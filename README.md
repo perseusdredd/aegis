@@ -8,9 +8,6 @@ AEGIS is a build-time defence layer for software you ship: it makes release arte
 [![Node.js](https://img.shields.io/badge/Node.js-%5E22.23.4%7C%7C_24.x-0284c7?style=flat-square&logo=nodedotjs&logoColor=white)](#requirements)
 [![MIT license](https://img.shields.io/badge/license-MIT-38bdf8?style=flat-square)](LICENSE)
 
-**[Website](https://aegis.tools/) - [Guides](https://aegis.tools/guides/) - [Showcase](https://aegis.tools/showcase/) - [Disclaimer](DISCLAIMER.md)**
-
----
 
 ## What it does
 
