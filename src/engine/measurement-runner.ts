@@ -23,7 +23,7 @@ import { AEGIS_IDENTITY } from "../identity.js";
 // verbatim here (never rewritten); these are minimal structural types for
 // the handful of exports this runner actually calls.
 interface RedteamSamplesModule {
-  buildSampleMatrix(): Promise<{
+  buildSampleMatrix(options?: { intensity?: string; seed?: string }): Promise<{
     aegis: { REA_INTERNAL_LIMITS: Record<string, unknown> } & Record<string, unknown>;
     intensity: string;
     seed: string;
@@ -364,12 +364,12 @@ async function measureCore(options: MeasureOptions): Promise<MeasureRunResult> {
   const samplesMod = (await import(samplesModUrl)) as RedteamSamplesModule;
   const probesMod = (await import(probesModUrl)) as RedteamProbesModule;
 
-  const { aegis, intensity: builtIntensity, seed: builtSeed, samples } = await samplesMod.buildSampleMatrix();
+  const { aegis, intensity, seed, samples } = await samplesMod.buildSampleMatrix({
+    ...(options.intensity !== undefined ? { intensity: options.intensity } : {}),
+    ...(options.seed !== undefined ? { seed: options.seed } : {}),
+  });
   const rea = await probesMod.loadReaProbes();
   const limits = aegis.REA_INTERNAL_LIMITS;
-
-  const seed = options.seed ?? builtSeed;
-  const intensity = options.intensity ?? builtIntensity;
   const timeoutMs = options.timeoutMs ?? 120_000;
 
   const selectedFormats: MeasureFormat[] = requested

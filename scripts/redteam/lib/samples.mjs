@@ -191,13 +191,23 @@ export function buildMinimalWasm() {
   ]);
 }
 
+export const DEFAULT_MATRIX_INTENSITY = "bankrupt";
+export const DEFAULT_MATRIX_SEED = "aegis-redteam-empirical-v1";
+const MATRIX_INTENSITIES = ["stealth", "balanced", "maximum", "bankrupt"];
+
 /**
  * Build the red-team sample matrix: one entry per empirically runnable format.
+ * `options.intensity` / `options.seed` flow into every protect* call, so each
+ * intensity yields a genuinely different matrix. Defaults keep the historical
+ * bankrupt + fixed-seed behaviour used by `redteam:rea`.
  */
-export async function buildSampleMatrix() {
+export async function buildSampleMatrix(options = {}) {
   const aegis = await loadAegis();
-  const intensity = "bankrupt";
-  const seed = "aegis-redteam-empirical-v1";
+  const intensity = options.intensity ?? DEFAULT_MATRIX_INTENSITY;
+  if (!MATRIX_INTENSITIES.includes(intensity)) {
+    throw new Error(`unknown intensity '${intensity}' (expected ${MATRIX_INTENSITIES.join(", ")})`);
+  }
+  const seed = options.seed ?? DEFAULT_MATRIX_SEED;
 
   const elfRaw = aegis.buildMappedGoFlutterElfFixture();
   const elfHard = aegis.protectNativeBinary(elfRaw, { intensity, seed });

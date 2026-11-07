@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -31,7 +31,7 @@ describe("drift check covers the budget registry", () => {
   it("a REA constant matching the registry value yields a PASS Registry row", () => {
     const { out } = runDrift(fakeRea("match", "export const TSHARK_JSON_MAX_BYTES = 8 * 1024 * 1024;\n"));
     expect(out).toMatch(/PASS\s+Registry:TSHARK_JSON_MAX_BYTES\s+8388608/);
-    expect(out).toMatch(/Registry:summary\s+\d+ entries: \d+ verified by name/);
+    expect(out).toMatch(/Registry:summary\s+\d+ entries: \d+ verified, \d+ doğrulanamadı/);
   }, 130_000);
 
   it("a drifted REA constant yields a FAIL Registry row and a non-zero exit", () => {
@@ -39,4 +39,32 @@ describe("drift check covers the budget registry", () => {
     expect(out).toMatch(/FAIL\s+Registry:TSHARK_JSON_MAX_BYTES\s+AEGIS tracks 8388608, REA has 1024/);
     expect(status).toBe(1);
   }, 130_000);
+});
+
+describe("every registry entry is accounted for", () => {
+  const countRows = (out: string) => ({
+    pass: (out.match(/^PASS\s+Registry:(?!summary|load)/gm) ?? []).length,
+    unverified: (out.match(/^UNVERIFIED\s+Registry:/gm) ?? []).length,
+    fail: (out.match(/^FAIL\s+Registry:/gm) ?? []).length,
+  });
+
+  it("unmatched entries are reported UNVERIFIED (doğrulanamadı), never skipped silently", () => {
+    const { out } = runDrift(fakeRea("sparse", "export const TSHARK_JSON_MAX_BYTES = 8 * 1024 * 1024;\n"));
+    const c = countRows(out);
+    expect(c.pass + c.unverified + c.fail).toBe(104);
+    expect(c.unverified).toBeGreaterThan(0);
+    expect(out).toMatch(/UNVERIFIED\s+Registry:ELECTRON_CALL_PATH_DEPTH_LIMIT\s+doğrulanamadı/);
+  }, 130_000);
+
+  const realRea = resolve(ROOT, "..", "rea");
+  it.skipIf(!existsSync(join(realRea, "src")))(
+    "against the real REA: 75 verified + 29 doğrulanamadı = 104, no drift",
+    () => {
+      const r = runDrift(realRea);
+      const c = countRows(r.out);
+      expect(c).toEqual({ pass: 75, unverified: 29, fail: 0 });
+      expect(r.status).toBe(0);
+    },
+    130_000,
+  );
 });

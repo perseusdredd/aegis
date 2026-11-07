@@ -131,6 +131,77 @@ function findObjectProperty(files, objectName, propName) {
   return hits;
 }
 
+/**
+ * Name-correlated resolver for registry entries whose AEGIS name is not literally
+ * assigned in REA. Indexes every numeric `const NAME = expr` and every
+ * `const OBJ = { prop: expr }` member (as OBJ+prop tokens) by an order-insensitive
+ * token key (LIMIT/LIMITS/MAX dropped), then looks entries up by:
+ *   1. the full token key;
+ *   2. the key minus its domain prefix (LLDB, GDB, ...), restricted to REA files
+ *      whose path contains that prefix.
+ * The VALUE is compared by the caller, so a changed REA value is reported as
+ * drift; only entries with no name-correlated numeric candidate stay unresolved.
+ */
+function tokenKey(parts) {
+  const toks = parts
+    .flatMap((p) => p.replace(/([a-z0-9])([A-Z])/g, "$1_$2").toUpperCase().split(/_+/))
+    .filter((t) => t && !["LIMIT", "LIMITS", "MAX"].includes(t));
+  return [...new Set(toks)].sort().join("_");
+}
+
+function buildNumericIndex(files) {
+  const index = new Map();
+  const add = (key, entry) => {
+    if (!index.has(key)) index.set(key, []);
+    index.get(key).push(entry);
+  };
+  for (const file of files) {
+    if (!/\.ts$/.test(file) || /\.(test|spec)\.[jt]s$/.test(file)) continue;
+    let text = FILE_TEXT_CACHE.get(file);
+    if (text === undefined) {
+      try {
+        text = readFileSync(file, "utf8");
+      } catch {
+        text = "";
+      }
+      FILE_TEXT_CACHE.set(file, text);
+    }
+    const rel = file.slice(REA_ROOT.length + 1);
+    for (const m of text.matchAll(/(?:const|let|var|static(?:\s+readonly)?)\s+([A-Za-z_]\w*)\s*(?::\s*[\w<>]+\s*)?=\s*([^;\n]+)/g)) {
+      add(tokenKey([m[1]]), { qual: m[1], expr: m[2], file: rel });
+    }
+    for (const m of text.matchAll(/const\s+([A-Za-z_]\w*)\s*=\s*(?:Object\.freeze\s*\()?\{([\s\S]*?)\n\}/g)) {
+      for (const p of m[2].matchAll(/(?:^|\n)\s*([A-Za-z_]\w*)\s*:\s*([^,\n]+)/g)) {
+        add(tokenKey([m[1], p[1]]), { qual: `${m[1]}.${p[1]}`, expr: p[2], file: rel });
+      }
+    }
+  }
+  return index;
+}
+
+function resolveRegistryCandidates(index, reaConstant) {
+  const key = tokenKey([reaConstant.replace(/\./g, "_")]);
+  const out = [];
+  const take = (entry) => {
+    try {
+      out.push({ ...entry, value: evalNumericExpr(entry.expr.replace(/,$/, "")) });
+    } catch {
+      // non-literal initializer: cannot be evaluated here
+    }
+  };
+  for (const e of index.get(key) ?? []) take(e);
+  if (out.length > 0) return out;
+  const prefix = reaConstant.split(/[_.]/)[0].toLowerCase();
+  const tail = key.split("_").filter((t) => t !== prefix.toUpperCase());
+  if (tail.length < 2) return out;
+  const tailKey = tail.join("_");
+  for (const [k, entries] of index) {
+    if (k !== tailKey) continue;
+    for (const e of entries) if (e.file.toLowerCase().includes(prefix)) take(e);
+  }
+  return out;
+}
+
 function countObligationFamilies(files) {
   const policyFile = files.find((f) =>
     f.endsWith("ReconstructionObligationPolicies.ts"),
@@ -567,15 +638,17 @@ async function main() {
     failures++;
   }
 
-  // Budget registry coverage (src/config/rea-budgets.config.ts): every entry whose
-  // constant name is directly assignable in REA source must match AEGIS's tracked
-  // value. Entries REA exposes under a different name / object property are counted
-  // as unchecked here (the property tables above cover some) and never as PASS.
+  // Budget registry coverage (src/config/rea-budgets.config.ts): EVERY entry is
+  // accounted for. Verified = a REA constant (directly named, or name-correlated
+  // via resolveRegistryCandidates) whose value equals AEGIS's tracked value.
+  // Entries with no numeric REA candidate are reported as UNVERIFIED
+  // ("doğrulanamadı") — never PASS and never silently skipped.
   try {
     const registryUrl = pathToFileURL(join(AEGIS_ROOT, "dist", "config", "rea-budgets.config.js")).href;
     const { REA_BUDGET_REGISTRY } = await import(registryUrl);
-    let matched = 0;
-    let unchecked = 0;
+    const numericIndex = buildNumericIndex(files);
+    let verified = 0;
+    const unverified = [];
     for (const entry of REA_BUDGET_REGISTRY) {
       const label = `Registry:${entry.reaConstant}`;
       if (!(entry.targetValue > entry.reaValue)) {
@@ -583,26 +656,34 @@ async function main() {
         failures++;
         continue;
       }
-      const hits = findAssignments(files, entry.reaConstant).filter((h) => !h.isTest);
-      if (hits.length === 0) {
-        unchecked++;
+      let candidates = findAssignments(files, entry.reaConstant)
+        .filter((h) => !h.isTest)
+        .flatMap((h) => {
+          try {
+            return [{ file: h.file, value: evalNumericExpr(h.expr) }];
+          } catch {
+            return [];
+          }
+        });
+      if (candidates.length === 0) candidates = resolveRegistryCandidates(numericIndex, entry.reaConstant);
+      if (candidates.length === 0) {
+        unverified.push(entry.reaConstant);
+        rows.push({
+          status: "UNVERIFIED",
+          label,
+          detail: "doğrulanamadı: REA kaynağında bu ada karşılık gelen sayısal sabit/özellik bulunamadı",
+        });
         continue;
       }
-      let actual;
-      try {
-        actual = evalNumericExpr(hits[0].expr);
-      } catch {
-        unchecked++;
-        continue;
-      }
-      if (actual === entry.reaValue) {
-        matched++;
-        rows.push({ status: "PASS", label, detail: `${actual}  (${hits[0].file})` });
+      const hit = candidates.find((c) => c.value === entry.reaValue) ?? candidates[0];
+      if (hit.value === entry.reaValue) {
+        verified++;
+        rows.push({ status: "PASS", label, detail: `${hit.value}  (${hit.file})` });
       } else {
         rows.push({
           status: "FAIL",
           label,
-          detail: `AEGIS tracks ${entry.reaValue}, REA has ${actual} in ${hits[0].file}`,
+          detail: `AEGIS tracks ${entry.reaValue}, REA has ${hit.value} in ${hit.file}`,
         });
         failures++;
       }
@@ -610,7 +691,7 @@ async function main() {
     rows.push({
       status: "PASS",
       label: "Registry:summary",
-      detail: `${REA_BUDGET_REGISTRY.length} entries: ${matched} verified by name, ${unchecked} not directly assignable in REA (unchecked, not counted as verified)`,
+      detail: `${REA_BUDGET_REGISTRY.length} entries: ${verified} verified, ${unverified.length} doğrulanamadı (UNVERIFIED, not counted as verified): ${unverified.join(", ")}`,
     });
   } catch (err) {
     rows.push({

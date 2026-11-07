@@ -1161,7 +1161,8 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
         const result = await runMeasurement({
           ...(parsed.measureFormats.length > 0 ? { formats: parsed.measureFormats } : {}),
           ...(parsed.seed !== undefined ? { seed: parsed.seed } : {}),
-          intensity: parsed.intensity,
+          // Spec default is bankrupt; the global parser default (balanced) must not leak in.
+          ...(argv.includes("--intensity") ? { intensity: parsed.intensity } : {}),
           ...(parsed.output !== undefined ? { outDir: parsed.output } : {}),
           ...(parsed.measureTimeoutMs !== undefined ? { timeoutMs: parsed.measureTimeoutMs } : {}),
           ...(parsed.reaRoot !== undefined ? { reaRoot: parsed.reaRoot } : {}),

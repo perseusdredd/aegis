@@ -283,3 +283,29 @@ describe("isBudgetTripError (REA budget trips are measurements, not failures)", 
     expect(r.document.formats[0]!.estimatedTrip).toBe(true);
   }, 30_000);
 });
+
+describe("format count stays pinned at 13 (spec, code and harness agree)", () => {
+  it("KNOWN_MEASURE_FORMATS has exactly 13 entries", () => {
+    expect(KNOWN_MEASURE_FORMATS).toHaveLength(13);
+  });
+
+  it("docs/AEGIS-MEASUREMENT.md and README never claim 14 formats", async () => {
+    const { readFileSync } = await import("node:fs");
+    for (const f of ["docs/AEGIS-MEASUREMENT.md", "README.md"]) {
+      const text = readFileSync(join(process.cwd(), f), "utf8");
+      expect(text, `${f} still mentions 14 formats`).not.toMatch(/\b14\s+(format|anahtar)/i);
+    }
+    const spec = readFileSync(join(process.cwd(), "docs/AEGIS-MEASUREMENT.md"), "utf8");
+    expect(spec).toMatch(/13 format/);
+  });
+
+  it("the red-team harness has a sample for every measurable format", async () => {
+    if (!reaReady) return;
+    const { pathToFileURL } = await import("node:url");
+    const mod = (await import(pathToFileURL(join(process.cwd(), "scripts/redteam/lib/samples.mjs")).href)) as {
+      buildSampleMatrix(): Promise<{ samples: Record<string, unknown> }>;
+    };
+    const { samples } = await mod.buildSampleMatrix();
+    expect(Object.keys(samples).length).toBe(12); // go_flutter_elf serves two formats (13 = 12 + 1)
+  }, 60_000);
+});

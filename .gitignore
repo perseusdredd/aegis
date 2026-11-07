@@ -27,3 +27,8 @@ challenge/v7/.fixture/
 
 # CrackMe v8 fixture builds
 challenge/v8/.fixture/
+
+# Measurement artifacts / local scratch
+.aegis-hardened/
+docs/measure/*.json
+drift.txt
