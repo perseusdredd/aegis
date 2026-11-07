@@ -1,258 +1,114 @@
-<div align="center">
+﻿# <img src="docs/assets/logo.png" alt="AEGIS Shield" width="42" align="absmiddle" /> AEGIS: Blind LLM Agents
 
-**English** · [简体中文](docs/readme/README_zh.md) · [繁體中文](docs/readme/README_zh-TW.md) · [日本語](docs/readme/README_ja.md) · [한국어](docs/readme/README_ko.md) · [Türkçe](docs/readme/README_tr.md) · [Русский](docs/readme/README_ru.md) · [Tiếng Việt](docs/readme/README_vi.md) · [ไทย](docs/readme/README_th.md) · [Deutsch](docs/readme/README_de.md) · [Español](docs/readme/README_es.md) · [Français](docs/readme/README_fr.md) · [Українська](docs/readme/README_uk.md) · [Polski](docs/readme/README_pl.md) · [Português (Brasil)](docs/readme/README_pt-BR.md) · [العربية](docs/readme/README_ar.md) · [فارسی](docs/readme/README_fa.md) · [Bahasa Indonesia](docs/readme/README_id.md) · [Italiano](docs/readme/README_it.md) · [Ελληνικά](docs/readme/README_el.md) · [മലയാളം](docs/readme/README_ml.md) · [Roman Urdu](docs/readme/README_ur-Latn.md) · [Română](docs/readme/README_ro.md)
+### Rotate -> Deepen -> Measure
 
-# <img src="docs/assets/logo.png" alt="AEGIS Shield" width="42" align="absmiddle" /> AEGIS: Blind LLM Agents
-
-### Make reverse engineering bankrupt again.
-
-**Point AEGIS at the build you ship. When an AI reverse-engineering agent (REA) opens it, the analyzer hits resource budgets, follows decoys, and burns tokens — while your users still get the same runtime behavior.**
+AEGIS is a build-time defence layer for software you ship: it makes release artefacts expensive for an AI reverse-engineering agent (REA) to read, while runtime behaviour stays equivalent.
 
 [![npm version](https://img.shields.io/badge/npm-aegis--agents-2563eb?style=flat-square&logo=npm)](https://www.npmjs.com/package/aegis-agents)
-[![GitHub Trending](https://img.shields.io/badge/GitHub_Trending-%2315_Daily-7c3aed?style=flat-square&logo=github&logoColor=white)](https://trendshift.io/repositories/323569)
-[![MCP tool catalog](https://img.shields.io/badge/MCP-tool_catalog-3b82f6?style=flat-square)](docs/cli-and-mcp.md)
-[![Node.js](https://img.shields.io/badge/Node.js-%5E22.23.4_%7C%7C_24.x-0284c7?style=flat-square&logo=nodedotjs&logoColor=white)](#format-coverage)
-[![Counter-REA](https://img.shields.io/badge/Counter--REA-empirically_measured-1d4ed8?style=flat-square)](#empirical-results-vs-real-rea)
+[![Node.js](https://img.shields.io/badge/Node.js-%5E22.23.4%7C%7C_24.x-0284c7?style=flat-square&logo=nodedotjs&logoColor=white)](#requirements)
 [![MIT license](https://img.shields.io/badge/license-MIT-38bdf8?style=flat-square)](LICENSE)
 
-**[Website](https://aegis.tools/) · [Guides](https://aegis.tools/guides/) · [Showcases](https://aegis.tools/showcase/) · [Disclaimer](DISCLAIMER.md)**
+**[Website](https://aegis.tools/) - [Guides](https://aegis.tools/guides/) - [Showcase](https://aegis.tools/showcase/) - [Disclaimer](DISCLAIMER.md)**
 
-[Quick start](#quick-start) · [Empirical results](#empirical-results-vs-real-rea) · [Format coverage](#format-coverage) · [Benchmark](#benchmark-14-targets-internal-estimates) · [FAQ](#faq)
+---
+
+## What it does
+
+| Layer | What it does |
+| --- | --- |
+| **Rotate** | Picks decoys deterministically per build from a seed, so a rebuild is reproducible and two builds never share one layout. The plan can be written out with `--rotation-report`. |
+| **Deepen** | Pushes each format past its recorded cost budget: header rows, nesting depth, interface inventories, PCAP JSON, fuse sentinels, model JSON. |
+| **Measure** | Runs REA probes against the build and diffes the result against the recorded budget. Deviation is reported, never assumed. |
+
+Each layer has a spec with the exact limits it targets: [rotation](docs/AEGIS-ROTATION.md), [budgets](docs/AEGIS-BUDGETS.md), [measurement](docs/AEGIS-MEASUREMENT.md).
+
+## Requirements
+
+- Node.js `^22.23.4` or `>=24.0.0` (REA red-team probes need `zlib.zstd*` on 22.23+)
+- Optional: `wabt` and `tshark` on `PATH` for WASM and PCAP coverage
+
+There is no global `aegis` binary to rely on. Use one of these two forms:
+
+- `npx aegis-agents <command>` — published package
+- `node dist/cli.js <command>` — local build
+
+On Windows use `npm.cmd` for scripts, since `npm.ps1` is blocked by the default execution policy.
+
+## Install
 
 ```bash
-aegis harden .
+git clone https://github.com/perseusdredd/aegis.git
+cd aegis
+npm install
+npm.cmd run build
+```
+
+## Usage
+
+Register the MCP server and skill with your coding agent, then run the default one-command pass:
+
+```bash
+npx aegis-agents setup -y
+npx aegis-agents harden .
 # or tell your agent: "Harden my software against REA"
 ```
 
-</div>
+`harden` auto-discovers build outputs (`dist/`, `build/`, `.asar`, `.wasm`, `.sqlite`, `models/` ...) and runs `audit` -> `protect` -> `verify` at `bankrupt` intensity.
 
-
-<p align="center">
-  <a href="https://trendshift.io/repositories/323569" target="_blank" rel="noopener noreferrer">
-    <img src="docs/assets/aegis-github-trending-badge.png" alt="GitHub Trending — #15 Repository Of The Day" width="280" height="56"/>
-  </a>
-</p>
-
-> [!IMPORTANT]
-> AEGIS is a **defensive** tool for protecting **your own** software. See [DISCLAIMER.md](DISCLAIMER.md).
-> Get AEGIS from [perseusdredd/aegis](https://github.com/perseusdredd/aegis) or [npm `aegis-agents`](https://www.npmjs.com/package/aegis-agents).
-
-<div align="center">
-<img src="docs/assets/aegis-vs-rea-showcase.svg" alt="Side-by-side: REA on an unprotected artifact vs AEGIS-protected output" width="1200" />
-</div>
-
----
-
-## What AEGIS does
-
-REA reverse-engineers release artifacts in one command. AEGIS is the Counter-REA half of that story:
-
-| Layer | What happens |
-| --- | --- |
-| **Poison** | Plant format-valid canaries, honey metadata, and decoy control flow that look like real evidence. |
-| **Exhaust** | Push the artifact past REA's documented resource budgets (headers, nesting, interface inventories, PCAP JSON, fuse sentinels, …). |
-| **Hallucinate** | Leave the analyzer with truncated inventories, redaction failures, and ambiguous rabbit holes — while **runtime stays equivalent**. |
-
-One sentence covers the common case (auto-discovers `dist/` / `build/` / `.asar` / `.wasm` / `.sqlite` / models / … and runs audit → protect → verify):
+Step by step, when you know the target:
 
 ```bash
-npx aegis-agents harden .
-# MCP / agent: aegis_harden   ·   "Harden my software against REA"
+npx aegis-agents audit dist            # read-only exposure scan
+node dist/cli.js protect dist          # inject shields (writes alongside, or --in-place)
+node dist/cli.js verify dist           # check invariants survived
+node dist/cli.js defend app.asar       # full pipeline in one call
+node dist/cli.js measure app.wasm      # measure one artefact against REA
 ```
 
-Same pipeline as `aegis defend` / `aegis_defend` when you already know the path; `harden` is the default one-command UX.
-
-## Quick start
+Report a rotation plan and the emitted manifest:
 
 ```bash
-# Node.js ^22.23.4 or 24.x recommended (REA red-team needs zlib.zstd on 22.23+)
-npx aegis-agents setup          # register MCP + skill with your coding agent
-npx aegis-agents harden .       # one-command Counter-REA pass on the current project
-npx aegis-agents benchmark      # 14-target showcase (local estimates + runtime checks)
+node dist/cli.js protect dist --intensity balanced --seed my-seed --rotation-report aegis-rotation/v1.json
+node dist/cli.js protect dist --manifest --sign-manifest --manifest-key private.pem
+node dist/cli.js verify-manifest dist/.aegis-manifest.json --public-key public.pem
 ```
 
-Ask your agent after setup (skill guides one-click harden):
+Intensity presets: `stealth`, `balanced`, `maximum`, `bankrupt` (default for `harden`/`defend` is `bankrupt`, `protect` is `balanced`). `--fail-under <n>` turns a weak score into exit 2 for CI.
 
-```text
-Harden my software against REA
-```
+## Measurement
 
-Or run stages explicitly: `audit` · `protect` · `verify` · `defend` — see [one-click agent defense](docs/one-click-agent-defense.md) and [CLI and MCP](docs/cli-and-mcp.md).
-
----
-
-## Empirical results vs real REA
-
-These numbers come from running **real REA** against AEGIS-hardened samples on commodity hardware (`npm run redteam:rea`). Full machine-readable report: [`docs/redteam/empirical-rea-validation.md`](docs/redteam/empirical-rea-validation.md) / [`.json`](docs/redteam/empirical-rea-validation.json).
-
-**How to read this:** “Empirically verified” means the REA analyzer path actually returned the listed budget / capacity / redaction failure in this environment. It is **not** a claim about Ghidra/Frida/LLDB/Rizin/JADX sessions we did not run here.
-
-### Empirically verified on commodity hardware
-
-Recorded under **Node v24.22.1** with optional **Wabt 1.0.42** + **tshark 4.4** when noted. Soft-skips keep Node 22 / CI green when tooling is absent.
-
-| Format | Before → after | REA outcome after AEGIS | Budget / error |
-| --- | ---: | --- | --- |
-| **Go buildinfo** | 50 KiB → 1.16 MiB | capacity error | `MAX_BUILD_INFO_BYTES` (1 MiB) — *Go build-info string length exceeds the 1 MiB limit* |
-| **Erlang BEAM** | 84 B → 262 KiB | capacity error | `max_chunks` — *BEAM form exceeds the 64-chunk budget* |
-| **EVM bytecode** | 16 B → **4.00 MiB** | approaches full input cap | `EVM_INTERFACE_LIMITS.inputBytes` (4 MiB) |
-| **PCAP** | 24 B → 1.29 MiB | budget rejected | `TSHARK_JSON_MAX_BYTES` (>8 MiB) → `AnalysisResourceConstraintError` (tshark present) |
-| **Electron ASAR** | 607 B → **16.9 MiB** | capacity error | `DEFAULT_ASAR_MAX_HEADER_BYTES` (16 MiB) |
-| **WASM + Wabt** | 54 B → **6.56 MiB** · 251 exports | `ifaceState=partial` | `WASM_INTERFACE_REPRESENTATION_BYTES` — *Typed WASM interface decoding exceeds the WABT output representation budget* |
-| **SQLite** (Node 24) | 12 KiB → 56 KiB | redaction / column eval | `SqliteColumnEvaluationFailure` — unknown `enclave_unseal_payload()` on honey trap columns |
-| **JavaScript** | 761 B → 116 KiB | budget rejected | `alias-selections` + `getter-expansion` + `primitive-bytes` + `primitive-candidates` (real REA `resourceLimits`) |
-| **Safetensors** | 128 B → 10.1 KiB | capacity error | `MODEL_JSON_NESTING` — *Safetensors JSON nesting exceeds 32 levels* (HF-loadable; tensor bytes unchanged) |
-| **GGUF** | 24 B → 7.7 KiB | capacity error | `MODEL_METADATA_NESTING` — *GGUF metadata nesting exceeds 32 array frames* |
-| **Electron fuses** | 50 KiB → 1.16 MiB | budget rejected | `ELECTRON_FUSE_LIMITS.maximumSentinelsPerSlice` (>32) |
-| **Flutter pool** | 50 KiB → 1.16 MiB | projected cap | `MAX_POOL_URIS` / `MAX_POOL_TOKENS` (REA would truncate with “at least N”) |
-
-Reproduce:
+`measure` compares a protected artefact against the live REA probes:
 
 ```bash
-# Prefer Node 22.23.4+ or 24.x; set Wabt/tshark for full coverage
-export REA_WABT_BIN_DIRECTORY=$HOME/opt/wabt-1.0.42/bin   # optional
-npm run build && npm run redteam:rea
+node dist/cli.js measure dist/app.wasm --format wasm --json --out docs/measure
 ```
 
-### Designed-for but **not** empirically verified here
+| Format | Budget target | Observed | Verdict |
+| --- | --- | --- | --- |
+| `go_buildinfo` | MAX_BUILD_INFO_BYTES | 2 ms | trip, 0 deviation |
+| `erlang_beam` | max_chunks | 0 ms | trip, 0 deviation |
+| `wasm_module` | WASM_INTERFACE_REPRESENTATION_BYTES | 6 ms | trip, 0 deviation |
+| `javascript` | alias+getter+primitive byte budgets | 1108 ms | trip, 0 deviation |
 
-These shields exist in-tree and are covered by unit tests / catalog drift checks, but the matching REA path needs **native tooling we did not run** on this box:
-
-| Area | Why unverified here |
-| --- | --- |
-| Ghidra / native decompilation depth | Requires a Ghidra install + REA bridge |
-| Frida / LLDB / GDB / Rizin live sessions | Requires those debuggers + device/process attach |
-| JADX / full Android APK pipeline | APK resigning unsupported; DEX shield is in-tree |
-| **Firmware** containers | Skipped — staging/extraction budgets exist; no honest E2E without firmware corpora |
-| **SPIR-V / CUDA fatbinary / AMD GPU objects** | Skipped — need native GPU object decoders; **PTX text** is shielded in-tree (benchmark only, not a REA GPU-object budget hit) |
-| EVMole in-process EVM decode | Documented as not pathable in-process; EVM shield still densifies to the 4 MiB input approach |
-
-We do **not** claim those paths are empirically bankrupt until `redteam:rea` (or an equivalent harness) records a real before/after against the live analyzer.
-
----
-
-## Format coverage
-
-| Format | Canary + diagnostic | Exhaustion / budget trip | Empirically vs REA | Notes |
-| --- | :---: | :---: | :---: | --- |
-| JavaScript / TypeScript | ✓ | ✓ semantic budgets | **verified** (in-process) | Babel AST; anti-strip; real REA resourceLimits |
-| Electron `.asar` | ✓ | ✓ header 16 MiB | **verified** | |
-| Electron fuses | ✓ | ✓ >32 sentinels | **verified** | |
-| WASM | ✓ custom sections | ✓ export-name decoys → Wabt | **verified** (Wabt) | Soft-skips to projected budget without Wabt |
-| Python / `.pyc` | ✓ | ✓ | designed-for | |
-| SQLite | ✓ honey + trap cols | ✓ column eval | **verified** (Node 24) | Soft `capability_gated` on Node 22 |
-| Safetensors | ✓ string metadata | ✓ JSON nesting >32 | **verified** | HF-loadable; tensor bytes preserved |
-| GGUF | ✓ | ✓ ARRAY nesting >32 | **verified** | |
-| Go buildinfo | ✓ | ✓ >1 MiB | **verified** | Mapped ELF section |
-| Flutter / Dart pool | ✓ | ✓ URI/token caps | **verified** (projected) | |
-| Erlang BEAM | ✓ | ✓ chunks / atoms | **verified** | |
-| EVM + Solidity meta | ✓ | ✓ → 4 MiB input | **verified** (approach) | |
-| PCAP | ✓ | ✓ tshark JSON >8 MiB | **verified** (tshark) | Soft-skip without tshark |
-| NVIDIA PTX (text) | ✓ | entry flood | benchmark only | Not a REA GPU-object budget |
-| DEX / IL2CPP / bplist / .NET / JVM / ZIP | ✓ | format-specific | designed-for | APK signing-aware protect unsupported |
-| Firmware / SPIR-V / CUDA fatbin / AMD GPU | — | — | **skipped** | See matrix above |
-
----
-
-## Benchmark (14 targets, internal estimates)
-
-`npx aegis-agents benchmark` runs a **local Counter-REA showcase**: exposure scores, **estimated** token/cost multipliers, and **measured** runtime equivalence. Token/$ columns are **internal estimates** derived from AEGIS's catalog of REA limits — they are **not** the same as the empirical REA process measurements above (those are byte-level analyzer failures with real error strings). `npm run verify:rea` is a **constant-drift harness only** and must never be cited as protection evidence; the only authoritative gate is `npm run redteam:rea`.
-
-Latest local run (aegis-agents **v2.1.0**): aggregate **~639.5×** tokens · **~304.4×** cost · **14/14** runtime-exact.
-
-| Target | Unprotected (est.) | Protected (est.) | Token mult (est.) | Runtime |
-| --- | --- | --- | ---: | :---: |
-| DX-Ball sound-pan (`.js`) | 84/100 · 4,800 tok · $0.20 | 2/100 · 13.5M tok · $212.82 · LIMITED | **2822.7×** | 100% |
-| Notion Electron clipboard (`.asar`) | 98/100 · 9,132 tok · $0.34 | 2/100 · 23.1M tok · $358.28 · LIMITED | **2532.3×** | 100% |
-| Enterprise license validator | 84/100 · 4,800 tok · $0.20 | 2/100 · 13.5M tok · $212.82 · LIMITED | **2822.7×** | 100% |
-| WASM crypto kernel | 81/100 · 4,800 tok · $0.20 | 6/100 · 1.83M tok · $30.23 · LIMITED | **381.5×** | 100% |
-| Native ELF64 (Rust/Go/Fuse/Dart) | 81/100 · 35,222 tok · $0.73 | 2/100 · 3.72M tok · $60.03 · LIMITED | **105.6×** | 100% |
-| SQLite entitlement DB | 81/100 · 10,568 tok · $0.29 | 7/100 · 1.71M tok · $28.39 · LIMITED | **162.1×** | 100% |
-| Edge AI Safetensors | 81/100 · 4,800 tok · $0.20 | 6/100 · 1.81M tok · $29.90 · LIMITED | **376.8×** | 100% |
-| Android DEX | 81/100 · 8,900 tok · $0.34 | 7/100 · 2.79M tok · $45.11 · LIMITED | **313.2×** | 100% |
-| Apple bplist | 81/100 · 6,440 tok · $0.26 | 9/100 · 1.36M tok · $22.96 · LIMITED | **211.8×** | 100% |
-| .NET managed DLL | 81/100 · 8,900 tok · $0.34 | 6/100 · 2.45M tok · $39.96 · LIMITED | **274.8×** | 100% |
-| Erlang BEAM | 81/100 · 8,900 tok · $0.34 | 5/100 · 3.86M tok · $62.08 · LIMITED | **433.2×** | 100% |
-| EVM Solidity metadata | 81/100 · 6,440 tok · $0.26 | 6/100 · 1.78M tok · $29.40 · LIMITED | **276.3×** | 100% |
-| libpcap capture | 81/100 · 4,800 tok · $0.20 | 8/100 · 1.60M tok · $26.58 · LIMITED | **333.2×** | 100% |
-| NVIDIA PTX text | 81/100 · 4,800 tok · $0.20 | 6/100 · 2.40M tok · $39.29 · LIMITED | **500.2×** | 100% |
-
----
-
-## How AEGIS works
-
-1. **Exhaustion** — trip documented REA caps (`primitive-candidates`, ASAR header bytes, WASM interface representation, SQLite column evaluation, model JSON/ARRAY nesting, Go buildinfo, BEAM chunks, PCAP tshark JSON, fuse sentinels, …).
-2. **Deception** — canary credentials + system-diagnostic rabbit holes across Python/WASM/SQLite/models/DEX/IL2CPP/bplist/.NET/JVM/ZIP; decoy IPC / enclave manifests / VLQ maps.
-3. **Runtime guard** — Electron V1 fuse hardening; CDP/Frida/inspector detection returns synthetic telemetry during inspection sessions.
-
-Protections are format-native (no commercial packer / external LLVM required). Red line: **never break protected program behavior, export surface, binary/section integrity, or format validity.**
-
----
+Real run, 2026-11-07, AEGIS `8cd5447` against REA `c5301e6`: 13/13 formats measured, 0 remaining, 0 deviations, verdict pass, 4349 ms total. Full table in [docs/MEASURE-RESULT.md](docs/MEASURE-RESULT.md). See [docs/AEGIS-MEASUREMENT.md](docs/AEGIS-MEASUREMENT.md) for flags and report layout.
 
 
-## Project config defaults (P0)
+## Limits
 
-- **Per-project seed** — AEGIS mints a random seed into `.aegisrc` / `aegis.config.json` on first use. Legacy shared fingerprints (`aegis-shield-seed-v1`, …) are no longer the default.
-- **`--llm-directives`** — risky LLM-facing bait (fake COPPA/medical notices, dual-use imitation, in-band AI chat markers) is **off by default**; pass the flag (or `llmDirectives: true` / MCP `llm_directives`) to opt in.
-- **`--manifest`** — `.aegis-manifest.json` is an **opt-in** attestation and is **unsigned by default**. Add `--sign-manifest --manifest-key <pem>` to attach an ed25519 signature (the SPKI public key is embedded in the manifest), or use `signManifest` + `manifestSigningKeyPath` from the API. Schema: [`defense-manifest-v1.json`](website/schemas/defense-manifest-v1.json).
+- Draft shields (LLM directives, weave decoys, self-seal, sidecar entangle, Godot PCK, UnityFS, PyInstaller, device tree, ESP images) are opt-in and experimental; the newest five are wired into dispatch and tested on magic bytes only, not on real-world binaries.
+- The measurement set is a fixed 13-format list, not a general REA score.
+- Firmware, JADX/APK resign, GPU fatbins and Frida live sessions are designed for but not all wired end to end.
+- Verify always runs after protect; a shield that breaks runtime is a regression, not a win.
 
-## FAQ
-
-<details>
-<summary><strong>Which agents can use AEGIS?</strong></summary>
-
-Any coding agent with local MCP or `SKILL.md` workflows. `npx aegis-agents setup` configures Claude Code, Cursor, Codex, Gemini CLI, Windsurf, Google Antigravity, OpenCode, VS Code, and GitHub Copilot CLI. After setup, the bundled [`aegis-counter-rea` skill](.agents/skills/aegis-counter-rea/SKILL.md) is the one-click harden guide (`aegis_harden` / `aegis harden .`); MCP stays the execution layer.
-</details>
-
-<details>
-<summary><strong>Does AEGIS change runtime output?</strong></summary>
-
-No on the hot path. Budget guards sit behind $O(1)$ opaque predicates. Every benchmark target checks 100% input/output equivalence against the unprotected build.
-</details>
-
-<details>
-<summary><strong>Do I need Ghidra, Hopper, IDA, or Wabt to protect files?</strong></summary>
-
-No. Shields are built into `aegis-agents`. Wabt/tshark/Node 24 are optional — they unlock **empirical** red-team probes (`npm run redteam:rea`), not protection itself.
-</details>
-
-<details>
-<summary><strong>Is AEGIS for attacking other people's software?</strong></summary>
-
-No. See [DISCLAIMER.md](DISCLAIMER.md). Protective payloads activate under reverse-engineering inspection of artifacts **you** hardened.
-</details>
-
-## Documentation
-
-- [DISCLAIMER.md](DISCLAIMER.md) — defensive use, own-software only
-- [Installation and agent setup](docs/installation.md)
-- [CLI and MCP contracts](docs/cli-and-mcp.md)
-- [One-click agent defense (skill-first)](docs/one-click-agent-defense.md)
-- [Weave-decoy MCP](docs/weave-decoy-mcp.md)
-- [Empirical REA validation](docs/redteam/empirical-rea-validation.md)
-- [`aegis-counter-rea` skill](.agents/skills/aegis-counter-rea/SKILL.md)
-- [Counter-REA matrix](.agents/skills/aegis-counter-rea/references/counter-rea-matrix.md)
-- [v1.4.0 release notes (staged)](docs/releases/v1.4.0.md)
-- [CHANGELOG](CHANGELOG.md)
-
-Report security issues through [SECURITY.md](SECURITY.md).
-
-## Contributing
-
-Issues and PRs welcome at [perseusdredd/aegis](https://github.com/perseusdredd/aegis). Before submitting:
+## Tests
 
 ```bash
-export PATH=$HOME/node22.23.4/bin:$PATH   # or node24
-npm run build && npm test && node dist/cli.js benchmark
-npm run redteam:rea                        # authoritative (real REA)
-# npm run verify:rea                       # drift harness only — NOT protection proof
+npm.cmd run build
+npm.cmd test
 ```
 
-## Community / 友情社区
-
-- 🎯 **[Public AEGIS CrackMe v6 (`challenge/v6/`)](challenge/v6/README.md)** — harden-native: a Node vault + HTML panel + WebAssembly core hardened by the real `aegis harden` pipeline (`bankrupt`, LLM directives OFF, fixed seed). Run `npm run crackme:v6 -- '<key>'`; `SEAL.json` publishes digests only (no plaintext key/flag in git).
-- [LINUX DO (`linux.do`)](https://linux.do/) — 新的理想型社区
+Tests need the sibling `rea` checkout next to this repo; without it one test is skipped.
 
 ## License
 
-[MIT](LICENSE)
+MIT. AEGIS is a fork of BLA; the original BLA copyright line is retained in [LICENSE](LICENSE).
