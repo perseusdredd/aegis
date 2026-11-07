@@ -174,6 +174,16 @@ export type MeasureRunResult =
  * `estimatedTrip === null` means AEGIS makes no claim for this format — no
  * deviation can be computed.
  */
+/**
+ * REA reports a budget trip as a thrown error (e.g. BinaryResourceFailure,
+ * BeamCapacityFailure) that the probe records as status "error" with
+ * `budgetHit: true`. That is the measured outcome AEGIS aims for, not a failed
+ * measurement; only an "error" WITHOUT a budget hit is a genuine probe failure.
+ */
+export function isBudgetTripError(after: Record<string, unknown> | null | undefined): boolean {
+  return after?.status === "error" && after.budgetHit === true;
+}
+
 export function computeDeviation(
   estimatedTrip: boolean | null,
   afterBudgetHit: boolean,
@@ -448,7 +458,7 @@ async function measureCore(options: MeasureOptions): Promise<MeasureRunResult> {
       status = "skipped";
       skipReason =
         typeof after?.redactionOrAmbiguity === "string" ? (after.redactionOrAmbiguity as string) : afterStatus;
-    } else if (afterStatus === "error") {
+    } else if (afterStatus === "error" && !isBudgetTripError(after)) {
       status = "failed";
       skipReason = typeof after?.errorMessage === "string" ? (after.errorMessage as string) : "error";
     } else {

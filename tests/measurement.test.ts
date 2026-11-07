@@ -261,3 +261,25 @@ describe("measure lock (docs/AEGIS-MEASUREMENT.md section 6)", () => {
     }
   }, 30_000);
 });
+
+describe("isBudgetTripError (REA budget trips are measurements, not failures)", () => {
+  it("error + budgetHit:true is a budget trip", async () => {
+    const { isBudgetTripError } = await import("../src/engine/measurement-runner.js");
+    expect(isBudgetTripError({ status: "error", budgetHit: true, errorName: "BinaryResourceFailure" })).toBe(true);
+  });
+  it("error without a budget hit is a genuine failure", async () => {
+    const { isBudgetTripError } = await import("../src/engine/measurement-runner.js");
+    expect(isBudgetTripError({ status: "error", budgetHit: false })).toBe(false);
+    expect(isBudgetTripError({ status: "ok", budgetHit: true })).toBe(false);
+    expect(isBudgetTripError(null)).toBe(false);
+  });
+  it("live: erlang_beam (REA BeamCapacityFailure) is measured, not failed", async () => {
+    if (!reaReady) return;
+    const r = await runMeasurement({ formats: ["erlang_beam"], outDir: freshOutDir() });
+    expect(r.kind).toBe("ok");
+    if (r.kind !== "ok") return;
+    expect(r.document.formats[0]!.status).toBe("measured");
+    expect(r.document.formats[0]!.afterBudgetHit).toBe(true);
+    expect(r.document.formats[0]!.estimatedTrip).toBe(true);
+  }, 30_000);
+});
