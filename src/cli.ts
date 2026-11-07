@@ -22,6 +22,7 @@ import {
 import { inspectReleaseExposure } from "./core/release-exposure.js";
 import { buildSarifReport } from "./core/sarif.js";
 import { verifyManifestFile } from "./core/manifest-verify.js";
+import { renderMeasureMarkdown, runMeasurement } from "./engine/measurement-runner.js";
 import type { ProtectionIntensity } from "./core/types.js";
 import { auditTarget } from "./engine/auditor.js";
 import { protectTarget } from "./engine/protector.js";
@@ -96,6 +97,7 @@ Commands:
   benchmark                   Run the 14-target Counter-REA Showcase Benchmark suite
   emit-headers                Generate compile-time C/C++, Rust, or Go defense headers
   verify-manifest <file>      Verify a signed .aegis-manifest.json (exit 2 when invalid)
+  measure                     Empirically measure AEGIS budget claims against real REA probes (docs/AEGIS-MEASUREMENT.md)
   doctor                      Check readiness of AEGIS engines & agent registrations
   update                      Update global aegis-shield installation & print setup refresh instructions
   uninstall                   Remove AEGIS MCP configuration & skill files
@@ -132,6 +134,13 @@ Options:
   --json                      Emit structured JSON output
   -v, --version               Print AEGIS version
   -h, --help                  Print this help guide
+
+Measure options (aegis measure):
+  --format <f>                Restrict to one format (repeatable); see docs/AEGIS-MEASUREMENT.md
+  --out <dir>                 Report output directory (default: docs/measure, or AEGIS_MEASURE_OUT_DIR)
+  --timeout-ms <n>            Per-format probe timeout in milliseconds (default: 120000)
+  --fail-on-diverge           Exit 2 when any format's estimatedTrip claim diverges from REA's observed behavior
+  --rea-root <path>           Sibling REA checkout path (default: REA_ROOT env, then ../rea)
 `);
 }
 
@@ -175,6 +184,10 @@ interface ParsedCliArgs {
   readonly honeyMaps: boolean;
   readonly help: boolean;
   readonly version: boolean;
+  readonly measureFormats: readonly string[];
+  readonly measureTimeoutMs?: number;
+  readonly measureFailOnDiverge: boolean;
+  readonly reaRoot?: string;
 }
 
 export function parseCliArgs(argv: readonly string[]): ParsedCliArgs {
@@ -217,6 +230,10 @@ export function parseCliArgs(argv: readonly string[]): ParsedCliArgs {
   let honeyMaps = true;
   let help = false;
   let version = false;
+  const measureFormats: string[] = [];
+  let measureTimeoutMs: number | undefined;
+  let measureFailOnDiverge = false;
+  let reaRoot: string | undefined;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
@@ -287,7 +304,7 @@ export function parseCliArgs(argv: readonly string[]): ParsedCliArgs {
       command = "mcp";
     } else if (arg === "--update") {
       command = "update";
-    } else if ((arg === "-o" || arg === "--output") && i + 1 < argv.length) {
+    } else if ((arg === "-o" || arg === "--output" || arg === "--out") && i + 1 < argv.length) {
       output = argv[++i]!;
     } else if ((arg === "-c" || arg === "--config") && i + 1 < argv.length) {
       configPath = argv[++i]!;
@@ -337,6 +354,25 @@ export function parseCliArgs(argv: readonly string[]): ParsedCliArgs {
       }
     } else if (arg === "--client" && i + 1 < argv.length) {
       clients.push(argv[++i]! as SupportedAgentClientId);
+    } else if (arg === "--format") {
+      const val = argv[++i];
+      if (val === undefined || val.trim().length === 0) {
+        argErrors.push("--format requires a value");
+      } else {
+        measureFormats.push(val);
+      }
+    } else if (arg === "--timeout-ms") {
+      const raw = argv[++i];
+      const n = raw === undefined ? Number.NaN : Number(raw);
+      if (raw === undefined || !Number.isFinite(n) || n <= 0) {
+        argErrors.push(`--timeout-ms must be a positive number (received '${raw}')`);
+      } else {
+        measureTimeoutMs = n;
+      }
+    } else if (arg === "--fail-on-diverge") {
+      measureFailOnDiverge = true;
+    } else if (arg === "--rea-root" && i + 1 < argv.length) {
+      reaRoot = argv[++i]!;
     } else if (!arg.startsWith("-")) {
       if (!command) command = arg;
       else positionals.push(arg);
@@ -383,6 +419,10 @@ export function parseCliArgs(argv: readonly string[]): ParsedCliArgs {
     honeyMaps,
     help,
     version,
+    measureFormats,
+    ...(measureTimeoutMs !== undefined ? { measureTimeoutMs } : {}),
+    measureFailOnDiverge,
+    ...(reaRoot !== undefined ? { reaRoot } : {}),
   };
 }
 
@@ -1115,6 +1155,36 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
         const plan = buildWeavePlan(target);
         console.log(JSON.stringify(plan, null, 2));
         return plan.overallStatus === "unsupported" ? 2 : 0;
+      }
+
+      case "measure": {
+        const result = await runMeasurement({
+          ...(parsed.measureFormats.length > 0 ? { formats: parsed.measureFormats } : {}),
+          ...(parsed.seed !== undefined ? { seed: parsed.seed } : {}),
+          intensity: parsed.intensity,
+          ...(parsed.output !== undefined ? { outDir: parsed.output } : {}),
+          ...(parsed.measureTimeoutMs !== undefined ? { timeoutMs: parsed.measureTimeoutMs } : {}),
+          ...(parsed.reaRoot !== undefined ? { reaRoot: parsed.reaRoot } : {}),
+        });
+        if (result.kind === "rea-not-ready") {
+          console.error(`REA not ready at ${result.reaRoot} (checkout + compiled dist required). Set --rea-root or REA_ROOT.`);
+          return 3;
+        }
+        if (result.kind === "invalid-format") {
+          console.error(`Unknown --format value(s): ${result.invalid.join(", ")}. Valid formats: ${result.valid.join(", ")}`);
+          return 2;
+        }
+        if (parsed.json) {
+          // Single-line JSON on stdout; file paths go to stderr (acceptance #10).
+          console.log(JSON.stringify(result.document));
+          console.error(`Wrote ${result.jsonPath}\nWrote ${result.mdPath}`);
+        } else {
+          console.log(renderMeasureMarkdown(result.document));
+          console.log(`\nWrote ${result.jsonPath}\nWrote ${result.mdPath}`);
+        }
+        // verdict:"fail" is exit 0 by default; only --fail-on-diverge + an
+        // actual divergence escalates to exit 2 (docs/AEGIS-MEASUREMENT.md section 4).
+        return parsed.measureFailOnDiverge && result.document.summary.divergences > 0 ? 2 : 0;
       }
 
       case "verify-weave": {
