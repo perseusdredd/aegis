@@ -1170,6 +1170,12 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
           console.error(`REA not ready at ${result.reaRoot} (checkout + compiled dist required). Set --rea-root or REA_ROOT.`);
           return 3;
         }
+        if (result.kind === "locked") {
+          console.error(
+            `Another aegis measure run holds ${result.lockPath}${result.holderPid !== null ? ` (pid ${result.holderPid})` : ""}. Wait for it to finish or pick a different --out.`,
+          );
+          return 1;
+        }
         if (result.kind === "invalid-format") {
           console.error(`Unknown --format value(s): ${result.invalid.join(", ")}. Valid formats: ${result.valid.join(", ")}`);
           return 2;

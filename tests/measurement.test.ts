@@ -222,3 +222,42 @@ describe("resolveReaRoot / KNOWN_MEASURE_FORMATS sanity", () => {
     expect(resolveReaRoot("/some/explicit/rea")).toContain("rea");
   });
 });
+
+describe("measure lock (docs/AEGIS-MEASUREMENT.md section 6)", () => {
+  it("a held lock makes the second run return a clear 'locked' result and write nothing", async () => {
+    const { acquireMeasureLock, releaseMeasureLock, measureLockPath } = await import("../src/engine/measurement-runner.js");
+    const dir = freshOutDir();
+    const held = acquireMeasureLock(dir);
+    expect(held.acquired).toBe(true);
+    try {
+      expect(acquireMeasureLock(dir).acquired).toBe(false);
+      if (reaReady) {
+        const r = await runMeasurement({ formats: ["wasm_module"], outDir: dir });
+        expect(r.kind).toBe("locked");
+        if (r.kind === "locked") {
+          expect(r.lockPath).toBe(measureLockPath(dir));
+          expect(r.holderPid).toBe(process.pid);
+        }
+        expect(readdirSync(dir).filter((f) => f.startsWith("measure-"))).toHaveLength(0);
+      }
+    } finally {
+      releaseMeasureLock(dir);
+    }
+    expect(existsSync(measureLockPath(dir))).toBe(false);
+  }, 30_000);
+
+  it("a stale lock (dead pid) is taken over; a finished run leaves no lock behind", async () => {
+    const { writeFileSync, mkdirSync } = await import("node:fs");
+    const { acquireMeasureLock, releaseMeasureLock, measureLockPath } = await import("../src/engine/measurement-runner.js");
+    const dir = freshOutDir();
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(measureLockPath(dir), "2147483646");
+    expect(acquireMeasureLock(dir).acquired).toBe(true);
+    releaseMeasureLock(dir);
+    if (reaReady) {
+      const r = await runMeasurement({ formats: ["wasm_module"], outDir: dir });
+      expect(r.kind).toBe("ok");
+      expect(existsSync(measureLockPath(dir))).toBe(false);
+    }
+  }, 30_000);
+});

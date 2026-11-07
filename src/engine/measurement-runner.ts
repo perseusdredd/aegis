@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
@@ -164,6 +164,7 @@ export interface MeasureDocument {
 
 export type MeasureRunResult =
   | { readonly kind: "rea-not-ready"; readonly reaRoot: string }
+  | { readonly kind: "locked"; readonly lockPath: string; readonly holderPid: number | null }
   | { readonly kind: "invalid-format"; readonly invalid: readonly string[]; readonly valid: readonly string[] }
   | { readonly kind: "ok"; readonly document: MeasureDocument; readonly jsonPath: string; readonly mdPath: string };
 
@@ -309,6 +310,30 @@ export function renderMeasureMarkdown(doc: MeasureDocument): string {
  * verbatim via dynamic import — never reimplements REA-probing logic.
  */
 export async function runMeasurement(options: MeasureOptions = {}): Promise<MeasureRunResult> {
+  const reaRoot = resolveReaRoot(options.reaRoot);
+  // Preflight first so a not-ready / invalid call never creates a lock or any file.
+  if (!reaCheckoutPresent(reaRoot) || !reaDistReady(reaRoot)) {
+    return { kind: "rea-not-ready", reaRoot };
+  }
+  const requested = options.formats && options.formats.length > 0 ? options.formats : undefined;
+  if (requested) {
+    const invalid = requested.filter((f) => !(KNOWN_MEASURE_FORMATS as readonly string[]).includes(f));
+    if (invalid.length > 0) return { kind: "invalid-format", invalid, valid: KNOWN_MEASURE_FORMATS };
+  }
+
+  const outDir = options.outDir ?? process.env.AEGIS_MEASURE_OUT_DIR ?? join(AEGIS_PACKAGE_ROOT, "docs", "measure");
+  const lock = acquireMeasureLock(outDir);
+  if (!lock.acquired) {
+    return { kind: "locked", lockPath: measureLockPath(outDir), holderPid: lock.holderPid };
+  }
+  try {
+    return await measureCore({ ...options, outDir });
+  } finally {
+    releaseMeasureLock(outDir);
+  }
+}
+
+async function measureCore(options: MeasureOptions): Promise<MeasureRunResult> {
   const reaRoot = resolveReaRoot(options.reaRoot);
   if (!reaCheckoutPresent(reaRoot) || !reaDistReady(reaRoot)) {
     return { kind: "rea-not-ready", reaRoot };
@@ -519,25 +544,54 @@ export async function runMeasurement(options: MeasureOptions = {}): Promise<Meas
   return { kind: "ok", document, jsonPath, mdPath };
 }
 
-/** True if `outDir` (or its default) already has a measure-lock file (acceptance: concurrent run guard). */
 export function measureLockPath(outDir: string): string {
   return join(outDir, ".measure-lock");
 }
 
-export function acquireMeasureLock(outDir: string): boolean {
+function pidAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (err) {
+    return (err as NodeJS.ErrnoException).code === "EPERM";
+  }
+}
+
+/**
+ * Atomic (`wx`) lock so two concurrent `aegis measure` runs cannot share an
+ * output dir. A lock whose holder pid is dead is stale and is taken over.
+ */
+export function acquireMeasureLock(outDir: string): { acquired: boolean; holderPid: number | null } {
   const lockPath = measureLockPath(outDir);
-  if (existsSync(lockPath)) return false;
   mkdirSync(outDir, { recursive: true });
-  writeFileSync(lockPath, String(process.pid));
-  return true;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      writeFileSync(lockPath, String(process.pid), { flag: "wx" });
+      return { acquired: true, holderPid: process.pid };
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code !== "EEXIST") throw err;
+      let holder: number | null = null;
+      try {
+        const n = Number.parseInt(readFileSync(lockPath, "utf8").trim(), 10);
+        holder = Number.isFinite(n) ? n : null;
+      } catch {
+        continue; // vanished between EEXIST and read: retry
+      }
+      if (holder !== null && pidAlive(holder)) return { acquired: false, holderPid: holder };
+      try {
+        unlinkSync(lockPath); // stale
+      } catch {
+        /* raced with another cleaner */
+      }
+    }
+  }
+  return { acquired: false, holderPid: null };
 }
 
 export function releaseMeasureLock(outDir: string): void {
+  const lockPath = measureLockPath(outDir);
   try {
-    const lockPath = measureLockPath(outDir);
-    if (existsSync(lockPath)) {
-      spawnSync(process.execPath, ["-e", `require('fs').unlinkSync(${JSON.stringify(lockPath)})`]);
-    }
+    if (readFileSync(lockPath, "utf8").trim() === String(process.pid)) unlinkSync(lockPath);
   } catch {
     /* best effort */
   }
