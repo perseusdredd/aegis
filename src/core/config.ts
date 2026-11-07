@@ -41,6 +41,15 @@ export interface AegisProjectConfig {
   readonly allowWasmXorMaskSidecar?: boolean;
   /** When true, allow bankrupt despite seal.revision XOR known-plaintext packs (red-blue round-7). Default false. */
   readonly allowWasmSealXorKnownPlaintext?: boolean;
+  /** Per-build decoy rotation (docs/AEGIS-ROTATION.md). Absent -> enabled: true, decoyCount derived from intensity. */
+  readonly rotation?: AegisRotationConfig;
+}
+
+export interface AegisRotationConfig {
+  readonly enabled?: boolean;
+  /** 1-4096. When set, overrides the intensity-derived decoy count range (min = max = decoyCount). */
+  readonly decoyCount?: number | null;
+  readonly reservedNames?: readonly string[];
 }
 
 /**
@@ -133,6 +142,34 @@ export function validateAegisConfigShape(value: unknown, source: string): AegisP
       !obj.wasmPreserveExports.every((v) => typeof v === "string"))
   ) {
     throw new Error(`Invalid AEGIS config at ${source}: 'wasmPreserveExports' must be an array of strings`);
+  }
+  if (obj.rotation !== undefined) {
+    if (obj.rotation === null || typeof obj.rotation !== "object" || Array.isArray(obj.rotation)) {
+      throw new Error(`Invalid AEGIS config at ${source}: 'rotation' must be an object`);
+    }
+    const rotation = obj.rotation as Record<string, unknown>;
+    if (rotation.enabled !== undefined && typeof rotation.enabled !== "boolean") {
+      throw new Error(`Invalid AEGIS config at ${source}: 'rotation.enabled' must be a boolean`);
+    }
+    if (
+      rotation.decoyCount !== undefined &&
+      rotation.decoyCount !== null &&
+      (typeof rotation.decoyCount !== "number" ||
+        !Number.isInteger(rotation.decoyCount) ||
+        rotation.decoyCount < 1 ||
+        rotation.decoyCount > 4096)
+    ) {
+      throw new Error(
+        `Invalid AEGIS config at ${source}: 'rotation.decoyCount' must be an integer between 1 and 4096`,
+      );
+    }
+    if (
+      rotation.reservedNames !== undefined &&
+      (!Array.isArray(rotation.reservedNames) ||
+        !rotation.reservedNames.every((v) => typeof v === "string"))
+    ) {
+      throw new Error(`Invalid AEGIS config at ${source}: 'rotation.reservedNames' must be an array of strings`);
+    }
   }
   return obj as AegisProjectConfig;
 }

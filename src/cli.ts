@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { AEGIS_IDENTITY } from "./identity.js";
 import {
@@ -8,6 +9,16 @@ import {
   resolveProjectSeed,
   type AegisProjectConfig,
 } from "./core/config.js";
+import {
+  ROTATION_SCHEMA,
+  RotationTargetUnreadable,
+  RotationVocabularyExhausted,
+  decoyRangeForIntensity,
+  deriveBuildId,
+  deriveBuildSeed,
+  planDecoyRotation,
+  resolveRotationSeed,
+} from "./core/rotation.js";
 import { inspectReleaseExposure } from "./core/release-exposure.js";
 import { buildSarifReport } from "./core/sarif.js";
 import { verifyManifestFile } from "./core/manifest-verify.js";
@@ -96,6 +107,8 @@ Options:
   --intensity <preset>        stealth | balanced | maximum | bankrupt
                             (harden/defend default: bankrupt; protect default: balanced)
   --seed <seed>               Deterministic PRNG seed (default: per-project random in .aegisrc)
+  --rotation-report <path>    Write the per-build decoy rotation plan (aegis-rotation/v1) as JSON to this path
+  --no-rotation                Disable per-build decoy rotation; decoyCount is reported as 0
   --manifest                  Emit .aegis-manifest.json next to protected artifacts (opt-in; unsigned by default)
   --sign-manifest             Ed25519-sign the emitted manifest (implies --manifest; requires --manifest-key)
   --manifest-key <path>       Ed25519 private key PEM file used by --sign-manifest
@@ -148,6 +161,8 @@ interface ParsedCliArgs {
   readonly allowJsWasmHydrateDump: boolean;
   readonly allowWasmXorMaskSidecar: boolean;
   readonly allowWasmSealXorKnownPlaintext: boolean;
+  readonly rotationReport?: string;
+  readonly noRotation: boolean;
   readonly lang: NativeHeaderLanguage;
   readonly clients: SupportedAgentClientId[];
   readonly allDetected: boolean;
@@ -188,6 +203,8 @@ export function parseCliArgs(argv: readonly string[]): ParsedCliArgs {
   let allowWasmXorMaskSidecar = false;
   let allowWasmSealXorKnownPlaintext = false;
   let allowPanelOfflineOracle = false;
+  let rotationReport: string | undefined;
+  let noRotation = false;
   let lang: NativeHeaderLanguage = "c";
   const clients: SupportedAgentClientId[] = [];
   const argErrors: string[] = [];
@@ -300,6 +317,15 @@ export function parseCliArgs(argv: readonly string[]): ParsedCliArgs {
       } else {
         seed = val;
       }
+    } else if (arg === "--rotation-report") {
+      const val = argv[++i];
+      if (val === undefined || val.trim().length === 0) {
+        argErrors.push("--rotation-report requires a path value");
+      } else {
+        rotationReport = val;
+      }
+    } else if (arg === "--no-rotation") {
+      noRotation = true;
     } else if (arg === "--lang") {
       const val = argv[++i];
       if (val === undefined) {
@@ -343,6 +369,8 @@ export function parseCliArgs(argv: readonly string[]): ParsedCliArgs {
     allowJsWasmHydrateDump,
     allowWasmXorMaskSidecar,
     allowWasmSealXorKnownPlaintext,
+    ...(rotationReport !== undefined ? { rotationReport } : {}),
+    noRotation,
     lang,
     clients,
     allDetected,
@@ -356,6 +384,98 @@ export function parseCliArgs(argv: readonly string[]): ParsedCliArgs {
     help,
     version,
   };
+}
+
+/** Content digest for rotation build-id derivation; directories hash their sorted entry list. */
+function computeTargetContentDigest(targetPath: string): string {
+  try {
+    const st = statSync(targetPath);
+    if (st.isDirectory()) {
+      const entries = readdirSync(targetPath).sort();
+      return createHash("sha256").update(entries.join("\n")).digest("hex");
+    }
+    return createHash("sha256").update(readFileSync(targetPath)).digest("hex");
+  } catch (err) {
+    throw new RotationTargetUnreadable(targetPath, err);
+  }
+}
+
+/**
+ * Compute (and optionally persist to --rotation-report) the per-build decoy
+ * rotation plan for `harden`/`defend`/`protect`. Returns null when rotation
+ * reporting was not requested, so callers can skip the work entirely.
+ */
+function runRotationReport(
+  parsed: ParsedCliArgs,
+  targetDirectory: string,
+  intensity: ProtectionIntensity,
+  loadedConfig: AegisProjectConfig,
+): { buildId: string | null; seedSource: string; decoyCount: number } | "error" {
+  const rotationCfg = loadedConfig.rotation;
+  const rotationEnabled = !parsed.noRotation && (rotationCfg?.enabled ?? true);
+
+  const rotationSeedInfo = resolveRotationSeed({
+    cwd: targetDirectory,
+    ...(parsed.seed !== undefined ? { cliSeed: parsed.seed } : {}),
+    ...(parsed.configPath !== undefined ? { configPath: parsed.configPath } : {}),
+    persist: !parsed.dryRun,
+  });
+
+  let buildId: string | null = null;
+  let decoyCount = 0;
+
+  if (rotationEnabled) {
+    try {
+      const digest = computeTargetContentDigest(targetDirectory);
+      buildId = deriveBuildId(targetDirectory, digest);
+      const buildSeed = deriveBuildSeed(rotationSeedInfo.rootSeed, buildId);
+      const range =
+        rotationCfg?.decoyCount != null
+          ? { minCount: rotationCfg.decoyCount, maxCount: rotationCfg.decoyCount }
+          : decoyRangeForIntensity(intensity);
+      const plan = planDecoyRotation(buildSeed, {
+        ...range,
+        ...(rotationCfg?.reservedNames !== undefined ? { reservedNames: rotationCfg.reservedNames } : {}),
+      });
+      decoyCount = plan.decoyNames.length;
+      if (parsed.rotationReport !== undefined) {
+        writeFileSync(
+          resolve(parsed.rotationReport),
+          JSON.stringify(
+            {
+              schema: ROTATION_SCHEMA,
+              buildId,
+              seedSource: rotationSeedInfo.source,
+              decoyCount,
+              decoyNames: plan.decoyNames,
+              coefficients: plan.coefficients,
+            },
+            null,
+            2,
+          ) + "\n",
+          "utf8",
+        );
+      }
+    } catch (err) {
+      if (err instanceof RotationVocabularyExhausted || err instanceof RotationTargetUnreadable) {
+        console.error(`Error: ${err.message}`);
+        return "error";
+      }
+      throw err;
+    }
+  } else if (parsed.rotationReport !== undefined) {
+    writeFileSync(
+      resolve(parsed.rotationReport),
+      JSON.stringify(
+        { schema: ROTATION_SCHEMA, buildId: null, seedSource: rotationSeedInfo.source, decoyCount: 0 },
+        null,
+        2,
+      ) + "\n",
+      "utf8",
+    );
+  }
+
+  return { buildId, seedSource: rotationSeedInfo.source, decoyCount };
 }
 
 /** Merge CLI and .aegisrc WASM export preservation lists without duplicates. */
@@ -476,6 +596,25 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
               parsed.seed,
               parsed.configPath,
             ).seed;
+        if (parsed.rotationReport !== undefined || parsed.noRotation) {
+          const rotationResult = runRotationReport(
+            parsed,
+            typeof directory === "string" ? directory : process.cwd(),
+            explicitIntensity,
+            loaded.config,
+          );
+          if (rotationResult === "error") return 1;
+          if (parsed.json && parsed.rotationReport !== undefined) {
+            console.log(
+              JSON.stringify({
+                schema: ROTATION_SCHEMA,
+                buildId: rotationResult.buildId,
+                seedSource: rotationResult.seedSource,
+                decoyCount: rotationResult.decoyCount,
+              }),
+            );
+          }
+        }
         const report = hardenProject({
           directory,
           intensity: explicitIntensity,
