@@ -1,6 +1,6 @@
 {
   "name": "aegis-agents",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "AEGIS — hardened Counter-REA defense layer (BLA fork): rotation, depth, and measurement fixes",
   "keywords": [
     "reverse-engineering-defense",

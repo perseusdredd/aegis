@@ -5,7 +5,7 @@ export const AEGIS_IDENTITY = Object.freeze({
   packageAlias: "aegis-shield",
   cliBinary: "aegis",
   cliAlias: "aegis-agents",
-  version: "3.0.1",
+  version: "3.1.0",
   slogan: "Rotate -> Deepen -> Measure. Make Reverse Engineering Bankrupt Again.",
   counterpart: {
     name: "REA",
