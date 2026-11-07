@@ -20,7 +20,7 @@
  */
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const AEGIS_ROOT = resolve(__dirname, "..");
@@ -61,6 +61,8 @@ function walkFiles(root, exts, out = []) {
   return out;
 }
 
+const FILE_TEXT_CACHE = new Map();
+
 function findAssignments(files, name) {
   const hits = [];
   // Match: export const NAME = … / const NAME = … / NAME = … (Python)
@@ -69,14 +71,18 @@ function findAssignments(files, name) {
     "g",
   );
   for (const file of files) {
-    let text;
-    try {
-      text = readFileSync(file, "utf8");
-    } catch {
-      continue;
+    let text = FILE_TEXT_CACHE.get(file);
+    if (text === undefined) {
+      try {
+        text = readFileSync(file, "utf8");
+      } catch {
+        text = "";
+      }
+      FILE_TEXT_CACHE.set(file, text);
     }
     // Skip pure test files for value assertions (still allow symbol presence)
     const isTest = /\.test\.[jt]s$|\.spec\.[jt]s$/.test(file);
+    if (!text.includes(name)) continue;
     re.lastIndex = 0;
     let m;
     while ((m = re.exec(text))) {
@@ -377,7 +383,7 @@ const EXPECTED_OBLIGATION_FAMILIES = [
   "url-scheme",
 ];
 
-function main() {
+async function main() {
   console.log("AEGIS ↔ REA constant drift verification");
   console.log(`  AEGIS_ROOT = ${AEGIS_ROOT}`);
   console.log(`  REA_ROOT = ${REA_ROOT}`);
@@ -561,6 +567,60 @@ function main() {
     failures++;
   }
 
+  // Budget registry coverage (src/config/rea-budgets.config.ts): every entry whose
+  // constant name is directly assignable in REA source must match AEGIS's tracked
+  // value. Entries REA exposes under a different name / object property are counted
+  // as unchecked here (the property tables above cover some) and never as PASS.
+  try {
+    const registryUrl = pathToFileURL(join(AEGIS_ROOT, "dist", "config", "rea-budgets.config.js")).href;
+    const { REA_BUDGET_REGISTRY } = await import(registryUrl);
+    let matched = 0;
+    let unchecked = 0;
+    for (const entry of REA_BUDGET_REGISTRY) {
+      const label = `Registry:${entry.reaConstant}`;
+      if (!(entry.targetValue > entry.reaValue)) {
+        rows.push({ status: "FAIL", label, detail: `target ${entry.targetValue} does not exceed REA value ${entry.reaValue}` });
+        failures++;
+        continue;
+      }
+      const hits = findAssignments(files, entry.reaConstant).filter((h) => !h.isTest);
+      if (hits.length === 0) {
+        unchecked++;
+        continue;
+      }
+      let actual;
+      try {
+        actual = evalNumericExpr(hits[0].expr);
+      } catch {
+        unchecked++;
+        continue;
+      }
+      if (actual === entry.reaValue) {
+        matched++;
+        rows.push({ status: "PASS", label, detail: `${actual}  (${hits[0].file})` });
+      } else {
+        rows.push({
+          status: "FAIL",
+          label,
+          detail: `AEGIS tracks ${entry.reaValue}, REA has ${actual} in ${hits[0].file}`,
+        });
+        failures++;
+      }
+    }
+    rows.push({
+      status: "PASS",
+      label: "Registry:summary",
+      detail: `${REA_BUDGET_REGISTRY.length} entries: ${matched} verified by name, ${unchecked} not directly assignable in REA (unchecked, not counted as verified)`,
+    });
+  } catch (err) {
+    rows.push({
+      status: "FAIL",
+      label: "Registry:load",
+      detail: `cannot load dist/config/rea-budgets.config.js (run npm run build): ${err.message}`,
+    });
+    failures++;
+  }
+
   console.log("");
   const labelWidth = Math.max(...rows.map((r) => r.label.length), 10);
   for (const row of rows) {
@@ -576,4 +636,4 @@ function main() {
   process.exit(failures === 0 ? 0 : 1);
 }
 
-main();
+await main();
