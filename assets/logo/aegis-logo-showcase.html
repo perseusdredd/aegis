@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>AEGIS Logo & Brand System</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #030712;
+    color: #f8fafc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    padding: 40px;
+    width: 1200px;
+  }
+  .header {
+    border-bottom: 1px solid #1e293b;
+    padding-bottom: 24px;
+    margin-bottom: 36px;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: #f8fafc;
+    margin-bottom: 8px;
+  }
+  .meta {
+    color: #38bdf8;
+    font-size: 13px;
+    font-family: monospace;
+    letter-spacing: 0.1em;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-bottom: 32px;
+  }
+  .card {
+    background: #0b1120;
+    border: 1px solid #1e293b;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .card.light-card {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    color: #0f172a;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 20px;
+    align-self: flex-start;
+  }
+  .dark-title { color: #94a3b8; }
+  .light-title { color: #64748b; }
+  .img-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 280px;
+    width: 100%;
+  }
+  .img-box img {
+    max-height: 260px;
+    max-width: 260px;
+    object-fit: contain;
+  }
+  .full-card {
+    grid-column: span 2;
+  }
+  .lockup-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+  .lockup-box {
+    width: 100%;
+    padding: 16px 24px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lockup-dark-box {
+    background: #070c18;
+    border: 1px solid #1e293b;
+  }
+  .lockup-light-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+  }
+  .lockup-box img {
+    max-width: 100%;
+    height: auto;
+    max-height: 95px;
+    display: block;
+  }
+  .fav-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px 10px;
+  }
+  .fav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .fav-item p {
+    font-size: 12px;
+    color: #94a3b8;
+    font-family: monospace;
+  }
+  .browser-mock {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #1e293b;
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+  }
+  .browser-mock span {
+    font-size: 13px;
+    color: #f1f5f9;
+    font-weight: 500;
+  }
+  .fav-row {
+    display: flex;
+    gap: 36px;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+  }
+  .checker {
+    background-image: linear-gradient(45deg, #131d31 25%, transparent 25%), 
+                      linear-gradient(-45deg, #131d31 25%, transparent 25%), 
+                      linear-gradient(45deg, transparent 75%, #131d31 75%), 
+                      linear-gradient(-45deg, transparent 75%, #131d31 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>AEGIS &bull; BRAND ASSET SHOWCASE</h1>
+  <div class="meta">PROJECT: AEGIS (BLIND LLM AGENTS) // ROLE: PICASSO (DESIGN SYSTEM)</div>
+</div>
+
+<div class="grid">
+  <!-- Card 01: Dark Mark -->
+  <div class="card">
+    <div class="card-title dark-title">01 &bull; Ana Logo (Koyu Zemin &bull; 512x512)</div>
+    <div class="img-box">
+      <img src="aegis-shield-dark-512.png" alt="Aegis Dark Shield" />
+    </div>
+  </div>
+
+  <!-- Card 02: Light Mark -->
+  <div class="card light-card">
+    <div class="card-title light-title">02 &bull; Ana Logo (Beyaz Zemin &bull; 512x512)</div>
+    <div class="img-box">
+      <img src="aegis-shield-light-512.png" alt="Aegis Light Shield" />
+    </div>
+  </div>
+
+  <!-- Card 03: Transparent Mark -->
+  <div class="card">
+    <div class="card-title dark-title">03 &bull; Şeffaf Zemin Varyantı (512x512 PNG)</div>
+    <div class="img-box checker" style="border-radius: 12px;">
+      <img src="aegis-shield-512.png" alt="Aegis Transparent" />
+    </div>
+  </div>
+
+  <!-- Card 04: Favicon Scale Test -->
+  <div class="card">
+    <div class="card-title dark-title">04 &bull; Favicon Ölçeklenebilirlik Testi</div>
+    <div class="fav-row">
+      <div class="fav-item">
+        <img src="aegis-favicon-32x32.png" width="32" height="32" style="border: 1px solid #1e293b; padding: 2px;" alt="32x32" />
+        <p>32x32 px</p>
+      </div>
+      <div class="fav-item">
+        <img src="aegis-favicon-16x16.png" width="16" height="16" style="border: 1px solid #1e293b; padding: 1px;" alt="16x16" />
+        <p>16x16 px</p>
+      </div>
+      <div class="fav-item">
+        <img src="aegis-favicon-32x32.png" width="64" height="64" style="border: 1px solid #1e293b; padding: 4px;" alt="64x64" />
+        <p>64x64 Retina</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 05: Lockup (Dark & Light) -->
+  <div class="card full-card">
+    <div class="card-title dark-title">05 &bull; Yatay Kilit Sürümü (Lockup)</div>
+    <div class="lockup-container">
+      <div class="lockup-box lockup-dark-box">
+        <img src="aegis-lockup-dark.png" alt="AEGIS Lockup Dark" />
+      </div>
+      <div class="lockup-box lockup-light-box">
+        <img src="aegis-lockup-light-transparent.svg" alt="AEGIS Lockup Light" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 06: Favicon & Desktop Icon Distribution -->
+  <div class="card full-card">
+    <div class="card-title dark-title">06 &bull; Favicon &amp; İkon Dağıtım Paketi (Favicon)</div>
+    <div class="fav-container">
+      <div class="fav-item">
+        <img src="aegis-favicon-32x32.png" width="48" height="48" style="background:#070c18; padding:8px; border-radius:8px; border:1px solid #1e293b;" alt="32x32 PNG" />
+        <p>aegis-favicon-32x32.png</p>
+      </div>
+      <div class="fav-item">
+        <img src="favicon.ico" width="48" height="48" style="background:#070c18; padding:8px; border-radius:8px; border:1px solid #1e293b;" alt="favicon.ico" />
+        <p>favicon.ico (Multi-size)</p>
+      </div>
+      <div class="fav-item">
+        <div class="browser-mock">
+          <img src="aegis-favicon-16x16.png" width="16" height="16" alt="Tab Icon" />
+          <span>AEGIS: Blind LLM Agents</span>
+        </div>
+        <p>Tarayıcı Sekmesi Simülasyonu</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

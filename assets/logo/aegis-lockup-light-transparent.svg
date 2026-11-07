@@ -1,0 +1,245 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 240" width="920" height="240">
+  <defs>
+    <style>
+      .aegis-title {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "Helvetica Neue", sans-serif;
+        font-weight: 300;
+        font-size: 82px;
+        letter-spacing: 0.28em;
+        fill: #0f172a;
+      }
+      .aegis-pills {
+        font-family: "JetBrains Mono", SFMono-Regular, Consolas, Menlo, monospace;
+        font-weight: 500;
+        font-size: 15px;
+        letter-spacing: 0.32em;
+        fill: #0284c7;
+      }
+      .aegis-desc {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-weight: 400;
+        font-size: 13.5px;
+        letter-spacing: 0.16em;
+        fill: #64748b;
+      }
+    </style>
+  </defs>
+
+  
+
+  <!-- Shield Mark -->
+  <g transform="translate(35, 15) scale(0.41)">
+    
+  <defs>
+    <linearGradient id="shieldGrad_light_180" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#f8fafc" stop-opacity="0.95" />
+    </linearGradient>
+  </defs>
+
+  
+
+  <!-- Outer Aegis Shield (Impenetrable Defense Contour) -->
+  <path d="M 256 46 
+           C 322 46 390 62 414 76 
+           C 414 238 372 356 256 466 
+           C 140 356 98 238 98 76 
+           C 122 62 190 46 256 46 Z"
+        fill="url(#shieldGrad_light_180)"
+        stroke="#0284c7"
+        stroke-width="14"
+        stroke-linejoin="round" />
+
+  <!-- Inner Aegis Rim / Reinforcement Ring -->
+  <path d="M 256 70 
+           C 308 70 366 84 388 96 
+           C 388 226 352 330 256 432 
+           C 160 330 124 226 124 96 
+           C 146 84 204 70 256 70 Z"
+        fill="none"
+        stroke="#bae6fd"
+        stroke-width="3"
+        stroke-opacity="0.45"
+        stroke-dasharray="12 8" />
+
+  <!-- Shield Top Keystone Boss -->
+  <path d="M 242 54 L 270 54 L 276 72 L 236 72 Z" fill="#0284c7" />
+
+  <!-- Keçi Derisi / Aegis Defensive Chevron Fringe (Rotate • Deepen • Measure) -->
+  <g opacity="0.75">
+    <path d="M 180 374 L 256 426 L 332 374"
+          fill="none"
+          stroke="#0284c7"
+          stroke-width="6"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+    <path d="M 206 402 L 256 438 L 306 402"
+          fill="none"
+          stroke="#0284c7"
+          stroke-width="4.5"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+    <path d="M 230 426 L 256 448 L 282 426"
+          fill="none"
+          stroke="#0284c7"
+          stroke-width="3.5"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+  </g>
+
+  <!-- MEDUSA GORGONEION (The Guardian with Stone-Turning Gaze) -->
+  <g id="medusa_emblem">
+    <!-- CROWN SERPENTS (Top Pair - Radiating from Crown to Upper Shield Corners) -->
+    <!-- Left Crown Snake -->
+    <path d="M 256 120
+             C 238 88 198 80 178 98
+             C 158 116 164 140 188 148
+             C 210 156 226 144 236 160
+             C 242 170 242 186 242 200"
+          fill="none"
+          stroke="#0369a1"
+          stroke-width="8"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+    <!-- Left Snake Head (Stylized Viper Angle) -->
+    <polygon points="174,90 190,96 182,108" fill="#0284c7" />
+
+    <!-- Right Crown Snake -->
+    <path d="M 256 120
+             C 274 88 314 80 334 98
+             C 354 116 348 140 324 148
+             C 302 156 286 144 276 160
+             C 270 170 270 186 270 200"
+          fill="none"
+          stroke="#0369a1"
+          stroke-width="8"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+    <!-- Right Snake Head -->
+    <polygon points="338,90 322,96 330,108" fill="#0284c7" />
+
+    <!-- LATERAL SERPENTS (Middle Pair - Sweeping along Shield Shoulders) -->
+    <!-- Left Mid Snake -->
+    <path d="M 236 148
+             C 210 128 164 132 144 162
+             C 126 190 138 218 164 222
+             C 188 226 204 214 214 228
+             C 222 238 220 254 218 270"
+          fill="none"
+          stroke="#0369a1"
+          stroke-width="8"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+    <polygon points="138,156 154,162 146,174" fill="#0284c7" />
+
+    <!-- Right Mid Snake -->
+    <path d="M 276 148
+             C 302 128 348 132 368 162
+             C 386 190 374 218 348 222
+             C 324 226 308 214 298 228
+             C 290 238 292 254 294 270"
+          fill="none"
+          stroke="#0369a1"
+          stroke-width="8"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+    <polygon points="374,156 358,162 366,174" fill="#0284c7" />
+
+    <!-- LOWER CHEEK SERPENTS (Lower Pair - Coiling along Jaw) -->
+    <!-- Left Lower Snake -->
+    <path d="M 166 244
+             C 148 268 156 298 182 308
+             C 208 314 224 296 232 314
+             C 238 328 234 346 242 360"
+          fill="none"
+          stroke="#0369a1"
+          stroke-width="8"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+
+    <!-- Right Lower Snake -->
+    <path d="M 346 244
+             C 364 268 356 298 330 308
+             C 304 314 288 296 280 314
+             C 274 328 278 346 270 360"
+          fill="none"
+          stroke="#0369a1"
+          stroke-width="8"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+
+    <!-- GORGON FACE MASK & SENTINEL BROW -->
+    <!-- Geometric Cranium / Helmet Contour -->
+    <path d="M 256 162
+             L 288 190
+             L 280 234
+             L 256 248
+             L 232 234
+             L 224 190 Z"
+          fill="#ffffff"
+          stroke="#0f172a"
+          stroke-width="5"
+          stroke-linejoin="round" />
+
+    <!-- Sentinel Winged Brow (Sharp, Intimidating) -->
+    <path d="M 224 208 L 256 220 L 288 208"
+          fill="none"
+          stroke="#0f172a"
+          stroke-width="6.5"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+
+    <!-- PIERCING STONE-GAZE (Medusa's Eyes that Blind/Petrify LLMs) -->
+    <!-- Left Eye -->
+    <path d="M 232 218 Q 243 214 249 222 Q 243 227 232 218 Z"
+          fill="#0f172a"
+          stroke="#0f172a"
+          stroke-width="1.5" />
+    <polygon points="241,217 244,217 243,223 240,223" fill="#38bdf8" />
+
+    <!-- Right Eye -->
+    <path d="M 280 218 Q 269 214 263 222 Q 269 227 280 218 Z"
+          fill="#0f172a"
+          stroke="#0f172a"
+          stroke-width="1.5" />
+    <polygon points="271,217 268,217 269,223 272,223" fill="#38bdf8" />
+
+    <!-- Chiseled Nose Ridge -->
+    <path d="M 256 220 L 256 254 L 248 262 L 264 262"
+          fill="none"
+          stroke="#0f172a"
+          stroke-width="3.5"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+
+    <!-- Cyber-Spartan Chin Plate -->
+    <polygon points="246,278 266,278 262,310 256,324 250,310"
+             fill="#0284c7" />
+
+    <!-- Cheek Contour Lines -->
+    <path d="M 226 248 L 236 276 L 246 300"
+          fill="none"
+          stroke="#0284c7"
+          stroke-width="4"
+          stroke-linecap="round" />
+    <path d="M 286 248 L 276 276 L 266 300"
+          fill="none"
+          stroke="#0284c7"
+          stroke-width="4"
+          stroke-linecap="round" />
+  </g>
+
+  </g>
+
+  <!-- Vertical Divider -->
+  <line x1="270" y1="45" x2="270" y2="195" stroke="#e2e8f0" stroke-width="2" />
+
+  <!-- AEGIS Title -->
+  <text x="310" y="124" class="aegis-title">AEGIS</text>
+
+  <!-- Tagline: ROTATE • DEEPEN • MEASURE -->
+  <text x="315" y="164" class="aegis-pills">ROTATE &#8226; DEEPEN &#8226; MEASURE</text>
+
+  <!-- Subtitle -->
+  <text x="315" y="190" class="aegis-desc">BLIND LLM AGENTS // DEFENCE LAYER</text>
+</svg>
