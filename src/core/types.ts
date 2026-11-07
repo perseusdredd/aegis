@@ -25,6 +25,11 @@ export type ArtifactFormat =
   | "pcap-capture"
   | "gpu-ptx"
   | "firmware-uf2"
+  | "godot-pck"
+  | "unityfs"
+  | "pyinstaller-archive"
+  | "devicetree"
+  | "esp-image"
   | "directory"
   | "unknown";
 

@@ -45,6 +45,11 @@ import { protectEvmBytecodeBuffer } from "../shields/formats/evm-bytecode.js";
 import { protectPcapCaptureBuffer } from "../shields/formats/pcap-capture.js";
 import { protectGpuPtxText } from "../shields/formats/gpu-ptx.js";
 import { protectUf2FirmwareBuffer } from "../shields/formats/firmware-uf2.js";
+import { draftAnnotateDeviceTree } from "../shields/formats/devicetree.js";
+import { draftAnnotateEspImage } from "../shields/formats/esp-image.js";
+import { draftAnnotateGodotPck } from "../shields/formats/godot-pck.js";
+import { draftAnnotatePyInstaller } from "../shields/formats/pyinstaller.js";
+import { draftAnnotateUnityFs } from "../shields/formats/unityfs.js";
 import { auditTarget } from "./auditor.js";
 import {
   formatSupportsLaneIndependenceLint,
@@ -920,6 +925,24 @@ function protectTargetInner(options: ProtectionOptions): ProtectionResult {
     chaffPayloadsEmbedded = res.canaryTokensEmbedded;
     binarySectionsPatched = res.blocksInjected;
     counteredVectors.add("uf2-firmware-inspection");
+  } else if (
+    format === "godot-pck" ||
+    format === "unityfs" ||
+    format === "pyinstaller-archive" ||
+    format === "devicetree" ||
+    format === "esp-image"
+  ) {
+    // Draft shields (docs/AEGIS-BUDGETS.md section 3): append-only tagged trailer,
+    // existing bytes untouched. No REA attack vector is claimed as countered.
+    const rawDraft = readFileSync(absInput);
+    const annotate =
+      format === "godot-pck" ? draftAnnotateGodotPck
+      : format === "unityfs" ? draftAnnotateUnityFs
+      : format === "pyinstaller-archive" ? draftAnnotatePyInstaller
+      : format === "devicetree" ? draftAnnotateDeviceTree
+      : draftAnnotateEspImage;
+    writeFileAtomicSync(absOutput, annotate(rawDraft));
+    binarySectionsPatched = 1;
   } else if (format === "directory") {
     mkdirSync(absOutput, { recursive: true });
     const walkAndProtect = (srcDir: string, dstDir: string): void => {

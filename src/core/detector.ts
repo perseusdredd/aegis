@@ -1,4 +1,9 @@
 import { statSync, openSync, readSync, closeSync } from "node:fs";
+import { detectDeviceTree } from "../shields/formats/devicetree.js";
+import { detectEspImage } from "../shields/formats/esp-image.js";
+import { detectGodotPck } from "../shields/formats/godot-pck.js";
+import { detectPyInstaller } from "../shields/formats/pyinstaller.js";
+import { detectUnityFs } from "../shields/formats/unityfs.js";
 import { extname } from "node:path";
 import type { ArtifactFormat } from "./types.js";
 
@@ -227,5 +232,27 @@ export function detectArtifactFormat(targetPath: string): ArtifactFormat {
   if (ext === ".ptx") return "gpu-ptx";
   if (ext === ".uf2") return "firmware-uf2";
 
+  // 17. Draft-shield formats (docs/AEGIS-BUDGETS.md section 3). Evaluated LAST so
+  // a target that any earlier rule classifies keeps exactly its previous format.
+  if (detectGodotPck(header)) return "godot-pck";
+  if (detectUnityFs(header)) return "unityfs";
+  if (detectDeviceTree(header)) return "devicetree";
+  if (detectEspImage(header)) return "esp-image";
+  if (stats.size > 0 && detectPyInstaller(readTail(targetPath, stats.size))) return "pyinstaller-archive";
+
   return "unknown";
+}
+
+const PYINSTALLER_SCAN_BYTES = 1_048_576;
+
+function readTail(targetPath: string, size: number): Buffer {
+  const len = Math.min(PYINSTALLER_SCAN_BYTES, size);
+  const buf = Buffer.alloc(len);
+  const fd = openSync(targetPath, "r");
+  try {
+    readSync(fd, buf, 0, len, size - len);
+  } finally {
+    closeSync(fd);
+  }
+  return buf;
 }
