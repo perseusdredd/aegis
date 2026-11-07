@@ -1,0 +1,64 @@
+{
+  "schema": "bla-crackme-v8-seal/v2",
+  "mode": "release",
+  "product": "Aegis",
+  "blaVersion": "3.0.1",
+  "recipe": "npm run crackme:v8:build (hardenProject == `bla harden <dir> --intensity bankrupt --seed <private> --self-seal`); harden/schedule seed is private (derived from release secrets) and NOT published",
+  "label": "bla-crackme-v8-aegis-2026-11",
+  "intensity": "bankrupt",
+  "selfSeal": true,
+  "llmDirectives": false,
+  "emitManifest": false,
+  "flagSha256": "df777780af5a9e99813bf3b8dafc223c65876c220cf847afa95164f10f026a74",
+  "artifacts": {
+    "license.cjs": {
+      "sha256": "2204575350f91886fe397c462024a0898ae1a286d0b1927617cb9ccbbab85032",
+      "bytes": 226519
+    },
+    "panel.html": {
+      "sha256": "713213fcde2c71f8cb83e95a3c61a66559ebf97772521c68b8a344a31d0f0d98",
+      "bytes": 122529
+    },
+    "core.wasm.gz": {
+      "sha256": "81c2ebf1ffc50a6f2bde1f1083679e1b55a9b0b276ab4eeaaf41bf5547b77038",
+      "bytes": 21403
+    },
+    "seal.json": {
+      "sha256": "5e7b434881d8441fdf05c3ccf945ae0038d0e41b5b0362d57898d836c14150e7",
+      "bytes": 654
+    },
+    "core.wasm": {
+      "sha256": "440aadb73ec436ccb21f21780e112e99e234bd49ffe800bb202195d29be21676",
+      "bytes": 6883663,
+      "note": "raw harden output; committed gzipped"
+    }
+  },
+  "hardenSummary": [
+    {
+      "relativePath": "core.wasm",
+      "format": "wasm",
+      "defenseScore": 98,
+      "success": true
+    },
+    {
+      "relativePath": "panel.html",
+      "format": "html-bundle",
+      "defenseScore": 99,
+      "success": true
+    },
+    {
+      "relativePath": "license.cjs",
+      "format": "javascript",
+      "defenseScore": 99,
+      "success": true
+    }
+  ],
+  "recipesAbsorbed": [
+    "R7/R8 SHA-256(key) mask KDF + commitment outside XOR",
+    "R9 seed-derived rounds + pad3 (private seed — v8 red-team public-seed KP closed)",
+    "R10–R12 arity-2 hygiene + export-order shuffle + unlock body-index scatter",
+    "bankrupt packaging gates + --self-seal (no --allow-*)"
+  ],
+  "honestyResidual": "P2 full WASM RE + online/SMT vs clear commitment remains possible — gates do not claim white-box secrecy.",
+  "note": "Public commitment: prove a solve by publishing SHA-256(FLAG{...}) matching flagSha256. Plaintext key/flag/seed are not in git; no key digest is published (no offline key oracle)."
+}

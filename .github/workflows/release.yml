@@ -1,0 +1,204 @@
+name: Release bla-agents
+
+# Tag-only releases. Do not publish on plain main pushes.
+on:
+  push:
+    tags:
+      - "bla-agents-*"
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Expected release version (must match package.json / tag)"
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: release-bla-agents
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build, Verify & Publish bla-agents (OIDC / Trusted Publishing)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          registry-url: "https://registry.npmjs.org"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify version, trigger tag, and target tag commit consistency
+        id: check_npm
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISPATCH_VERSION: ${{ inputs.version }}
+          TRIGGER_REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          LOCAL_VERSION=$(node -p "require('./package.json').version")
+          HEAD_SHA=$(git rev-parse HEAD)
+          TAG="bla-agents-${LOCAL_VERSION}"
+
+          if [ -n "${DISPATCH_VERSION}" ]; then
+            NORM_DISPATCH="${DISPATCH_VERSION#v}"
+            NORM_DISPATCH="${NORM_DISPATCH#bla-agents-}"
+            if [ "${NORM_DISPATCH}" != "${LOCAL_VERSION}" ]; then
+              echo "::error::workflow_dispatch version '${DISPATCH_VERSION}' does not match package.json version '${LOCAL_VERSION}'"
+              exit 1
+            fi
+          fi
+
+          if [[ "${TRIGGER_REF}" == refs/tags/* ]]; then
+            RAW_TAG="${TRIGGER_REF#refs/tags/}"
+            if [[ "${RAW_TAG}" == bla-agents-* ]]; then
+              TAG_VER="${RAW_TAG#bla-agents-}"
+            elif [[ "${RAW_TAG}" == v* ]]; then
+              TAG_VER="${RAW_TAG#v}"
+            else
+              echo "::error::Unsupported release tag format '${RAW_TAG}'"
+              exit 1
+            fi
+            if [ "${TAG_VER}" != "${LOCAL_VERSION}" ]; then
+              echo "::error::Trigger tag '${RAW_TAG}' does not match package.json version '${LOCAL_VERSION}'"
+              exit 1
+            fi
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "::notice::workflow_dispatch release for bla-agents@${LOCAL_VERSION} (tag ${TAG})"
+          else
+            echo "::error::Release workflow only runs on version tags or workflow_dispatch"
+            exit 1
+          fi
+
+          PRIMARY_NPM_VERSION=$(npm view "bla-agents@${LOCAL_VERSION}" version 2>/dev/null || echo "none")
+          echo "local_version=${LOCAL_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "head_sha=${HEAD_SHA}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
+          if [ "${LOCAL_VERSION}" != "${PRIMARY_NPM_VERSION}" ] && ! gh release view "${TAG}" >/dev/null 2>&1; then
+            SHOULD_PUBLISH="true"
+          else
+            SHOULD_PUBLISH="true"
+            echo "Release requested for bla-agents@${LOCAL_VERSION}; will attempt idempotent publish/GitHub Release."
+          fi
+
+          EXISTING_TAG_SHA=""
+          if git ls-remote --exit-code --tags origin "refs/tags/${TAG}" >/dev/null 2>&1; then
+            git fetch origin "refs/tags/${TAG}:refs/tags/${TAG}" --force
+            EXISTING_TAG_SHA=$(git rev-list -n 1 "${TAG}")
+          elif git rev-parse "${TAG}" >/dev/null 2>&1; then
+            EXISTING_TAG_SHA=$(git rev-list -n 1 "${TAG}")
+          fi
+          echo "existing_tag_sha=${EXISTING_TAG_SHA}" >> "$GITHUB_OUTPUT"
+
+          if [ "${SHOULD_PUBLISH}" = "true" ] && [ -n "${EXISTING_TAG_SHA}" ] && [ "${EXISTING_TAG_SHA}" != "${HEAD_SHA}" ]; then
+            echo "::error::Existing tag '${TAG}' points to ${EXISTING_TAG_SHA}, which differs from checkout commit ${HEAD_SHA}. Refusing cross-commit release."
+            exit 1
+          fi
+
+          echo "should_publish=${SHOULD_PUBLISH}" >> "$GITHUB_OUTPUT"
+
+      - name: Run full verification gates (typecheck, build, test, benchmark)
+        if: steps.check_npm.outputs.should_publish == 'true'
+        run: |
+          npm run typecheck
+          npm run build
+          npm test
+          npm run benchmark
+
+      - name: Pack primary and alias release tarballs & verify consistency
+        if: steps.check_npm.outputs.should_publish == 'true'
+        env:
+          DISPATCH_VERSION: ${{ inputs.version }}
+          TRIGGER_REF: ${{ github.ref }}
+          HEAD_SHA: ${{ steps.check_npm.outputs.head_sha }}
+          EXISTING_TAG_SHA: ${{ steps.check_npm.outputs.existing_tag_sha }}
+        run: |
+          node --input-type=module -e '
+            import { readFileSync } from "node:fs";
+            import { BLA_IDENTITY } from "./dist/identity.js";
+            import { packDualReleaseTarballs, verifyReleaseConsistency } from "./dist/core/release-plan.js";
+            const pkg = JSON.parse(readFileSync("./package.json", "utf8"));
+            const packed = packDualReleaseTarballs(process.cwd(), "./release-assets");
+            const plan = verifyReleaseConsistency({
+              packageVersion: pkg.version,
+              identityVersion: BLA_IDENTITY.version,
+              dispatchVersion: process.env.DISPATCH_VERSION || null,
+              triggerRef: process.env.TRIGGER_REF || null,
+              headSha: process.env.HEAD_SHA,
+              existingTagSha: process.env.EXISTING_TAG_SHA || null,
+              tarballSha256: packed.primary.sha256,
+              aliasTarballSha256: packed.alias.sha256,
+            });
+            console.log("Release plan verified:", JSON.stringify(plan, null, 2));
+          '
+          cat release-assets/SHA256SUMS.txt
+
+      # Prefer npm Trusted Publishing (OIDC). Optional NPM_TOKEN remains as a fallback
+      # when OIDC is not yet configured on the npm package. Never publish without provenance.
+      - name: Publish bla-agents tarball to npm (provenance required)
+        if: steps.check_npm.outputs.should_publish == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          VERSION: ${{ steps.check_npm.outputs.local_version }}
+        run: |
+          set -euo pipefail
+          PRIMARY_TGZ="./release-assets/bla-agents-${VERSION}.tgz"
+
+          if npm view "bla-agents@${VERSION}" version >/dev/null 2>&1; then
+            echo "bla-agents@${VERSION} is already published on npm; skipping primary publish."
+            exit 0
+          fi
+
+          # Trusted Publishing (OIDC) needs no token. If NPM_TOKEN is set, it is used
+          # with provenance. There is intentionally no --access-only / no-provenance fallback.
+          if npm publish "${PRIMARY_TGZ}" --provenance --access public; then
+            echo "Published bla-agents@${VERSION} with provenance."
+          else
+            echo "::error::npm publish --provenance failed. Configure npm Trusted Publishing (OIDC) for qybaihe/bla or set a valid NPM_TOKEN secret. Refusing to publish without provenance."
+            exit 1
+          fi
+
+      - name: Create or idempotently verify GitHub Release (no cross-commit clobber)
+        if: steps.check_npm.outputs.should_publish == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.check_npm.outputs.tag }}
+          VERSION: ${{ steps.check_npm.outputs.local_version }}
+          HEAD_SHA: ${{ steps.check_npm.outputs.head_sha }}
+        run: |
+          set -euo pipefail
+          if ! git rev-parse "$TAG" >/dev/null 2>&1; then
+            git tag "$TAG" "$HEAD_SHA"
+            git push origin "$TAG"
+          else
+            TAG_SHA=$(git rev-list -n 1 "$TAG")
+            if [ "$TAG_SHA" != "$HEAD_SHA" ]; then
+              echo "::error::Tag $TAG points to $TAG_SHA instead of $HEAD_SHA"
+              exit 1
+            fi
+            git push origin "$TAG"
+          fi
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "GitHub Release '$TAG' already exists for verified tag commit $HEAD_SHA."
+          else
+            gh release create "$TAG" release-assets/* \
+              --verify-tag \
+              --title "bla-agents: v${VERSION}" \
+              --generate-notes
+          fi

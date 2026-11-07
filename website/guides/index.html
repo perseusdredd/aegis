@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'self'; form-action 'self'" />
+    <title>Technical Guides — BLA (bla-agents)</title>
+    <link rel="icon" type="image/png" href="../assets/favicon.png" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav-bar">
+        <a href="../" class="brand">
+          <img src="../assets/logo.png" alt="BLA Shield Logo" class="brand-logo" width="38" height="38" />
+          <span>BLA</span>
+          <span class="brand-badge" data-i18n="nav.badge">BLUE SHIELD v1.5</span>
+        </a>
+        <nav class="nav-links">
+          <a href="../" class="nav-link" data-i18n="nav.overview">Overview</a>
+          <a href="../get-started/" class="nav-link" data-i18n="nav.getStarted">Get Started</a>
+          <a href="../showcase/" class="nav-link" data-i18n="nav.showcase">Benchmarks</a>
+          <a href="../crackme/" class="nav-link" data-i18n="nav.crackme">CrackMe</a>
+          <a href="./" class="nav-link active" data-i18n="nav.guides">Guides</a>
+          <a href="../faq/" class="nav-link" data-i18n="nav.faq">FAQ</a>
+        </nav>
+        <div class="nav-actions">
+          <select id="bla-lang-select" class="lang-select" aria-label="Select Language">
+            <option value="en">🌐 English</option>
+            <option value="zh-CN">🌐 简体中文</option>
+            <option value="zh-TW">🌐 繁體中文</option>
+            <option value="ja">🌐 日本語</option>
+            <option value="ko">🌐 한국어</option>
+            <option value="es">🌐 Español</option>
+            <option value="fr">🌐 Français</option>
+            <option value="de">🌐 Deutsch</option>
+          </select>
+          <a href="https://github.com/qybaihe/bla" class="nav-cta" target="_blank" rel="noopener">
+            <span>★</span>
+            <span data-i18n="nav.star">Star</span>
+            <span class="star-pill" data-gh-stars>★</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section">
+        <div class="container">
+          <div class="section-header">
+            <div class="eyebrow" data-i18n="gd.eyebrow">Technical Architecture Guides</div>
+            <h1 class="section-title" data-i18n="gd.title">How BLA Protects Build Artifacts</h1>
+            <p class="section-lead" data-i18n-html="gd.lead">
+              Each protection pass is designed around the static analyzers, resource caps, and evidence rules used by automated reverse-engineering pipelines.
+            </p>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <span class="card-tag" data-i18n="pillars.c1.tag">01 · Resource Budget Guards</span>
+              <h3 data-i18n="pillars.c1.title">Saturate Static &amp; Semantic Limits</h3>
+              <p data-i18n-html="pillars.c1.desc">
+                Triggers analyzer admission caps with O(1) runtime identities inside unreachable branches.
+              </p>
+              <details class="evidence-drawer">
+                <summary>View Analyzer Limit Mapping</summary>
+                <div class="drawer-body">• SEMANTIC_PRIMITIVE_CANDIDATE_LIMIT = 256 -> 9-chunk opaque ternary (512)
+• SEMANTIC_ALIAS_SELECTION_LIMIT = 512 -> 528+ dynamic selector states
+• SEMANTIC_PRIMITIVE_JSON_BYTES_LIMIT = 1 MiB -> (codeUnits * 6 + 2) expansion
+• ReconstructionObligationPolicies -> 22-family obligation expansion</div>
+              </details>
+            </div>
+
+            <div class="card">
+              <span class="card-tag" data-i18n="pillars.c2.tag">02 · Evidence &amp; Control-Flow Decoys</span>
+              <h3 data-i18n="pillars.c2.title">Demote Real Paths, Surface Decoy Logic</h3>
+              <p data-i18n-html="pillars.c2.desc">
+                Demotes core business logic to status: "unknown" under static inspection while presenting self-consistent shadow state machines.
+              </p>
+              <details class="evidence-drawer">
+                <summary>View Shadow Business Logic Strategy</summary>
+                <div class="drawer-body">1. Demote real logic to status: "unknown" via static budget guards.
+2. Provide self-consistent Shadow Business Logic (Shamir-Ed25519 rings, tiered billing matrices, TPM2 PCR0 quotes).
+3. Include enclave delegation metadata (vsock CID 16) and decoy VLQ source maps.</div>
+              </details>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div data-i18n-html="footer.tagline"><strong>BLA (`bla-agents`)</strong> · Blind LLM Agents · Software Protection MCP &amp; CLI</div>
+        <div><a href="https://github.com/qybaihe/bla">GitHub ★</a> · <a href="../" data-i18n="nav.overview">Overview</a></div>
+      </div>
+    </footer>
+    <script src="../assets/i18n.js"></script>
+    <script src="../assets/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#040814" />
+      <stop offset="50%" stop-color="#09152e" />
+      <stop offset="100%" stop-color="#050a18" />
+    </linearGradient>
+    <linearGradient id="blueAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <circle cx="980" cy="140" r="260" fill="#2563eb" opacity="0.14" />
+  <circle cx="200" cy="520" r="220" fill="#ef4444" opacity="0.09" />
+
+  <rect x="72" y="64" width="1056" height="502" rx="24" fill="#081126" stroke="#1e3a8a" stroke-width="2" />
+  <rect x="112" y="108" width="280" height="38" rx="19" fill="#0f234d" stroke="#3b82f6" stroke-width="1.2" />
+  <text x="252" y="132" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="14" font-weight="700" fill="#93c5fd">
+    BL = BLUE SHIELD vs. RE = RED
+  </text>
+
+  <text x="112" y="220" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="68" font-weight="800" fill="#f8fafc">
+    BLA: Blind LLM Agents
+  </text>
+  <text x="112" y="280" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="28" font-weight="500" fill="#94a3b8">
+    Exhaust attacker compute. Induce model misjudgment. One-click defense.
+  </text>
+
+  <rect x="112" y="330" width="540" height="68" rx="14" fill="#040917" stroke="#2563eb" stroke-width="1.5" />
+  <text x="140" y="372" font-family="SFMono-Regular, Consolas, monospace" font-size="22" font-weight="700" fill="#60a5fa">
+    $ npx bla-agents defend ./dist --manifest
+  </text>
+
+  <g transform="translate(112, 442)">
+    <text x="0" y="0" font-family="SFMono-Regular, Consolas, monospace" font-size="18" fill="#ef4444" font-weight="700">
+      REA (Red): 38s clone · $0.20
+    </text>
+    <text x="340" y="0" font-family="SFMono-Regular, Consolas, monospace" font-size="18" fill="#60a5fa" font-weight="700">
+      →  BLA (Blue): 38.4x Token Burn · Shadow Logic Misjudgment
+    </text>
+  </g>
+</svg>

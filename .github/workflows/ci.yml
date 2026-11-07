@@ -1,0 +1,109 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Build, Test & Counter-REA Benchmark (${{ matrix.os }}, Node ${{ matrix.node }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            node: 24
+          - os: macos-latest
+            node: 24
+          - os: windows-latest
+            node: 24
+          - os: ubuntu-latest
+            node: 22
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node.js ${{ matrix.node }}
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript typecheck
+        run: npm run typecheck
+
+      - name: Build dist & CLI
+        run: npm run build
+
+      - name: Run unit & multi-format shield tests
+        run: npm test
+
+      - name: CrackMe v6 seal (digest + fixture rebuild)
+        env:
+          CRACKME_V6_KEY: ${{ secrets.CRACKME_V6_KEY }}
+          CRACKME_V6_FLAG: ${{ secrets.CRACKME_V6_FLAG }}
+          CRACKME_V8_KEY: ${{ secrets.CRACKME_V8_KEY }}
+          CRACKME_V8_FLAG: ${{ secrets.CRACKME_V8_FLAG }}
+        run: npm run crackme:seal
+
+      - name: Run Counter-REA showcase benchmark
+        run: npm run benchmark
+
+      - name: Verify CLI doctor & update commands
+        shell: bash
+        run: |
+          node dist/cli.js --version
+          node dist/cli.js doctor --json
+          node dist/cli.js update --json
+
+      - name: Detect sibling REA checkout (optional)
+        id: rea
+        shell: bash
+        run: |
+          REA_CANDIDATE="${REA_ROOT:-$(dirname "$GITHUB_WORKSPACE")/rea}"
+          if [ -d "$REA_CANDIDATE/src" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+            echo "root=$REA_CANDIDATE" >> "$GITHUB_OUTPUT"
+            echo "Sibling REA found at $REA_CANDIDATE"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "root=" >> "$GITHUB_OUTPUT"
+            echo "No sibling REA checkout — verify:rea / redteam:rea will skip with notice."
+          fi
+
+      - name: Verify REA constant alignment (skip if REA absent)
+        shell: bash
+        env:
+          REA_ROOT: ${{ steps.rea.outputs.root }}
+        run: |
+          if [ "${{ steps.rea.outputs.present }}" != "true" ]; then
+            echo "SKIP: npm run verify:rea (sibling REA not checked out alongside BLA)"
+            exit 0
+          fi
+          npm run verify:rea
+
+      - name: Empirical REA red-team (skip if REA absent)
+        shell: bash
+        env:
+          REA_ROOT: ${{ steps.rea.outputs.root }}
+        run: |
+          if [ "${{ steps.rea.outputs.present }}" != "true" ]; then
+            echo "SKIP: npm run redteam:rea (sibling REA not checked out alongside BLA)"
+            exit 0
+          fi
+          if [ ! -f "${REA_ROOT}/dist/go/GoBinaryImage.js" ]; then
+            echo "Building REA dist for red-team…"
+            (cd "$REA_ROOT" && npm install --ignore-scripts && npx tsc -p tsconfig.build.json)
+          fi
+          npm run redteam:rea
