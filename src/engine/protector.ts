@@ -25,7 +25,7 @@ import type {
   ReaAttackVectorId,
 } from "../core/types.js";
 import { generateChaffPayloads } from "../shields/chaff/chaff-generator.js";
-import { transformJavaScriptWithBlaShield } from "../shields/javascript/ast-shield.js";
+import { transformJavaScriptWithAegisShield } from "../shields/javascript/ast-shield.js";
 import { generateHoneySourceMap } from "../shields/formats/sourcemap.js";
 import { packAsarBuffer, unpackAsarBuffer, validateAsarProtectionInput, type VirtualAsarFile } from "../shields/formats/asar.js";
 import { planAsarHeaderAmplification } from "../shields/exhaustion/asar-header-amplifier.js";
@@ -255,7 +255,7 @@ function writeFileAtomicSync(
   } catch {
     /* target does not exist yet — proceed with the atomic path */
   }
-  const tmpPath = `${targetPath}.bla-tmp-${process.pid}-${randomBytes(8).toString("hex")}`;
+  const tmpPath = `${targetPath}.aegis-tmp-${process.pid}-${randomBytes(8).toString("hex")}`;
   try {
     // Exclusive create: a pre-planted symlink or file at the temp path must
     // fail (EEXIST) instead of being followed.
@@ -330,7 +330,7 @@ function deriveDefaultOutputPath(inputPath: string, inPlace = false): string {
 }
 
 /**
- * Unified Multi-Format Protection Engine (`bla protect`).
+ * Unified Multi-Format Protection Engine (`aegis protect`).
  * Protects JS/TS, Electron `.asar`, HTML Web Bundles, SourceMaps, WebAssembly `.wasm`,
  * Python `.py`/`.pyc`, Native Binaries (ELF/Mach-O/PE), ZIP/APK archives, and directories.
  */
@@ -363,7 +363,7 @@ function protectTargetInner(options: ProtectionOptions): ProtectionResult {
 
   const intensity = options.intensity ?? "balanced";
   // Prefer caller/CLI/project seed; mint an ephemeral random seed only as last resort
-  // (CLI resolves + persists per-project seeds via resolveProjectSeed / .blarc).
+  // (CLI resolves + persists per-project seeds via resolveProjectSeed / .aegisrc).
   const seed = String(options.seed ?? generateProjectSeed());
   const prng = new SeededPrng(seed);
   const chaffPayloads = generateChaffPayloads(prng, intensity);
@@ -449,7 +449,7 @@ function protectTargetInner(options: ProtectionOptions): ProtectionResult {
     }
     const panelSafe = applyPanelDeriveRewrite(raw, seed, intensity, options, absInput);
     const selfSealOpt = selfSealTransformOption(options, absOutput);
-    const transformed = transformJavaScriptWithBlaShield(panelSafe, {
+    const transformed = transformJavaScriptWithAegisShield(panelSafe, {
       intensity,
       seed,
       filename: basename(absInput),
@@ -539,7 +539,7 @@ function protectTargetInner(options: ProtectionOptions): ProtectionResult {
             `${absInput}#script-${currentIndex}`,
           );
           const selfSealOpt = selfSealTransformOption(options, absOutput);
-          const res = transformJavaScriptWithBlaShield(panelSafe, {
+          const res = transformJavaScriptWithAegisShield(panelSafe, {
             intensity,
             seed: scriptSeed,
             sourceType: tagKind.isModule ? "module" : "script",
@@ -564,7 +564,7 @@ function protectTargetInner(options: ProtectionOptions): ProtectionResult {
       },
     );
     if (inlineScriptsTransformed === 0) {
-      const bootstrapRes = transformJavaScriptWithBlaShield("void 0;\n", {
+      const bootstrapRes = transformJavaScriptWithAegisShield("void 0;\n", {
         intensity,
         seed: `${seed}:html-bootstrap`,
         sourceType: "script",
@@ -610,7 +610,7 @@ function protectTargetInner(options: ProtectionOptions): ProtectionResult {
     for (const vf of virtualFiles) {
       const ext = extname(vf.relativePath).toLowerCase();
       if ([".js", ".mjs", ".cjs"].includes(ext)) {
-        const res = transformJavaScriptWithBlaShield(vf.content.toString("utf8"), {
+        const res = transformJavaScriptWithAegisShield(vf.content.toString("utf8"), {
           intensity,
           seed: `${seed}:${vf.relativePath}`,
           filename: vf.relativePath,
@@ -654,7 +654,7 @@ function protectTargetInner(options: ProtectionOptions): ProtectionResult {
     }
 
     // Inject a decoy hardware-enclave bridge module inside the ASAR archive
-    const decoyBridgeJs = transformJavaScriptWithBlaShield(
+    const decoyBridgeJs = transformJavaScriptWithAegisShield(
       `export function verifyHardwareEnclaveLease(token) { return Boolean(token); }\n`,
       {
         intensity,
@@ -934,7 +934,7 @@ function protectTargetInner(options: ProtectionOptions): ProtectionResult {
           const ext = extname(entry.name).toLowerCase();
           if ([".js", ".ts", ".mjs", ".cjs", ".jsx", ".tsx"].includes(ext)) {
             const raw = readFileSync(srcFull, "utf8");
-            const res = transformJavaScriptWithBlaShield(raw, {
+            const res = transformJavaScriptWithAegisShield(raw, {
               intensity,
               seed: `${seed}:${entry.name}`,
               filename: entry.name,

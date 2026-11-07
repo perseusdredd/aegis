@@ -13,7 +13,7 @@ afterEach(() => {
 
 describe("red-blue round-4 JS AES unwrap gates", () => {
   it("bankrupt protect refuses JS AES unwrap footgun unless allowed", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-aes-gate-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-aes-gate-"));
     dirs.push(dir);
     const input = join(dir, "license.cjs");
     const output = join(dir, "license.out.cjs");
@@ -39,7 +39,7 @@ describe("red-blue round-4 JS AES unwrap gates", () => {
   });
 
   it("bankrupt harden refuses project trees with JS AES unwrap footguns", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-aes-harden-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-aes-harden-"));
     dirs.push(dir);
     mkdirSync(join(dir, "dist"));
     writeFileSync(join(dir, "dist", "license.cjs"), buildTestJsAesUnwrapFootgun({}), "utf8");

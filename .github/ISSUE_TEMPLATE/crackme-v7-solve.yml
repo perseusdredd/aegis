@@ -15,7 +15,7 @@ body:
         - Executed hardened app (intended)
         - Rehosted integrity + fingerprint offline
         - Pure-static recovery (no execute)
-        - BLA product gap / generic harden bypass
+        - AEGIS product gap / generic harden bypass
     validations:
       required: true
   - type: input
@@ -40,5 +40,5 @@ body:
       options:
         - label: I did not use a leaked maintainer secret / CI secret.
           required: true
-        - label: I understand BLA does not claim immunity to interactive human RE.
+        - label: I understand AEGIS does not claim immunity to interactive human RE.
           required: true

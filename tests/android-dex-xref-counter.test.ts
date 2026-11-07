@@ -39,7 +39,7 @@ describe("android DEX external-invoke decoy (REA #8154)", () => {
     expect(Buffer.compare(sha1, dex.subarray(12, 32))).toBe(0);
     expect(dex.readUInt32LE(8)).toBe(adler32(dex, 12));
 
-    expect(dex.includes(Buffer.from("BLA-DEX-XREF-V1", "utf8"))).toBe(true);
+    expect(dex.includes(Buffer.from("AEGIS-DEX-XREF-V1", "utf8"))).toBe(true);
     expect(dex.includes(Buffer.from("Landroid/util/Log;", "utf8"))).toBe(true);
     expect(res.callerClassesEmitted).toBeGreaterThan(100);
     expect(res.externalMethodRefs).toBe(1);
@@ -113,7 +113,7 @@ describe("android DEX external-invoke decoy (REA #8154)", () => {
     expect(rootMf.data.toString("utf8")).toBe("<manifest/>");
 
     const decoy = entries.find((e) => /^classes\d+\.dex$/.test(e.name))!;
-    expect(decoy.data.includes(Buffer.from("BLA-DEX-XREF-V1", "utf8"))).toBe(
+    expect(decoy.data.includes(Buffer.from("AEGIS-DEX-XREF-V1", "utf8"))).toBe(
       true,
     );
     expect(decoy.data.includes(Buffer.from("Landroid/util/Log;", "utf8"))).toBe(

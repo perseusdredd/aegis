@@ -102,7 +102,7 @@ export function verifyReleaseConsistency(
     if (idVer !== pkgVer) {
       throw new ReleaseConsistencyError(
         "IDENTITY_VERSION_MISMATCH",
-        `BLA_IDENTITY.version '${idVer}' does not match package.json version '${pkgVer}'`,
+        `AEGIS_IDENTITY.version '${idVer}' does not match package.json version '${pkgVer}'`,
       );
     }
   }
@@ -140,8 +140,8 @@ export function verifyReleaseConsistency(
     if (rawDispatch.length > 0 && rawDispatch !== "none") {
       const normalizedDispatch = rawDispatch.startsWith("v")
         ? rawDispatch.slice(1)
-        : rawDispatch.startsWith("bla-agents-")
-          ? rawDispatch.slice("bla-agents-".length)
+        : rawDispatch.startsWith("aegis-agents-")
+          ? rawDispatch.slice("aegis-agents-".length)
           : rawDispatch;
       if (normalizedDispatch !== pkgVer) {
         throw new ReleaseConsistencyError(
@@ -157,13 +157,13 @@ export function verifyReleaseConsistency(
     const ref = input.triggerRef.trim();
     if (
       ref.startsWith("refs/tags/") ||
-      ref.startsWith("bla-agents-") ||
+      ref.startsWith("aegis-agents-") ||
       /^v\d+\./.test(ref)
     ) {
       const tagName = ref.startsWith("refs/tags/") ? ref.slice("refs/tags/".length) : ref;
       let extractedVersion: string | null = null;
-      if (tagName.startsWith("bla-agents-")) {
-        extractedVersion = tagName.slice("bla-agents-".length);
+      if (tagName.startsWith("aegis-agents-")) {
+        extractedVersion = tagName.slice("aegis-agents-".length);
       } else if (tagName.startsWith("v")) {
         extractedVersion = tagName.slice(1);
       }
@@ -176,7 +176,7 @@ export function verifyReleaseConsistency(
     }
   }
 
-  const canonicalTag = `bla-agents-${pkgVer}`;
+  const canonicalTag = `aegis-agents-${pkgVer}`;
 
   // 3. Verify existing tag commit matches checkout commit
   let tagAction: ReleaseConsistencyPlan["tagAction"] = "create";
@@ -263,7 +263,7 @@ export interface NpmPublishRetryPlan {
 }
 
 /**
- * Computes an idempotent dual-package (`bla-agents` primary + `bla-shield` alias)
+ * Computes an idempotent dual-package (`aegis-agents` primary + `aegis-shield` alias)
  * npm publish plan so that a retry after `primary` succeeds and `alias` fails
  * safely completes `alias` without failing on `primary` or clobbering different bytes.
  */
@@ -363,7 +363,7 @@ function runNpmPack(args: readonly string[], cwd: string): void {
 }
 
 /**
- * Packs both `bla-agents` (primary) and `bla-shield` (alias) tarballs into `outDir`
+ * Packs both `aegis-agents` (primary) and `aegis-shield` (alias) tarballs into `outDir`
  * without mutating the repository working tree, and writes `SHA256SUMS.txt`.
  */
 export function packDualReleaseTarballs(repoDir: string, outDir: string): DualPackResult {
@@ -381,18 +381,18 @@ export function packDualReleaseTarballs(repoDir: string, outDir: string): DualPa
   };
   const version = pkgJson.version;
 
-  // 1. Pack primary (`bla-agents-<version>.tgz`) directly into `absOut`
+  // 1. Pack primary (`aegis-agents-<version>.tgz`) directly into `absOut`
   runNpmPack(["pack", "--pack-destination", absOut], absRepo);
 
-  const primaryFilename = `bla-agents-${version}.tgz`;
+  const primaryFilename = `aegis-agents-${version}.tgz`;
   const primaryPath = join(absOut, primaryFilename);
   if (!existsSync(primaryPath)) {
     throw new Error(`Expected packed tarball at '${primaryPath}'`);
   }
   const primarySha256 = sha256File(primaryPath);
 
-  // 2. Build alias (`bla-shield-<version>.tgz`) in an isolated temp staging directory
-  const stageDir = mkdtempSync(join(tmpdir(), "bla-alias-pack-"));
+  // 2. Build alias (`aegis-shield-<version>.tgz`) in an isolated temp staging directory
+  const stageDir = mkdtempSync(join(tmpdir(), "aegis-alias-pack-"));
   const tarCmd = resolveTarCommand();
   try {
     execFileSync(tarCmd, ["-xzf", primaryPath, "-C", stageDir], {
@@ -404,7 +404,7 @@ export function packDualReleaseTarballs(repoDir: string, outDir: string): DualPa
       string,
       unknown
     >;
-    unpackedPkg.name = "bla-shield";
+    unpackedPkg.name = "aegis-shield";
     writeFileSync(unpackedPkgJsonPath, JSON.stringify(unpackedPkg, null, 2) + "\n", "utf8");
 
     runNpmPack(["pack", "--pack-destination", absOut, "--ignore-scripts"], unpackedPkgDir);
@@ -412,7 +412,7 @@ export function packDualReleaseTarballs(repoDir: string, outDir: string): DualPa
     rmSync(stageDir, { recursive: true, force: true });
   }
 
-  const aliasFilename = `bla-shield-${version}.tgz`;
+  const aliasFilename = `aegis-shield-${version}.tgz`;
   const aliasPath = join(absOut, aliasFilename);
   if (!existsSync(aliasPath)) {
     throw new Error(`Expected packed alias tarball at '${aliasPath}'`);
@@ -430,14 +430,14 @@ export function packDualReleaseTarballs(repoDir: string, outDir: string): DualPa
   return {
     version,
     primary: {
-      packageName: "bla-agents",
+      packageName: "aegis-agents",
       version,
       tarballPath: primaryPath,
       tarballFilename: primaryFilename,
       sha256: primarySha256,
     },
     alias: {
-      packageName: "bla-shield",
+      packageName: "aegis-shield",
       version,
       tarballPath: aliasPath,
       tarballFilename: aliasFilename,

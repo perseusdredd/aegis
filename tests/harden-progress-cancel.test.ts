@@ -8,7 +8,7 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { initBlaConfig } from "../src/core/config.js";
+import { initAegisConfig } from "../src/core/config.js";
 import { inspectReleaseExposure } from "../src/core/release-exposure.js";
 import { auditTarget } from "../src/engine/auditor.js";
 import { runShowcaseBenchmark } from "../src/engine/benchmark.js";
@@ -29,7 +29,7 @@ import {
 
 const tempDirs: string[] = [];
 function createTempDir(): string {
-  const dir = mkdtempSync(join(tmpdir(), "bla-harden-cancel-"));
+  const dir = mkdtempSync(join(tmpdir(), "aegis-harden-cancel-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -65,11 +65,11 @@ function baseHandlers(
     emitCompileTimeNativeHeader,
     runDoctor,
     inspectReleaseExposure,
-    initBlaConfig,
+    initAegisConfig,
   };
 }
 
-describe("bla_harden progress + cooperative cancel (#75)", () => {
+describe("aegis_harden progress + cooperative cancel (#75)", () => {
   it("emits start/artifact/done progress and lists written on success", () => {
     const root = createTempDir();
     writeTinyJsTree(root, ["a.js", "b.js"]);
@@ -117,7 +117,7 @@ describe("bla_harden progress + cooperative cancel (#75)", () => {
     expect(text).toContain("written:");
   });
 
-  it("MCP notifications/cancelled aborts in-flight bla_harden via requestId", async () => {
+  it("MCP notifications/cancelled aborts in-flight aegis_harden via requestId", async () => {
     const root = createTempDir();
     writeTinyJsTree(root, ["alpha.js", "beta.js"]);
     const reqId = "harden-cancel-1";
@@ -142,7 +142,7 @@ describe("bla_harden progress + cooperative cancel (#75)", () => {
         id: reqId,
         method: "tools/call",
         params: {
-          name: "bla_harden",
+          name: "aegis_harden",
           arguments: {
             directory: root,
             intensity: "bankrupt",

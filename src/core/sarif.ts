@@ -1,4 +1,4 @@
-import { BLA_IDENTITY } from "../identity.js";
+import { AEGIS_IDENTITY } from "../identity.js";
 import type { AuditReport } from "./types.js";
 import type { ReleaseExposureReport } from "./release-exposure.js";
 
@@ -61,7 +61,7 @@ export function buildSarifReport(
   const results: SarifLog["runs"][0]["results"][number][] = [];
 
   for (const item of audit.exposedItems) {
-    const ruleId = `BLA-AUDIT-${item.kind.toUpperCase()}`;
+    const ruleId = `AEGIS-AUDIT-${item.kind.toUpperCase()}`;
     const level: "error" | "warning" | "note" =
       item.riskLevel === "critical"
         ? "error"
@@ -106,7 +106,7 @@ export function buildSarifReport(
 
   if (releaseExposure) {
     for (const f of releaseExposure.findings) {
-      const ruleId = `BLA-RELEASE-${f.kind.toUpperCase()}`;
+      const ruleId = `AEGIS-RELEASE-${f.kind.toUpperCase()}`;
       const level: "error" | "warning" | "note" =
         f.kind === "embedded-source-text" ? "error" : "warning";
       if (!rulesMap.has(ruleId)) {
@@ -121,7 +121,7 @@ export function buildSarifReport(
         ruleId,
         level,
         message: {
-          text: `${f.kind} (${f.representation}) in ${f.file} — Run "npx bla-agents defend" to replace with decoy source maps.`,
+          text: `${f.kind} (${f.representation}) in ${f.file} — Run "npx aegis-agents defend" to replace with decoy source maps.`,
         },
         locations: [
           {
@@ -141,10 +141,10 @@ export function buildSarifReport(
       {
         tool: {
           driver: {
-            name: BLA_IDENTITY.packageName,
-            fullName: BLA_IDENTITY.fullName,
-            version: BLA_IDENTITY.version,
-            informationUri: "https://bla.tools",
+            name: AEGIS_IDENTITY.packageName,
+            fullName: AEGIS_IDENTITY.fullName,
+            version: AEGIS_IDENTITY.version,
+            informationUri: "https://aegis.tools",
             rules: [...rulesMap.values()],
           },
         },

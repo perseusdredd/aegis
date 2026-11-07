@@ -641,7 +641,7 @@ export function weavePythonPycBuffer(
   if (!layout) return null;
 
   const intensity = options.intensity ?? "balanced";
-  const prng = new SeededPrng(options.seed ?? "bla-pyc-weave-v1");
+  const prng = new SeededPrng(options.seed ?? "aegis-pyc-weave-v1");
   const moduleDecoys = decoyCountForIntensity(intensity);
 
   try {

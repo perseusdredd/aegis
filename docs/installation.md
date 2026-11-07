@@ -1,28 +1,28 @@
 # Installation & Setup Guide
 
-**BLA (`bla-agents` — Blind LLM Agents)** is distributed as a zero-config Node.js CLI and MCP server that runs anywhere Node.js `^22.23.4 || >=24.0.0` is installed (matches `package.json` `engines`).
+**AEGIS (`aegis-agents` — Blind LLM Agents)** is distributed as a zero-config Node.js CLI and MCP server that runs anywhere Node.js `^22.23.4 || >=24.0.0` is installed (matches `package.json` `engines`).
 
 ---
 
 ## 1. Quick Start (`npx`)
 
-Run BLA directly without installing anything globally:
+Run AEGIS directly without installing anything globally:
 
 ```bash
-# 1. Register BLA MCP Server + Skill into Claude Code, Cursor, Codex, Windsurf, Gemini CLI, etc.
-npx bla-agents setup
+# 1. Register AEGIS MCP Server + Skill into Claude Code, Cursor, Codex, Windsurf, Gemini CLI, etc.
+npx aegis-agents setup
 
 # 2. Check your environment and configured AI clients
-npx bla-agents doctor
+npx aegis-agents doctor
 
 # 3. Audit an artifact for REA exposure before release
-npx bla-agents audit ./dist/app.js
+npx aegis-agents audit ./dist/app.js
 
-# 4. Protect the artifact with BLA's three-stage shield
-npx bla-agents protect ./dist/app.js --mode bankrupt
+# 4. Protect the artifact with AEGIS's three-stage shield
+npx aegis-agents protect ./dist/app.js --mode bankrupt
 
 # 5. Verify functional preservation and REA analyzer degradation
-npx bla-agents verify ./dist/app.js ./dist/app.bla.js
+npx aegis-agents verify ./dist/app.js ./dist/app.aegis.js
 ```
 
 ---
@@ -32,11 +32,11 @@ npx bla-agents verify ./dist/app.js ./dist/app.bla.js
 ### Install as a Dev Dependency (Recommended for CI/CD Release Pipelines)
 
 ```bash
-npm install --save-dev bla-agents
+npm install --save-dev aegis-agents
 # or
-pnpm add -D bla-agents
+pnpm add -D aegis-agents
 # or
-bun add -d bla-agents
+bun add -d aegis-agents
 ```
 
 Then add a post-build protection script to your `package.json`:
@@ -45,7 +45,7 @@ Then add a post-build protection script to your `package.json`:
 {
   "scripts": {
     "build": "vite build",
-    "postbuild": "bla protect ./dist/assets/index.js --in-place --mode bankrupt --emit-sourcemap"
+    "postbuild": "aegis protect ./dist/assets/index.js --in-place --mode bankrupt --emit-sourcemap"
   }
 }
 ```
@@ -53,57 +53,57 @@ Then add a post-build protection script to your `package.json`:
 ### Install Globally
 
 ```bash
-npm install -g bla-agents
+npm install -g aegis-agents
 
-# Both `bla` and `bla-agents` binaries are registered:
-bla --version
-bla-agents doctor
+# Both `aegis` and `aegis-agents` binaries are registered:
+aegis --version
+aegis-agents doctor
 ```
 
 ---
 
-## 3. Registering BLA in Coding Agents (`bla setup`)
+## 3. Registering AEGIS in Coding Agents (`aegis setup`)
 
-Just like `npx reverse-engineer-anything setup`, `npx bla-agents setup` auto-discovers installed AI coding agents on your machine and registers:
+Just like `npx reverse-engineer-anything setup`, `npx aegis-agents setup` auto-discovers installed AI coding agents on your machine and registers:
 
-1. **The `bla` MCP stdio server** (`bla_audit`, `bla_protect`, `bla_verify`, `bla_benchmark`, `bla_emit_headers`, `bla_doctor`)
-2. **The `blind-llm-agents` skill** (`SKILL.md` + Counter-REA Matrix)
+1. **The `aegis` MCP stdio server** (`aegis_audit`, `aegis_protect`, `aegis_verify`, `aegis_benchmark`, `aegis_emit_headers`, `aegis_doctor`)
+2. **The `aegis-counter-rea` skill** (`SKILL.md` + Counter-REA Matrix)
 
 ### Supported Clients
 
 | Client ID | Name | Config Location | Skill Location |
 | :--- | :--- | :--- | :--- |
-| `claude-code` | Claude Code | `~/.claude.json` | `~/.claude/skills/blind-llm-agents` |
-| `cursor` | Cursor | `~/.cursor/mcp.json` | `~/.cursor/skills/blind-llm-agents` |
-| `codex` | OpenAI Codex | `~/.codex/config.toml` | `~/.codex/skills/blind-llm-agents` |
-| `windsurf` | Windsurf | `~/.codeium/windsurf/mcp_config.json` | `~/.codeium/windsurf/skills/blind-llm-agents` |
-| `gemini` | Gemini CLI | `~/.gemini/settings.json` | `~/.gemini/skills/blind-llm-agents` |
-| `opencode` | OpenCode | `~/.config/opencode/opencode.json` | `~/.config/opencode/skills/blind-llm-agents` |
+| `claude-code` | Claude Code | `~/.claude.json` | `~/.claude/skills/aegis-counter-rea` |
+| `cursor` | Cursor | `~/.cursor/mcp.json` | `~/.cursor/skills/aegis-counter-rea` |
+| `codex` | OpenAI Codex | `~/.codex/config.toml` | `~/.codex/skills/aegis-counter-rea` |
+| `windsurf` | Windsurf | `~/.codeium/windsurf/mcp_config.json` | `~/.codeium/windsurf/skills/aegis-counter-rea` |
+| `gemini` | Gemini CLI | `~/.gemini/settings.json` | `~/.gemini/skills/aegis-counter-rea` |
+| `opencode` | OpenCode | `~/.config/opencode/opencode.json` | `~/.config/opencode/skills/aegis-counter-rea` |
 
 ### Target Specific Clients
 
 ```bash
-npx bla-agents setup --client claude-code,cursor
+npx aegis-agents setup --client claude-code,cursor
 ```
 
 ### Uninstall
 
-To cleanly remove BLA from all agent configuration files and delete installed skill folders:
+To cleanly remove AEGIS from all agent configuration files and delete installed skill folders:
 
 ```bash
-npx bla-agents uninstall
+npx aegis-agents uninstall
 ```
 
 ---
 
 ## 4. Compile-Time Header Integration (C / C++ / Rust / Go)
 
-If you are shipping a native binary compiled with `clang`, `gcc`, `rustc`, or `go build`, you can embed BLA's compile-time counters directly into `.rodata` before linking:
+If you are shipping a native binary compiled with `clang`, `gcc`, `rustc`, or `go build`, you can embed AEGIS's compile-time counters directly into `.rodata` before linking:
 
 ```bash
-npx bla-agents emit-headers ./include/shield --seed my-release-v1
+npx aegis-agents emit-headers ./include/shield --seed my-release-v1
 ```
 
-- **C / C++**: `#include "bla_shield.h"` and call `BLA_ANCHOR_SHIELD();` inside `main()`.
-- **Rust**: `mod bla_shield;` and call `bla_shield::anchor_shield();` inside `fn main()`.
-- **Go**: Include `bla_shield.go` in your package and call `AnchorBlaShield()` inside `func main()`.
+- **C / C++**: `#include "aegis_shield.h"` and call `AEGIS_ANCHOR_SHIELD();` inside `main()`.
+- **Rust**: `mod aegis_shield;` and call `aegis_shield::anchor_shield();` inside `fn main()`.
+- **Go**: Include `aegis_shield.go` in your package and call `AnchorAegisShield()` inside `func main()`.

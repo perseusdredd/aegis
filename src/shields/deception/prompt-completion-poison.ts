@@ -14,7 +14,7 @@ export interface PromptCompletionPoisonResult {
  * By prefixing decoy high-salience procedures with a `$RR` early-sort prefix (ASCII `$` = 0x24
  * sorts BEFORE all standard `[A-Za-z_]` identifiers). Each symbol gets a UNIQUE rank hex so
  * there is no shared greppable literal like the old `$00_AAA` marker.
- * BLA guarantees that its decoy procedures occupy the very first slots of REA's
+ * AEGIS guarantees that its decoy procedures occupy the very first slots of REA's
  * paginated procedure lists and MCP prompt completions!
  */
 export function generatePromptCompletionPoison(

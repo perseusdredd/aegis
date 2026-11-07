@@ -227,7 +227,7 @@ function intensityScale(intensity: ProtectionIntensity): {
 
 /**
  * Generates a caller-tempting ProGuard / R8 `mapping.txt` plus a decoy
- * `libbla_enclave_jni.so` that counter REA's new Android analyzers:
+ * `libaegis_enclave_jni.so` that counter REA's new Android analyzers:
  * - #7456 `AndroidMappingFile` / `parseProguardMapping` (residual conflicts past
  *   `candidates: 8`, malformed samples past `malformedSamples: 16`)
  * - #7472 `projectAndroidJniBindings` (static `Java_*` export ↔ declaration linking)
@@ -242,11 +242,11 @@ export function generateAndroidR8Counter(
 
   const lines: string[] = [
     "# compiler: R8",
-    "# compiler_version: 8.7.18-bla-enclave",
+    "# compiler_version: 8.7.18-aegis-enclave",
     "# min_api: 24",
     `# pg_map_id: ${prng.hex(8)}`,
     `# pg_map_hash: sha-256 ${prng.hex(32)}`,
-    "# bla-shield: decoy mapping — applying this file poisons REA residual resolution",
+    "# aegis-shield: decoy mapping — applying this file poisons REA residual resolution",
     "",
   ];
 

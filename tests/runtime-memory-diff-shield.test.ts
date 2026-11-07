@@ -9,7 +9,7 @@ import {
 } from "../src/shields/runtime/memory-diff-shield.js";
 import { generateFridaCaptureSaturation } from "../src/shields/exhaustion/frida-capture-saturation.js";
 import { REA_BUDGET_BREAKER_MATRIX } from "../src/shields/exhaustion/rea-budget-matrix.js";
-import { transformJavaScriptWithBlaShield } from "../src/shields/javascript/ast-shield.js";
+import { transformJavaScriptWithAegisShield } from "../src/shields/javascript/ast-shield.js";
 import { emitCompileTimeNativeHeader } from "../src/shields/formats/headers.js";
 import { lintLaneIndependence } from "../src/engine/lane-independence-lint.js";
 
@@ -24,7 +24,7 @@ describe("Counter-REA Runtime Memory Diff & Heap Churn Shield", () => {
       module.exports = { checkEnterpriseSeat, getCounter: () => realLicenseCounter };
     `;
 
-    const protectedBundle = transformJavaScriptWithBlaShield(sourceCode, {
+    const protectedBundle = transformJavaScriptWithAegisShield(sourceCode, {
       intensity: "bankrupt",
       seed: "mem-diff-test",
     });

@@ -18,9 +18,9 @@ afterEach(() => {
   }
 });
 
-describe("BLA 3.0 Red-Blue Adversarial Rounds (Weave Evasion, Lane Oracles & Multi-Artifact Entanglement)", () => {
-  it("Round A: blocks constant-false dead-branch calls (`1 === 2`, `false && fn()`) and write-only state stores in bla_verify_weave", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-rb-round-a-"));
+describe("AEGIS 3.0 Red-Blue Adversarial Rounds (Weave Evasion, Lane Oracles & Multi-Artifact Entanglement)", () => {
+  it("Round A: blocks constant-false dead-branch calls (`1 === 2`, `false && fn()`) and write-only state stores in aegis_verify_weave", () => {
+    const dir = mkdtempSync(join(tmpdir(), "aegis-rb-round-a-"));
     temps.push(dir);
     const file = join(dir, "gate.js");
     writeFileSync(
@@ -57,8 +57,8 @@ export function verifyKey(k) {
     expect(report.agentActions.length).toBeGreaterThanOrEqual(3);
   });
 
-  it("Round B: blocks shadowed state parameters and disconnected multi-line no-op helpers in bla_verify_weave", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-rb-round-b-"));
+  it("Round B: blocks shadowed state parameters and disconnected multi-line no-op helpers in aegis_verify_weave", () => {
+    const dir = mkdtempSync(join(tmpdir(), "aegis-rb-round-b-"));
     temps.push(dir);
     const file = join(dir, "shadow.js");
     writeFileSync(
@@ -96,7 +96,7 @@ export function checkToken(tok) {
   });
 
   it("Round C: catches camelCase homogeneous TEE/scare vocabulary (`verifyEnclaveQuote`, `checkTpm2Pcr`)", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-rb-round-c-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-rb-round-c-"));
     temps.push(dir);
     const file = join(dir, "scare.js");
     writeFileSync(
@@ -130,7 +130,7 @@ module.exports = { checkTpm2Pcr };
   });
 
   it("Round D: blocks Python comment/string/dead-branch fake calls and untouched state dicts", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-rb-round-d-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-rb-round-d-"));
     temps.push(dir);
     const pyFile = join(dir, "service.py");
     writeFileSync(
@@ -163,8 +163,8 @@ def verify_order(order_id):
     expect(checks["opaque-true-entanglement"]).toBe(false);
   });
 
-  it("Round E: detects chained charCodeAt/bracket per-index checks and split-segment checks in bla_lint", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-rb-round-e-"));
+  it("Round E: detects chained charCodeAt/bracket per-index checks and split-segment checks in aegis_lint", () => {
+    const dir = mkdtempSync(join(tmpdir(), "aegis-rb-round-e-"));
     temps.push(dir);
 
     const r1 = lintLaneIndependence(`
@@ -202,7 +202,7 @@ def verify_order(order_id):
   });
 
   it("Round F: multi-artifact hardenProject with selfSeal + sidecarEntangle + weaveDecoys passes post-harden weave verification and hard-fails on any file tamper", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-rb-round-f-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-rb-round-f-"));
     temps.push(dir);
 
     writeFileSync(

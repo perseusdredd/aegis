@@ -4,13 +4,13 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { runSetup, runUninstall } from "../src/setup/setup.js";
 import { runDoctor } from "../src/setup/doctor.js";
-import { BLA_MCP_TOOLS, handleMcpRequest } from "../src/mcp/server.js";
+import { AEGIS_MCP_TOOLS, handleMcpRequest } from "../src/mcp/server.js";
 import { runShowcaseBenchmark } from "../src/engine/benchmark.js";
 import { isNodeSqliteAvailable } from "../src/core/sqlite-runtime.js";
 
 describe("CLI Setup, Doctor, Benchmark & MCP Server", () => {
-  it("registers and uninstalls BLA MCP server + skill across all 6 AI coding agents in an isolated homeDir", () => {
-    const fakeHome = fs.mkdtempSync(path.join(os.tmpdir(), "bla-home-test-"));
+  it("registers and uninstalls AEGIS MCP server + skill across all 6 AI coding agents in an isolated homeDir", () => {
+    const fakeHome = fs.mkdtempSync(path.join(os.tmpdir(), "aegis-home-test-"));
     try {
       const setupReport = runSetup({
         homeDir: fakeHome,
@@ -31,9 +31,9 @@ describe("CLI Setup, Doctor, Benchmark & MCP Server", () => {
       const claudeConfig = JSON.parse(
         fs.readFileSync(path.join(fakeHome, ".claude.json"), "utf8"),
       ) as { mcpServers?: Record<string, unknown> };
-      expect(claudeConfig.mcpServers?.bla).toBeDefined();
+      expect(claudeConfig.mcpServers?.aegis).toBeDefined();
 
-      const skillPath = path.join(fakeHome, ".claude", "skills", "blind-llm-agents", "SKILL.md");
+      const skillPath = path.join(fakeHome, ".claude", "skills", "aegis-counter-rea", "SKILL.md");
       expect(fs.existsSync(skillPath)).toBe(true);
 
       // Run doctor and verify the 6 configured clients report healthy MCP + Skill.
@@ -58,7 +58,7 @@ describe("CLI Setup, Doctor, Benchmark & MCP Server", () => {
   });
 
   it("handles MCP JSON-RPC 2.0 requests (initialize, tools/list, tools/call)", async () => {
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "bla-mcp-test-"));
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "aegis-mcp-test-"));
 
     try {
       const initRes = await handleMcpRequest({
@@ -67,7 +67,7 @@ describe("CLI Setup, Doctor, Benchmark & MCP Server", () => {
         method: "initialize",
       });
       expect(initRes?.result).toMatchObject({
-        serverInfo: { name: "bla" },
+        serverInfo: { name: "aegis" },
       });
 
       const listRes = await handleMcpRequest({
@@ -76,12 +76,12 @@ describe("CLI Setup, Doctor, Benchmark & MCP Server", () => {
         method: "tools/list",
       });
       const tools = (listRes?.result as { tools: Array<{ name: string }> }).tools;
-      expect(tools.map((t) => t.name)).toEqual(BLA_MCP_TOOLS.map((t) => t.name));
-      expect(tools.map((t) => t.name)).toContain("bla_lint_lanes");
+      expect(tools.map((t) => t.name)).toEqual(AEGIS_MCP_TOOLS.map((t) => t.name));
+      expect(tools.map((t) => t.name)).toContain("aegis_lint_lanes");
 
-      // Test bla_audit + bla_protect + bla_verify via MCP tool calls
+      // Test aegis_audit + aegis_protect + aegis_verify via MCP tool calls
       const sampleFile = path.join(tmpDir, "sample.js");
-      const protectedFile = path.join(tmpDir, "sample.bla.js");
+      const protectedFile = path.join(tmpDir, "sample.aegis.js");
       fs.writeFileSync(
         sampleFile,
         `function validateKey(k) { return k === "live-secret-token-2026"; }\nmodule.exports = { validateKey };\n`,
@@ -93,7 +93,7 @@ describe("CLI Setup, Doctor, Benchmark & MCP Server", () => {
         id: 3,
         method: "tools/call",
         params: {
-          name: "bla_audit",
+          name: "aegis_audit",
           arguments: { path: sampleFile },
         },
       });
@@ -104,7 +104,7 @@ describe("CLI Setup, Doctor, Benchmark & MCP Server", () => {
         id: 4,
         method: "tools/call",
         params: {
-          name: "bla_protect",
+          name: "aegis_protect",
           arguments: {
             input_path: sampleFile,
             output_path: protectedFile,
@@ -120,7 +120,7 @@ describe("CLI Setup, Doctor, Benchmark & MCP Server", () => {
         id: 5,
         method: "tools/call",
         params: {
-          name: "bla_verify",
+          name: "aegis_verify",
           arguments: {
             target_path: protectedFile,
             original_path: sampleFile,

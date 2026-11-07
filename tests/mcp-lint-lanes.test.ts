@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { handleMcpRequest, BLA_MCP_TOOLS } from "../src/mcp/server.js";
+import { handleMcpRequest, AEGIS_MCP_TOOLS } from "../src/mcp/server.js";
 import { LANE_INDEPENDENCE_SCHEMA } from "../src/engine/lane-independence-lint.js";
 
 const tempDirs: string[] = [];
@@ -20,16 +20,16 @@ async function call(name: string, args: Record<string, unknown>) {
   return res;
 }
 
-describe("MCP bla_lint_lanes", () => {
+describe("MCP aegis_lint_lanes", () => {
   it("is registered once next to the CLI-homologous engine", () => {
-    expect(BLA_MCP_TOOLS.filter((t) => t.name === "bla_lint_lanes")).toHaveLength(1);
-    const tool = BLA_MCP_TOOLS.find((t) => t.name === "bla_lint_lanes")!;
+    expect(AEGIS_MCP_TOOLS.filter((t) => t.name === "aegis_lint_lanes")).toHaveLength(1);
+    const tool = AEGIS_MCP_TOOLS.find((t) => t.name === "aegis_lint_lanes")!;
     expect(tool.inputSchema.required).toEqual(["path"]);
     expect(tool.inputSchema.properties.path?.type).toBe("string");
   });
 
   it("returns a clean report for whole-key mixing source", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-lint-clean-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-lint-clean-"));
     tempDirs.push(dir);
     const file = join(dir, "gate.js");
     writeFileSync(
@@ -48,7 +48,7 @@ describe("MCP bla_lint_lanes", () => {
       `,
       "utf8",
     );
-    const res = await call("bla_lint_lanes", { path: file });
+    const res = await call("aegis_lint_lanes", { path: file });
     expect(res?.error).toBeUndefined();
     const result = res!.result as {
       isError?: boolean;
@@ -66,7 +66,7 @@ describe("MCP bla_lint_lanes", () => {
   });
 
   it("returns error findings for independent per-lane gate shapes", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-lint-warn-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-lint-warn-"));
     tempDirs.push(dir);
     const file = join(dir, "oracle.js");
     writeFileSync(
@@ -79,7 +79,7 @@ describe("MCP bla_lint_lanes", () => {
       `,
       "utf8",
     );
-    const res = await call("bla_lint_lanes", { path: file });
+    const res = await call("aegis_lint_lanes", { path: file });
     expect(res?.error).toBeUndefined();
     const result = res!.result as {
       structuredContent: {
@@ -97,8 +97,8 @@ describe("MCP bla_lint_lanes", () => {
   });
 
   it("errors when the source file is missing", async () => {
-    const res = await call("bla_lint_lanes", {
-      path: join(tmpdir(), "bla-missing-lane-gate-does-not-exist.js"),
+    const res = await call("aegis_lint_lanes", {
+      path: join(tmpdir(), "aegis-missing-lane-gate-does-not-exist.js"),
     });
     expect(res?.error).toBeUndefined();
     const result = res!.result as { isError: boolean; content: ReadonlyArray<{ text: string }> };

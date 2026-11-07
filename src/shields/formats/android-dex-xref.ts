@@ -81,7 +81,7 @@ function buildExternalInvokeDex(
   callerCount: number,
   extraStrings: readonly string[],
 ): BuiltDex {
-  const marker = "BLA-DEX-XREF-V1";
+  const marker = "AEGIS-DEX-XREF-V1";
 
   // ----- string pool (order matters; indices are referenced below) -----
   const strings: string[] = [];
@@ -105,7 +105,7 @@ function buildExternalInvokeDex(
   const sMethodD = addStr("d");
   const sMethodBait = addStr("bait");
   const sMarker = addStr(marker);
-  const sSource = addStr("BlaDexXref.java");
+  const sSource = addStr("AegisDexXref.java");
 
   const callerTypeStrIdx: number[] = [];
   for (let i = 0; i < callerCount; i++) {
@@ -489,7 +489,7 @@ export function generateAndroidDexXrefCounter(
     dexBuffer: built.buffer,
     callerClassesEmitted: built.callerCount,
     externalMethodRefs: 1,
-    marker: "BLA-DEX-XREF-V1",
+    marker: "AEGIS-DEX-XREF-V1",
   };
 }
 

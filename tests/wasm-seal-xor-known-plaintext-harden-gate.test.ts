@@ -13,7 +13,7 @@ afterEach(() => {
 
 describe("red-blue round-7 WASM seal.revision XOR known-plaintext gate", () => {
   it("bankrupt protect refuses seal.revision known-plaintext unless allowed", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-sealxor-gate-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-sealxor-gate-"));
     dirs.push(dir);
     const { wasm, seal } = buildTestWasmWithSealXorKnownPlaintext({});
     const input = join(dir, "core.wasm");
@@ -39,7 +39,7 @@ describe("red-blue round-7 WASM seal.revision XOR known-plaintext gate", () => {
   });
 
   it("bankrupt harden refuses project trees with seal.revision known-plaintext WASM", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-sealxor-harden-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-sealxor-harden-"));
     dirs.push(dir);
     mkdirSync(join(dir, "dist"));
     const { wasm, seal } = buildTestWasmWithSealXorKnownPlaintext({});

@@ -1,12 +1,12 @@
-# Example GitHub Actions snippet for hardening release artifacts with BLA
-name: Harden Build with BLA Blue Shield
+# Example GitHub Actions snippet for hardening release artifacts with AEGIS
+name: Harden Build with AEGIS Blue Shield
 on:
   workflow_dispatch:
 
 env:
-  # Pinned to the BLA release you audited. Bump together with package.json.
+  # Pinned to the AEGIS release you audited. Bump together with package.json.
   # Never use the mutable `latest` tag in a release pipeline.
-  BLA_VERSION: "2.1.0"
+  AEGIS_VERSION: "2.1.0"
 
 jobs:
   harden:
@@ -16,4 +16,4 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
-      - run: npx -y "bla-agents@${BLA_VERSION}" defend ./dist -o ./dist-shielded --manifest
+      - run: npx -y "aegis-agents@${AEGIS_VERSION}" defend ./dist -o ./dist-shielded --manifest

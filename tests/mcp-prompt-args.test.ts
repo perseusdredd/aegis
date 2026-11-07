@@ -10,7 +10,7 @@ function text(res: unknown): string {
 
 describe("MCP prompt arguments and interpolation", () => {
   it("allows omitting arguments for an optional-only prompt", async () => {
-    const res = await getPrompt({ name: "bla-harden-project" });
+    const res = await getPrompt({ name: "aegis-harden-project" });
     expect((res as any).error).toBeUndefined();
     expect(text(res)).toContain('"directory": "."');
     expect(text(res)).toContain("dry_run");
@@ -18,16 +18,16 @@ describe("MCP prompt arguments and interpolation", () => {
 
   it("still rejects missing required and malformed arguments", async () => {
     expect(((await getPrompt({ name: "shield-against-rea", arguments: {} })) as any).error?.code).toBe(-32602);
-    expect(((await getPrompt({ name: "bla-harden-project", arguments: "x" })) as any).error?.code).toBe(-32602);
+    expect(((await getPrompt({ name: "aegis-harden-project", arguments: "x" })) as any).error?.code).toBe(-32602);
   });
 
   it("JSON-escapes paths containing quotes", async () => {
-    const t = text(await getPrompt({ name: "bla-harden-project", arguments: { directory: './we"ird' } }));
+    const t = text(await getPrompt({ name: "aegis-harden-project", arguments: { directory: './we"ird' } }));
     expect(t).toContain('"./we\\"ird"');
   });
 
   it("gives each generic prompt scenario-specific copy", async () => {
-    const names = ["shield-against-rea", "bla-hardening-workflow", "bla-counter-rea"];
+    const names = ["shield-against-rea", "aegis-hardening-workflow", "aegis-counter-rea"];
     const texts = await Promise.all(
       names.map(async (name) => text(await getPrompt({ name, arguments: { target_path: "dist/app.js" } }))),
     );

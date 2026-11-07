@@ -6,7 +6,7 @@
  * with a shallow AND/OR reduction, or per-byte charCodeAt → wasm mix/seal).
  * Meridian / good designs use chained whole-key mixing so no per-lane oracle exists.
  *
- * Findings are severity **"error"** — CLI `bla lint-lanes` exits 2, and
+ * Findings are severity **"error"** — CLI `aegis lint-lanes` exits 2, and
  * harden/defend refuse the artifact unless `allowLaneIndependentGates` is set.
  * This does NOT give reverse-engineering advice.
  */
@@ -16,7 +16,7 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { walkBounded } from "../core/walk.js";
 
-export const LANE_INDEPENDENCE_SCHEMA = "bla-lane-independence-lint/v1" as const;
+export const LANE_INDEPENDENCE_SCHEMA = "aegis-lane-independence-lint/v1" as const;
 
 export type LaneIndependenceFindingId =
   | "per-lane-byte-compare-array"
@@ -210,7 +210,7 @@ const SKIP_DIR_NAMES = new Set([
   ".git",
   ".hg",
   ".svn",
-  ".bla-hardened",
+  ".aegis-hardened",
   "coverage",
   ".turbo",
   ".cache",
@@ -247,7 +247,7 @@ export function lintLaneIndependenceFile(filePath: string): LaneIndependenceRepo
 
 /**
  * Discover JS/TS under a directory and lint each for lane-independence footguns.
- * Used by unified `bla lint` / packaging-gates (protect still refuses per-file).
+ * Used by unified `aegis lint` / packaging-gates (protect still refuses per-file).
  */
 export function discoverAndLintLaneIndependence(
   directory: string,

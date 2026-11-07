@@ -1,9 +1,9 @@
 # Counter-Showcase #5: Offline Python Pricing & Valuation Engine
 #
 # Run pre-flight audit:
-#   npx bla-shield audit examples/python-offline-engine/pricing_engine.py
+#   npx aegis-shield audit examples/python-offline-engine/pricing_engine.py
 # Protect against REA:
-#   npx bla-shield protect examples/python-offline-engine/pricing_engine.py
+#   npx aegis-shield protect examples/python-offline-engine/pricing_engine.py
 
 from __future__ import annotations
 

@@ -7,7 +7,7 @@
  *   - Runtime stub reconstructs the original UTF-8 string; equivalence is proven
  *     by tests / CrackMe v8 fixture runs — not by claiming "unbreakable".
  *
- * MCP: bla_encrypt_strings.
+ * MCP: aegis_encrypt_strings.
  */
 
 import { createHash } from "node:crypto";
@@ -26,7 +26,7 @@ import {
   lintPlaintextSecretsSource,
 } from "./plaintext-secret-lint.js";
 
-export const ENCRYPT_STRINGS_SCHEMA = "bla-encrypt-strings/v1" as const;
+export const ENCRYPT_STRINGS_SCHEMA = "aegis-encrypt-strings/v1" as const;
 
 export interface EncryptStringsOptions {
   readonly path: string;
@@ -143,7 +143,7 @@ function buildRuntimeStub(
     `(typeof TextDecoder!=="undefined"?new TextDecoder().decode(o):` +
     `String.fromCharCode.apply(null,Array.from(o)));` +
     `}` +
-    `var _blaS=${fnName};var _blaT=${tableName};`
+    `var _aegisS=${fnName};var _aegisT=${tableName};`
   );
 }
 
@@ -212,9 +212,9 @@ function transformJsSource(
   );
   const keystream = buildKeystream(prng, Math.max(64, maxLen));
   const table = unique.map((u) => xorEncodeToBytes(u, keystream));
-  const fnName = prng.identifier({ style: "camel", hint: "blaS", entropy: 3 });
-  const tableName = prng.identifier({ style: "camel", hint: "blaT", entropy: 3 });
-  const ksName = prng.identifier({ style: "camel", hint: "blaK", entropy: 3 });
+  const fnName = prng.identifier({ style: "camel", hint: "aegisS", entropy: 3 });
+  const tableName = prng.identifier({ style: "camel", hint: "aegisT", entropy: 3 });
+  const ksName = prng.identifier({ style: "camel", hint: "aegisK", entropy: 3 });
   const stub = buildRuntimeStub(table, keystream, fnName, tableName, ksName);
 
   const replacements = new Map<string, string>();

@@ -12,7 +12,7 @@ import { buildTestWasmWithXorMaskSidecar } from "../src/engine/wasm-xor-mask-sid
 
 describe("packaging-gates (unified R1–R7 scan)", () => {
   it("reports clean on an empty project tree", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-pg-clean-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-pg-clean-"));
     const report = scanPackagingGates({ directory: dir, intensity: "bankrupt" });
     expect(report.schema).toBe(PACKAGING_GATES_SCHEMA);
     expect(report.shouldRefuseBankrupt).toBe(false);
@@ -22,7 +22,7 @@ describe("packaging-gates (unified R1–R7 scan)", () => {
   });
 
   it("refuses bankrupt when a WASM XOR-mask sidecar is present", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-pg-xor-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-pg-xor-"));
     writeFileSync(join(dir, "core.wasm"), buildTestWasmWithXorMaskSidecar());
     const report = scanPackagingGates({ directory: dir, intensity: "bankrupt" });
     expect(report.shouldRefuseBankrupt).toBe(true);
@@ -37,7 +37,7 @@ describe("packaging-gates (unified R1–R7 scan)", () => {
   });
 
   it("allow_wasm_xor_mask_sidecar clears project-level refuse", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-pg-allow-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-pg-allow-"));
     writeFileSync(join(dir, "core.wasm"), buildTestWasmWithXorMaskSidecar());
     const blocks = evaluateHardenProjectPackagingBlocks({
       directory: dir,
@@ -48,7 +48,7 @@ describe("packaging-gates (unified R1–R7 scan)", () => {
   });
 
   it("surfaces lane-independence when includeProtectTimeGates", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-pg-lane-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-pg-lane-"));
     mkdirSync(dir, { recursive: true });
     writeFileSync(
       join(dir, "gate.js"),

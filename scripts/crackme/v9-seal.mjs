@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * CI gate for CrackMe v9 (Sovereign — BLA 3.0). No plaintext secrets required.
+ * CI gate for CrackMe v9 (Sovereign — AEGIS 3.0). No plaintext secrets required.
  * If CRACKME_V9_KEY/FLAG match SEAL digests, also verifies unlock + byte rebuild.
  */
 import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
@@ -59,7 +59,7 @@ try {
     fail("SEAL must pin llmDirectives=false, emitManifest=false");
   }
   const pkgVersion = String(JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")).version);
-  if (seal.blaVersion !== pkgVersion) fail(`SEAL blaVersion ${seal.blaVersion} != package.json ${pkgVersion}`);
+  if (seal.aegisVersion !== pkgVersion) fail(`SEAL aegisVersion ${seal.aegisVersion} != package.json ${pkgVersion}`);
   if (!/^[0-9a-f]{64}$/.test(seal.flagSha256)) fail("SEAL flagSha256 missing");
 
   for (const rel of COMMITTED_FILES) {

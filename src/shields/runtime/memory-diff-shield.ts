@@ -20,7 +20,7 @@ export interface SplitShareEncodedString {
 }
 
 /**
- * Generates BLA's Synchronized Shadow Heap Churn Shield (`memory-diff-shield.ts`).
+ * Generates AEGIS's Synchronized Shadow Heap Churn Shield (`memory-diff-shield.ts`).
  *
  * Counter-strategy against AI agents using Frida (`Memory.scan`, `Process.enumerateRanges`),
  * GDB (`gdb_console`), Rizin (`rizin_debug_command`), V8 Heap Snapshot diffs, or

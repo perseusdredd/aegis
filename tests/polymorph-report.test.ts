@@ -45,7 +45,7 @@ function hardenTo(dir: string, seed: string): string {
 
 describe("polymorph-report (seeded polymorphism)", () => {
   it("same seed → reproducible (expect=same passes)", () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-poly-same-"));
+    const root = mkdtempSync(join(tmpdir(), "aegis-poly-same-"));
     tempDirs.push(root);
     const a = hardenTo(join(root, "a"), "poly-seed-fixed");
     const b = hardenTo(join(root, "b"), "poly-seed-fixed");
@@ -61,7 +61,7 @@ describe("polymorph-report (seeded polymorphism)", () => {
   });
 
   it("different seeds → polymorphic (expect=different passes)", () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-poly-diff-"));
+    const root = mkdtempSync(join(tmpdir(), "aegis-poly-diff-"));
     tempDirs.push(root);
     const a = hardenTo(join(root, "a"), "poly-seed-A");
     const b = hardenTo(join(root, "b"), "poly-seed-B");
@@ -78,7 +78,7 @@ describe("polymorph-report (seeded polymorphism)", () => {
   });
 
   it("expect=same refuses when seeds differ", () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-poly-refuse-"));
+    const root = mkdtempSync(join(tmpdir(), "aegis-poly-refuse-"));
     tempDirs.push(root);
     const a = hardenTo(join(root, "a"), "seed-X");
     const b = hardenTo(join(root, "b"), "seed-Y");
@@ -92,7 +92,7 @@ describe("polymorph-report (seeded polymorphism)", () => {
   });
 
   it("hardened output still exports unlockPremium (functional surface)", async () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-poly-fn-"));
+    const root = mkdtempSync(join(tmpdir(), "aegis-poly-fn-"));
     tempDirs.push(root);
     const outDir = hardenTo(root, "poly-fn-seed");
     const mod = await import(join(outDir, "app.js"));
@@ -101,8 +101,8 @@ describe("polymorph-report (seeded polymorphism)", () => {
     expect(mod.unlockPremium("nope")).toBe(false);
   });
 
-  it("MCP bla_polymorph_report wires through", async () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-poly-mcp-"));
+  it("MCP aegis_polymorph_report wires through", async () => {
+    const root = mkdtempSync(join(tmpdir(), "aegis-poly-mcp-"));
     tempDirs.push(root);
     const a = hardenTo(join(root, "a"), "mcp-seed-1");
     const b = hardenTo(join(root, "b"), "mcp-seed-1");
@@ -111,7 +111,7 @@ describe("polymorph-report (seeded polymorphism)", () => {
       id: 1,
       method: "tools/call",
       params: {
-        name: "bla_polymorph_report",
+        name: "aegis_polymorph_report",
         arguments: { dir_a: a, dir_b: b, expect: "same" },
       },
     });
@@ -121,7 +121,7 @@ describe("polymorph-report (seeded polymorphism)", () => {
       structuredContent: { status: string; reproducible: boolean; schema: string };
     };
     expect(result.isError).toBe(false);
-    expect(result.structuredContent.schema).toBe("bla-polymorph-report/v1");
+    expect(result.structuredContent.schema).toBe("aegis-polymorph-report/v1");
     expect(result.structuredContent.status).toBe("ok");
     expect(result.structuredContent.reproducible).toBe(true);
   });

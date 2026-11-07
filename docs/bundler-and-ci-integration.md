@@ -4,11 +4,11 @@
 
 ```ts
 import { defineConfig } from "vite";
-import { blaVitePlugin } from "bla-agents/bundler";
+import { aegisVitePlugin } from "aegis-agents/bundler";
 
 export default defineConfig({
   plugins: [
-    blaVitePlugin({
+    aegisVitePlugin({
       intensity: "bankrupt",
       enableHoneySourceMaps: true,
     }),
@@ -21,6 +21,6 @@ export default defineConfig({
 Add a single step after `npm run build` in your release workflow:
 
 ```yaml
-- name: Harden release build against REA (One-Click BLA Blue Shield)
-  run: npx -y bla-agents@latest defend ./dist -o ./dist-shielded --manifest
+- name: Harden release build against REA (One-Click AEGIS Blue Shield)
+  run: npx -y aegis-agents@latest defend ./dist -o ./dist-shielded --manifest
 ```

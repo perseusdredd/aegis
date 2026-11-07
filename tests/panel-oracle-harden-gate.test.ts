@@ -12,7 +12,7 @@ afterEach(() => {
 
 describe("red-blue round-4 panel oracle gate", () => {
   it("bankrupt protect refuses deriveLocal + panelTokenSha256 unless allowed", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-panel-oracle-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-panel-oracle-"));
     dirs.push(dir);
     const input = join(dir, "panel.js");
     const output = join(dir, "panel.out.js");

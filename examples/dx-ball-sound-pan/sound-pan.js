@@ -3,9 +3,9 @@
  * Reference: REA Official Showcase (`https://rea.tools/showcase/dx-ball/`)
  *
  * Run pre-flight audit:
- *   npx bla-shield audit examples/dx-ball-sound-pan/sound-pan.js
+ *   npx aegis-shield audit examples/dx-ball-sound-pan/sound-pan.js
  * Protect against REA:
- *   npx bla-shield protect examples/dx-ball-sound-pan/sound-pan.js
+ *   npx aegis-shield protect examples/dx-ball-sound-pan/sound-pan.js
  */
 
 function clampPan(panValue) {

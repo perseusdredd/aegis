@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'self'; form-action 'self'" />
-    <title>Get Started — BLA (bla-agents)</title>
+    <title>Get Started — AEGIS (aegis-agents)</title>
     <link rel="icon" type="image/png" href="../assets/favicon.png" />
     <link rel="stylesheet" href="../assets/styles.css" />
   </head>
@@ -12,8 +12,8 @@
     <header class="site-header">
       <div class="container nav-bar">
         <a href="../" class="brand">
-          <img src="../assets/logo.png" alt="BLA Shield Logo" class="brand-logo" width="38" height="38" />
-          <span>BLA</span>
+          <img src="../assets/logo.png" alt="AEGIS Shield Logo" class="brand-logo" width="38" height="38" />
+          <span>AEGIS</span>
           <span class="brand-badge" data-i18n="nav.badge">BLUE SHIELD v1.5</span>
         </a>
         <nav class="nav-links">
@@ -25,7 +25,7 @@
           <a href="../faq/" class="nav-link" data-i18n="nav.faq">FAQ</a>
         </nav>
         <div class="nav-actions">
-          <select id="bla-lang-select" class="lang-select" aria-label="Select Language">
+          <select id="aegis-lang-select" class="lang-select" aria-label="Select Language">
             <option value="en">🌐 English</option>
             <option value="zh-CN">🌐 简体中文</option>
             <option value="zh-TW">🌐 繁體中文</option>
@@ -58,11 +58,11 @@
           <div class="grid-2">
             <div class="card">
               <span class="card-tag" data-i18n="gs.s1.tag">Step 1 · Agent MCP Setup</span>
-              <h3 data-i18n="gs.s1.title">Register BLA with Your Coding Agent</h3>
+              <h3 data-i18n="gs.s1.title">Register AEGIS with Your Coding Agent</h3>
               <p data-i18n-html="gs.s1.desc">
-                Configures Claude Code, Cursor, Codex, Windsurf, Gemini CLI, and Antigravity with the <code>bla</code> MCP server and <code>blind-llm-agents</code> skill.
+                Configures Claude Code, Cursor, Codex, Windsurf, Gemini CLI, and Antigravity with the <code>aegis</code> MCP server and <code>aegis-counter-rea</code> skill.
               </p>
-              <pre class="code-block">npx bla-agents@latest setup --all-detected --yes</pre>
+              <pre class="code-block">npx aegis-agents@latest setup --all-detected --yes</pre>
             </div>
 
             <div class="card">
@@ -71,7 +71,7 @@
               <p data-i18n="gs.s2.desc">
                 Runs source-map exposure checks, static audit, format-specific protection, and runtime equivalence verification. Pass --manifest only if you want an unsigned attestation JSON next to artifacts.
               </p>
-              <pre class="code-block">npx bla-agents@latest harden .</pre>
+              <pre class="code-block">npx aegis-agents@latest harden .</pre>
             </div>
           </div>
         </div>
@@ -89,17 +89,17 @@
               <span class="card-tag" data-i18n="gs.s3.c1.tag">Agent Prompt</span>
               <h3 data-i18n="gs.s3.c1.title">Prompt for Claude Code / Cursor</h3>
               <p data-i18n-html="gs.s3.c1.desc">Once <code>setup</code> is complete, ask your coding agent:</p>
-              <pre class="code-block">"Harden my software against REA (bla_harden on the project directory)."</pre>
+              <pre class="code-block">"Harden my software against REA (aegis_harden on the project directory)."</pre>
             </div>
 
             <div class="card">
               <span class="card-tag" data-i18n="gs.s3.c2.tag">Build Bundler Plugin</span>
               <h3 data-i18n="gs.s3.c2.title">Build-Time Protection</h3>
               <p data-i18n="gs.s3.c2.desc">Integrates with Vite, Rollup, Webpack, and esbuild:</p>
-              <pre class="code-block">import { blaVitePlugin } from "bla-agents/bundler";
+              <pre class="code-block">import { aegisVitePlugin } from "aegis-agents/bundler";
 
 export default {
-  plugins: [blaVitePlugin({ intensity: "bankrupt" })],
+  plugins: [aegisVitePlugin({ intensity: "bankrupt" })],
 };</pre>
             </div>
           </div>
@@ -109,7 +109,7 @@ export default {
 
     <footer class="site-footer">
       <div class="container footer-inner">
-        <div data-i18n-html="footer.tagline"><strong>BLA (`bla-agents`)</strong> · Blind LLM Agents · Software Protection MCP &amp; CLI</div>
+        <div data-i18n-html="footer.tagline"><strong>AEGIS (`aegis-agents`)</strong> · Blind LLM Agents · Software Protection MCP &amp; CLI</div>
         <div><a href="https://github.com/qybaihe/bla">GitHub ★</a> · <a href="../" data-i18n="nav.overview">Overview</a></div>
       </div>
     </footer>

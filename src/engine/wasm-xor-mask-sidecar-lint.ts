@@ -20,7 +20,7 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 import { basename, resolve } from "node:path";
 import { walkBounded } from "../core/walk.js";
 
-export const WASM_XOR_MASK_SIDECAR_SCHEMA = "bla-wasm-xor-mask-sidecar-lint/v1" as const;
+export const WASM_XOR_MASK_SIDECAR_SCHEMA = "aegis-wasm-xor-mask-sidecar-lint/v1" as const;
 
 export type WasmXorMaskSidecarFindingId =
   | "wasm-xor-mask-sidecar"
@@ -56,7 +56,7 @@ const SKIP_DIR_NAMES = new Set([
   ".git",
   ".hg",
   ".svn",
-  ".bla-hardened",
+  ".aegis-hardened",
   "coverage",
   ".next",
   ".turbo",
@@ -344,7 +344,7 @@ export function wasmXorMaskSidecarRefuseMessage(
 ): string {
   const p = pathLabel ?? report.path;
   const ids = report.findings.map((f) => f.id).join(",");
-  return `BLA refused bankrupt/maximum protect of ${p}: WASM XOR-mask sidecar entitlement pack (${ids || "exposed"}). Pass allowWasmXorMaskSidecar / --allow-wasm-xor-mask-sidecar / allow_wasm_xor_mask_sidecar to override. Prefer key-dependent unmask and one-way commitments (red/blue round-6).`;
+  return `AEGIS refused bankrupt/maximum protect of ${p}: WASM XOR-mask sidecar entitlement pack (${ids || "exposed"}). Pass allowWasmXorMaskSidecar / --allow-wasm-xor-mask-sidecar / allow_wasm_xor_mask_sidecar to override. Prefer key-dependent unmask and one-way commitments (red/blue round-6).`;
 }
 
 function walkWasmFiles(root: string): string[] {

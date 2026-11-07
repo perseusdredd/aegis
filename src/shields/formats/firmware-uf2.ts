@@ -35,7 +35,7 @@ const UF2_FLAG_FILE_CONTAINER = 0x0000_1000;
 const UF2_FLAG_FAMILY_ID = 0x0000_2000;
 
 /** Marker string embedded in decoy payloads (auditor / inspect). */
-export const UF2_SHIELD_MARKER = "[BLA-UF2-SHIELD]";
+export const UF2_SHIELD_MARKER = "[AEGIS-UF2-SHIELD]";
 
 /**
  * Subset of Microsoft uf2families.json IDs that REA names (see
@@ -56,7 +56,7 @@ const NAMED_DECOY_FAMILIES: readonly number[] = [
 export interface Uf2Inspection {
   readonly validMagic: boolean;
   readonly blockCount: number;
-  readonly blaProtected: boolean;
+  readonly aegisProtected: boolean;
   readonly notMainFlashDecoyHint: boolean;
 }
 
@@ -83,7 +83,7 @@ export function inspectUf2Firmware(bytes: Buffer): Uf2Inspection {
   return {
     validMagic,
     blockCount,
-    blaProtected: bytes.includes(marker),
+    aegisProtected: bytes.includes(marker),
     notMainFlashDecoyHint: bytes.includes(marker),
   };
 }
@@ -185,7 +185,7 @@ export function protectUf2FirmwareBuffer(
   readonly originalBlocksPreserved: number;
 } {
   const intensity = options.intensity ?? "balanced";
-  const prng = new SeededPrng(options.seed ?? "bla-uf2-shield");
+  const prng = new SeededPrng(options.seed ?? "aegis-uf2-shield");
   const deception = buildCanaryAndDiagnosticPayloads(prng, intensity);
   const plan = intensityPlan(intensity);
 

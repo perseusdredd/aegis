@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * CrackMe v9 (Sovereign) build — published challenge IS `bla harden` 3.0 output
+ * CrackMe v9 (Sovereign) build — published challenge IS `aegis harden` 3.0 output
  * (bankrupt + --weave-decoys + --self-seal + --sidecar-entangle, no --allow-*).
  *
  *   CRACKME_V9_KEY=… CRACKME_V9_FLAG=FLAG{…} npm run crackme:v9:build
@@ -32,9 +32,9 @@ const seal = {
   schema: SCHEMA,
   mode: secrets.mode,
   product: PRODUCT,
-  blaVersion: result.blaVersion,
+  aegisVersion: result.aegisVersion,
   recipe:
-    "npm run crackme:v9:build (4-Stage BLA 3.0 Playbook: bla_lint -> bla_weave_plan -> bla_verify_weave -> bla_harden --intensity bankrupt --weave-decoys --self-seal --sidecar-entangle); harden/schedule seed is private",
+    "npm run crackme:v9:build (4-Stage AEGIS 3.0 Playbook: aegis_lint -> aegis_weave_plan -> aegis_verify_weave -> aegis_harden --intensity bankrupt --weave-decoys --self-seal --sidecar-entangle); harden/schedule seed is private",
   label: SEED_LABEL,
   intensity: INTENSITY,
   weaveDecoys: true,
@@ -48,7 +48,7 @@ const seal = {
   artifacts: result.artifacts,
   hardenSummary: result.hardenSummary,
   recipesAbsorbed: [
-    "BLA 3.0 4-Stage Playbook: AST surgicalWorkorder + pre/post bla_verify_weave (100/100)",
+    "AEGIS 3.0 4-Stage Playbook: AST surgicalWorkorder + pre/post aegis_verify_weave (100/100)",
     "Closes v8 seal.json sidecar residual: license.cjs pins EXPECTED_SEAL_SHA256 at runtime",
     "Multi-format sibling entanglement: self_seal + sidecar_entangle across license.cjs, panel.html, policy.py, core.wasm",
     "R7–R12 SHA-256(key) mask KDF + commitment outside XOR + private seed + arity-2/export-order/body-index scatter",

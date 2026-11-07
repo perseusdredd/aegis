@@ -134,7 +134,7 @@ describe("python structural decoy weave", () => {
       seed: "py-weave-compile-1",
       weaveDecoys: true,
     });
-    const dir = mkdtempSync(join(tmpdir(), "bla-py-weave-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-py-weave-"));
     temps.push(dir);
     const file = join(dir, "woven.py");
     writeFileSync(file, out.code, "utf8");

@@ -8,7 +8,7 @@ import * as vm from "node:vm";
 import { SeededPrng } from "../src/core/prng.js";
 import { withLlmDirectives } from "../src/core/llm-directives.js";
 import { assertNoForbiddenMarkers } from "../src/core/identifiers.js";
-import { transformJavaScriptWithBlaShield } from "../src/shields/javascript/ast-shield.js";
+import { transformJavaScriptWithAegisShield } from "../src/shields/javascript/ast-shield.js";
 import { buildCanaryAndDiagnosticPayloads } from "../src/shields/deception/format-payloads.js";
 import {
   ALIGNMENT_EVAL_CANARY_GUID,
@@ -59,7 +59,7 @@ describe("Red-Team vs. Blue-Team Adversarial Bypass & Cognitive-Armor Coupling",
       module.exports = { verifyEnterpriseEntitlement };
     `;
 
-    const shielded = transformJavaScriptWithBlaShield(originalCode, {
+    const shielded = transformJavaScriptWithAegisShield(originalCode, {
       intensity: "bankrupt",
       seed: "redteam-armor-entangle",
       sourceType: "commonjs",
@@ -132,7 +132,7 @@ describe("Red-Team vs. Blue-Team Adversarial Bypass & Cognitive-Armor Coupling",
       module.exports = { publicVerifyGateway };
     `;
 
-    const shielded = transformJavaScriptWithBlaShield(sourceWithSensitiveSymbols, {
+    const shielded = transformJavaScriptWithAegisShield(sourceWithSensitiveSymbols, {
       intensity: "bankrupt",
       seed: "redteam-symbol-erasure",
       sourceType: "commonjs",
@@ -162,14 +162,14 @@ describe("Red-Team vs. Blue-Team Adversarial Bypass & Cognitive-Armor Coupling",
         intensity?: import("../core/types.js").ProtectionIntensity;
         nested?: import("../core/types.js").ProtectionResult["format"];
       }
-      export declare function blaVitePlugin(options?: BundlerOptions): { name: string };
+      export declare function aegisVitePlugin(options?: BundlerOptions): { name: string };
     `;
-    const dtsShielded = transformJavaScriptWithBlaShield(dtsInput, {
+    const dtsShielded = transformJavaScriptWithAegisShield(dtsInput, {
       intensity: "bankrupt",
       filename: "index.d.ts",
       seed: "dts-import-type-seed",
     });
-    expect(dtsShielded.exportedSymbols).toEqual(["BundlerOptions", "blaVitePlugin"]);
+    expect(dtsShielded.exportedSymbols).toEqual(["BundlerOptions", "aegisVitePlugin"]);
     expect(dtsShielded.code).toContain('import("../core/types.js").ProtectionIntensity');
   });
 

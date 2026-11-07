@@ -39,7 +39,7 @@ import {
   type CoverageMatrix,
 } from "../../engine/integrity-coverage.js";
 
-export const SELF_SEAL_SCHEMA = "bla-self-seal/v1" as const;
+export const SELF_SEAL_SCHEMA = "aegis-self-seal/v1" as const;
 
 /**
  * Build-time placeholder for the entry self-digest literal (exactly 64 chars,
@@ -189,7 +189,7 @@ export interface SelfSealSnippet {
   readonly hardFailOnSiblingMismatch: boolean;
   /** Colocated interleaved site count actually emitted. */
   readonly interleavedSites: number;
-  /** Coverage matrix for packaging gates / bla_lint_integrity_coverage. */
+  /** Coverage matrix for packaging gates / aegis_lint_integrity_coverage. */
   readonly coverageMatrix: CoverageMatrix;
   /** True when sites embed {@link SELF_DIGEST_PLACEHOLDER} (finalize at write time). */
   readonly selfDigestCheck: boolean;

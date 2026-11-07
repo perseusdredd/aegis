@@ -9,13 +9,13 @@ const TEE_GREP = /TPM2_|NitroEnclave|hardware_enclave_stub|verify_enclave_attest
 const MUNDANE_HINT = /invoice|session_cache|telemetry|locale|backoff|wal_segment|catalog_facet|worker_pool|report_cursor|transport_frame|metric_histogram|gateway_policy|pipeline_shard|audit_sample|connection_pool|lookup_vector/i;
 
 describe("Python decoy density + vocabulary diversification (WorkBuddy peel)", () => {
-  it("emits no greppable _bla_ / BLA-SHIELD markers at maximum intensity", () => {
+  it("emits no greppable _aegis_ / AEGIS-SHIELD markers at maximum intensity", () => {
     const out = protectPythonSource("def main():\n    return 1\n", {
       intensity: "maximum",
       seed: "wb-python-density-1",
     });
     assertNoForbiddenMarkers(out.code, "python-maximum");
-    expect(out.code).not.toContain("BLA-SHIELD");
+    expect(out.code).not.toContain("AEGIS-SHIELD");
     expect(out.code).not.toMatch(/\bpass\s*$/m);
     expect(out.decoyFunctionsInjected).toBeGreaterThanOrEqual(18);
   });

@@ -257,7 +257,7 @@ export function inspectProductionDebugPosture(
       blocksFridaOrGdbWithLocalPrivileges: false,
       blocksRuntimeStateRecovery: false,
       secretStorageGuidance:
-        "BLA JavaScript runtime shields cannot guarantee confidentiality of plaintext or decryption keys held by a client process when the observer has OS-level debugging/instrumentation permissions (e.g., Frida, GDB, LLDB, or root/admin access). Keep authoritative access control and long-lived secrets in trusted server or hardware boundaries.",
+        "AEGIS JavaScript runtime shields cannot guarantee confidentiality of plaintext or decryption keys held by a client process when the observer has OS-level debugging/instrumentation permissions (e.g., Frida, GDB, LLDB, or root/admin access). Keep authoritative access control and long-lived secrets in trusted server or hardware boundaries.",
     },
   };
 }

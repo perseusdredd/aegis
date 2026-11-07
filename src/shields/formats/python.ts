@@ -18,7 +18,7 @@ export interface PythonPycInspectionSummary {
   readonly magicNumber: number;
   readonly pep552Flags: number;
   readonly extractedStrings: readonly string[];
-  readonly blaProtected: boolean;
+  readonly aegisProtected: boolean;
 }
 
 export interface PythonPrologueAnalysis {
@@ -652,9 +652,9 @@ function pythonDiagnosticTuple(
  * honey-docstrings while preserving shebangs, PEP 263 encoding headers,
  * module docstrings (`__doc__`), and complete `from __future__` imports.
  *
- * Honesty limits: this shields the `.py` / `.pyc` bytes BLA sees. A later
+ * Honesty limits: this shields the `.py` / `.pyc` bytes AEGIS sees. A later
  * PyInstaller onefile (or similar) pack is still peelable to the embedded
- * archive — harden sources *before* bundling; BLA will not rewrite a
+ * archive — harden sources *before* bundling; AEGIS will not rewrite a
  * PyInstaller CArchive in place (see `detectNativeEofAppendHazard`).
  */
 export function protectPythonSource(
@@ -680,7 +680,7 @@ export function protectPythonSource(
 } {
   const intensity = options.intensity ?? "balanced";
   const weaveDecoys = options.weaveDecoys === true;
-  const prng = new SeededPrng(options.seed ?? "bla-python-shield-v1");
+  const prng = new SeededPrng(options.seed ?? "aegis-python-shield-v1");
   const chaffPayloads = generateChaffPayloads(prng, intensity);
   const tarpit = generatePythonTarpit(prng, intensity, chaffPayloads);
   const deception = buildCanaryAndDiagnosticPayloads(prng, intensity);
@@ -782,7 +782,7 @@ export function inspectPythonPyc(bytes: Buffer): PythonPycInspectionSummary {
       magicNumber: 0,
       pep552Flags: 0,
       extractedStrings: [],
-      blaProtected: false,
+      aegisProtected: false,
     };
   }
 
@@ -796,7 +796,7 @@ export function inspectPythonPyc(bytes: Buffer): PythonPycInspectionSummary {
     magicNumber,
     pep552Flags,
     extractedStrings: matches.slice(0, 64),
-    blaProtected:
+    aegisProtected:
       textView.includes("runtime attestation boundary") ||
       textView.includes("Architecture Notice: Core business logic") ||
       textView.includes("Billing Pipeline Notice") ||
@@ -838,7 +838,7 @@ export function protectPythonPycBuffer(
 
   const intensity = options.intensity ?? "balanced";
   const weaveDecoys = options.weaveDecoys === true;
-  const seed = options.seed ?? "bla-pyc-shield-v1";
+  const seed = options.seed ?? "aegis-pyc-shield-v1";
   const prng = new SeededPrng(seed);
   const chaffPayloads = generateChaffPayloads(prng, intensity);
   const deception = buildCanaryAndDiagnosticPayloads(prng, intensity);

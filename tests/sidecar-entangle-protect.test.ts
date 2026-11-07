@@ -17,7 +17,7 @@ const enc = (s: string) => new TextEncoder().encode(s);
 
 describe("sidecar entangle protectTarget wiring", () => {
   it("flag off leaves entry free of strip⇒fail preamble", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-sidecar-off-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-sidecar-off-"));
     try {
       const entry = join(dir, "main.js");
       const sib = join(dir, "sib.js");
@@ -42,7 +42,7 @@ describe("sidecar entangle protectTarget wiring", () => {
   });
 
   it("flag on writes binding; intact load works; strip fails closed", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-sidecar-on-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-sidecar-on-"));
     try {
       const entry = join(dir, "main.js");
       const entrySrc = "module.exports = { v: 99 };\n";
@@ -98,7 +98,7 @@ describe("sidecar entangle protectTarget wiring", () => {
 
 describe("sidecar entangle protectTarget Python wiring", () => {
   it("flag off leaves Python entry free of strip⇒fail preamble", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-sidecar-py-off-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-sidecar-py-off-"));
     try {
       const entry = join(dir, "main.py");
       const sib = join(dir, "sib.bin");
@@ -122,7 +122,7 @@ describe("sidecar entangle protectTarget Python wiring", () => {
   });
 
   it("flag on writes Python binding; intact runs; strip fails closed", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-sidecar-py-on-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-sidecar-py-on-"));
     try {
       const entry = join(dir, "main.py");
       const entrySrc = "print('py-ok')\n";
@@ -161,7 +161,7 @@ describe("sidecar entangle protectTarget Python wiring", () => {
 describe("sidecar entangle hardenProject Python-only post-pass", () => {
   it("Python-only project binds entry; strip of sibling fails closed", async () => {
     const { hardenProject } = await import("../src/engine/harden.js");
-    const dir = mkdtempSync(join(tmpdir(), "bla-sidecar-py-harden-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-sidecar-py-harden-"));
     try {
       writeFileSync(
         join(dir, "policy.py"),

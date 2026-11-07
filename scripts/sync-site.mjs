@@ -12,7 +12,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
 const websiteDir = path.join(rootDir, "website");
-const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "bla-site-sync-"));
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "aegis-site-sync-"));
 
 try {
   console.log("Cloning qybaihe/bla-site...");

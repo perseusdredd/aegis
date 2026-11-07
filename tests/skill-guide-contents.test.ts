@@ -6,38 +6,38 @@ import { resolveBundledSkillBundle } from "../src/setup/setup.js";
 
 const skillDir = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
-  "../.agents/skills/blind-llm-agents",
+  "../.agents/skills/aegis-counter-rea",
 );
 const skillPath = path.join(skillDir, "SKILL.md");
 
-describe("blind-llm-agents skill guide contents", () => {
+describe("aegis-counter-rea skill guide contents", () => {
   it("ships v1.5+/2.0/3.0 short decision guide with write-safety, lint-lanes, verify-weave, and run evidence", () => {
     const text = fs.readFileSync(skillPath, "utf8");
     expect(text).toMatch(/metadata:\s*\n\s*version:\s*"(?:1\.5\.\d+|2\.\d+\.\d+|3\.\d+\.\d+)"/);
-    expect(text).toContain("bla_harden");
-    expect(text).toContain("npx bla-agents@latest harden .");
+    expect(text).toContain("aegis_harden");
+    expect(text).toContain("npx aegis-agents@latest harden .");
     expect(text).toContain("weave_decoys");
-    expect(text).toContain("bla_weave_plan");
-    expect(text).toContain("bla_verify_weave");
+    expect(text).toContain("aegis_weave_plan");
+    expect(text).toContain("aegis_verify_weave");
     expect(text).toContain("surgicalWorkorder");
     expect(text).toContain("remediationPlan");
-    expect(text).toContain("bla://directives/weave-decoy");
-    expect(text).toContain("bla_lint_lanes");
+    expect(text).toContain("aegis://directives/weave-decoy");
+    expect(text).toContain("aegis_lint_lanes");
     expect(text).toMatch(/FORBIDDEN/i);
-    expect(text).toMatch(/bla_defend/);
+    expect(text).toMatch(/aegis_defend/);
     expect(text).toContain("counter-rea-matrix.md");
     expect(text.toLowerCase()).toMatch(/refuse|defensive only/);
     expect(text).toMatch(/Do not ask which files to protect/i);
-    expect(text).toContain("bla_discover");
+    expect(text).toContain("aegis_discover");
     expect(text).toContain("dry_run");
     expect(text).toContain("confirm_overwrite");
     expect(text).toContain("in_place");
-    expect(text).toContain("bla_run_lookup");
-    expect(text).toContain("bla_rea_drift");
-    expect(text).toContain("bla_polymorph_report");
-    expect(text).toContain("bla_encrypt_strings");
-    expect(text).toContain("bla_lint_plaintext_secrets");
-    expect(text).toContain("bla_redteam_report");
+    expect(text).toContain("aegis_run_lookup");
+    expect(text).toContain("aegis_rea_drift");
+    expect(text).toContain("aegis_polymorph_report");
+    expect(text).toContain("aegis_encrypt_strings");
+    expect(text).toContain("aegis_lint_plaintext_secrets");
+    expect(text).toContain("aegis_redteam_report");
     expect(text).toMatch(/unverified/i);
     expect(text).toContain("available");
     expect(text).toContain("overallSuccess");

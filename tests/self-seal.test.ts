@@ -9,17 +9,17 @@ import {
   measureSelfSealDigestOffline,
   SELF_SEAL_SCHEMA,
 } from "../src/shields/runtime/self-seal.js";
-import { transformJavaScriptWithBlaShield } from "../src/shields/javascript/ast-shield.js";
+import { transformJavaScriptWithAegisShield } from "../src/shields/javascript/ast-shield.js";
 import { parseCliArgs } from "../src/cli.js";
-import { DEFAULT_BLA_CONFIG, initBlaConfig, loadBlaConfig } from "../src/core/config.js";
+import { DEFAULT_AEGIS_CONFIG, initAegisConfig, loadAegisConfig } from "../src/core/config.js";
 import { protectTarget } from "../src/engine/protector.js";
 
 describe("self-seal helper (#40.5)", () => {
-  it("DEFAULT_BLA_CONFIG exposes selfSeal:false (opt-in)", () => {
-    expect(DEFAULT_BLA_CONFIG.selfSeal).toBe(false);
+  it("DEFAULT_AEGIS_CONFIG exposes selfSeal:false (opt-in)", () => {
+    expect(DEFAULT_AEGIS_CONFIG.selfSeal).toBe(false);
   });
 
-  it("emits a bla-self-seal/v1 snippet with binding + helper names", () => {
+  it("emits a aegis-self-seal/v1 snippet with binding + helper names", () => {
     const prng = new SeededPrng("self-seal-unit-1");
     const snip = generateSelfSealSnippet(prng, {
       siblingPaths: ["./sib-a.js", "./sib-b.js"],
@@ -33,8 +33,8 @@ describe("self-seal helper (#40.5)", () => {
     expect(snip.code).toContain("integrityDigestTest");
     expect(snip.code).toContain("node:crypto");
     expect(snip.code).toContain("./sib-a.js");
-    // No greppable BLA brand markers in customer-facing code.
-    expect(snip.code.toLowerCase()).not.toMatch(/\bbla[_-]?seal\b/);
+    // No greppable AEGIS brand markers in customer-facing code.
+    expect(snip.code.toLowerCase()).not.toMatch(/\baegis[_-]?seal\b/);
   });
 
   it("offline digest helper is deterministic for identical inputs", () => {
@@ -64,13 +64,13 @@ describe("self-seal helper (#40.5)", () => {
     const src = [
       '"use strict";',
       'const HONEYPOT = Object.freeze(["P4#kR9$vM2@xL7!q", "W9$mK3#pT7!vQ2@z"]);',
-      'const LABEL = "bla-redblue-r4|wrap";',
+      'const LABEL = "aegis-redblue-r4|wrap";',
       'function main(k) { return HONEYPOT.includes(k) ? "hp" : LABEL + ":" + String(k).length; }',
       'module.exports = { main, HONEYPOT };',
       'if (require.main === module) console.log(main(process.argv[2] || ""));',
       "",
     ].join("\n");
-    const on = transformJavaScriptWithBlaShield(src, {
+    const on = transformJavaScriptWithAegisShield(src, {
       intensity: "bankrupt",
       seed: "self-seal-tdz-r4",
       selfSeal: true,
@@ -87,14 +87,14 @@ describe("self-seal helper (#40.5)", () => {
       expect(seedPos).toBeLessThan(freezePos);
     }
 
-    const dir = mkdtempSync(join(tmpdir(), "bla-selfseal-tdz-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-selfseal-tdz-"));
     try {
       const file = join(dir, "gate.cjs");
       writeFileSync(file, on.code, "utf8");
       const run = spawnSync(process.execPath, [file, "abc"], { encoding: "utf8" });
       expect(run.status, run.stderr).toBe(0);
       expect(run.stderr || "").not.toMatch(/before initialization/i);
-      expect(run.stdout).toMatch(/bla-redblue-r4\|wrap:3/);
+      expect(run.stdout).toMatch(/aegis-redblue-r4\|wrap:3/);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -102,14 +102,14 @@ describe("self-seal helper (#40.5)", () => {
 
   it("AST shield injects self-seal only when opted in", () => {
     const src = "export function pay(n) { return n * 2; }\n";
-    const off = transformJavaScriptWithBlaShield(src, {
+    const off = transformJavaScriptWithAegisShield(src, {
       intensity: "balanced",
       seed: "seal-off",
     });
     expect(off.selfSealEnabled).toBeFalsy();
     expect(off.code).not.toContain("node:crypto");
 
-    const on = transformJavaScriptWithBlaShield(src, {
+    const on = transformJavaScriptWithAegisShield(src, {
       intensity: "balanced",
       seed: "seal-on",
       selfSeal: true,
@@ -121,32 +121,32 @@ describe("self-seal helper (#40.5)", () => {
     expect(on.code).toContain(on.selfSealBindingName!);
   });
 
-  it("CLI --self-seal parses and .blarc selfSeal loads", () => {
+  it("CLI --self-seal parses and .aegisrc selfSeal loads", () => {
     const parsed = parseCliArgs(["protect", "a.js", "--self-seal"]);
     expect(parsed.selfSeal).toBe(true);
     const off = parseCliArgs(["protect", "a.js"]);
     expect(off.selfSeal).toBe(false);
 
-    const dir = mkdtempSync(join(tmpdir(), "bla-selfseal-cfg-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-selfseal-cfg-"));
     try {
       writeFileSync(
-        join(dir, ".blarc"),
-        JSON.stringify({ selfSeal: true, seed: "bla-test-self-seal-seed-01" }),
+        join(dir, ".aegisrc"),
+        JSON.stringify({ selfSeal: true, seed: "aegis-test-self-seal-seed-01" }),
         "utf8",
       );
-      const loaded = loadBlaConfig(dir);
+      const loaded = loadAegisConfig(dir);
       expect(loaded.config.selfSeal).toBe(true);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
   });
 
-  it("initBlaConfig writes selfSeal:false into starter config", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-selfseal-init-"));
+  it("initAegisConfig writes selfSeal:false into starter config", () => {
+    const dir = mkdtempSync(join(tmpdir(), "aegis-selfseal-init-"));
     try {
-      const res = initBlaConfig(dir);
+      const res = initAegisConfig(dir);
       expect(res.config.selfSeal).toBe(false);
-      const loaded = loadBlaConfig(dir);
+      const loaded = loadAegisConfig(dir);
       expect(loaded.config.selfSeal).toBe(false);
     } finally {
       rmSync(dir, { recursive: true, force: true });
@@ -154,7 +154,7 @@ describe("self-seal helper (#40.5)", () => {
   });
 
   it("tiny fixture: sibling tamper changes offline digest (entanglement contract)", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-selfseal-fix-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-selfseal-fix-"));
     try {
       const mainPath = join(dir, "main.js");
       const sibPath = join(dir, "sib.js");
@@ -194,7 +194,7 @@ describe("self-seal helper (#40.5)", () => {
   });
 
   it("protect+self-seal hard-fails when an expected sibling is deleted", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-selfseal-missing-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-selfseal-missing-"));
     try {
       const sib = join(dir, "core.wasm");
       writeFileSync(sib, Buffer.from([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0xaa]));
@@ -233,7 +233,7 @@ describe("self-seal helper (#40.5)", () => {
   });
 
   it("protect+self-seal hard-fails when an on-disk sibling is tampered", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-selfseal-hf-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-selfseal-hf-"));
     try {
       const sib = join(dir, "core.wasm");
       // Minimal wasm magic so file exists for hashing (content arbitrary).

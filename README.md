@@ -2,25 +2,25 @@
 
 **English** · [简体中文](docs/readme/README_zh.md) · [繁體中文](docs/readme/README_zh-TW.md) · [日本語](docs/readme/README_ja.md) · [한국어](docs/readme/README_ko.md) · [Türkçe](docs/readme/README_tr.md) · [Русский](docs/readme/README_ru.md) · [Tiếng Việt](docs/readme/README_vi.md) · [ไทย](docs/readme/README_th.md) · [Deutsch](docs/readme/README_de.md) · [Español](docs/readme/README_es.md) · [Français](docs/readme/README_fr.md) · [Українська](docs/readme/README_uk.md) · [Polski](docs/readme/README_pl.md) · [Português (Brasil)](docs/readme/README_pt-BR.md) · [العربية](docs/readme/README_ar.md) · [فارسی](docs/readme/README_fa.md) · [Bahasa Indonesia](docs/readme/README_id.md) · [Italiano](docs/readme/README_it.md) · [Ελληνικά](docs/readme/README_el.md) · [മലയാളം](docs/readme/README_ml.md) · [Roman Urdu](docs/readme/README_ur-Latn.md) · [Română](docs/readme/README_ro.md)
 
-# <img src="docs/assets/logo.png" alt="BLA Shield" width="42" align="absmiddle" /> BLA: Blind LLM Agents
+# <img src="docs/assets/logo.png" alt="AEGIS Shield" width="42" align="absmiddle" /> AEGIS: Blind LLM Agents
 
 ### Make reverse engineering bankrupt again.
 
-**Point BLA at the build you ship. When an AI reverse-engineering agent (REA) opens it, the analyzer hits resource budgets, follows decoys, and burns tokens — while your users still get the same runtime behavior.**
+**Point AEGIS at the build you ship. When an AI reverse-engineering agent (REA) opens it, the analyzer hits resource budgets, follows decoys, and burns tokens — while your users still get the same runtime behavior.**
 
-[![npm version](https://img.shields.io/badge/npm-bla--agents-2563eb?style=flat-square&logo=npm)](https://www.npmjs.com/package/bla-agents)
+[![npm version](https://img.shields.io/badge/npm-aegis--agents-2563eb?style=flat-square&logo=npm)](https://www.npmjs.com/package/aegis-agents)
 [![GitHub Trending](https://img.shields.io/badge/GitHub_Trending-%2315_Daily-7c3aed?style=flat-square&logo=github&logoColor=white)](https://trendshift.io/repositories/323569)
 [![MCP tool catalog](https://img.shields.io/badge/MCP-tool_catalog-3b82f6?style=flat-square)](docs/cli-and-mcp.md)
 [![Node.js](https://img.shields.io/badge/Node.js-%5E22.23.4_%7C%7C_24.x-0284c7?style=flat-square&logo=nodedotjs&logoColor=white)](#format-coverage)
 [![Counter-REA](https://img.shields.io/badge/Counter--REA-empirically_measured-1d4ed8?style=flat-square)](#empirical-results-vs-real-rea)
 [![MIT license](https://img.shields.io/badge/license-MIT-38bdf8?style=flat-square)](LICENSE)
 
-**[Website](https://bla.tools/) · [Guides](https://bla.tools/guides/) · [Showcases](https://bla.tools/showcase/) · [Disclaimer](DISCLAIMER.md)**
+**[Website](https://aegis.tools/) · [Guides](https://aegis.tools/guides/) · [Showcases](https://aegis.tools/showcase/) · [Disclaimer](DISCLAIMER.md)**
 
 [Quick start](#quick-start) · [Empirical results](#empirical-results-vs-real-rea) · [Format coverage](#format-coverage) · [Benchmark](#benchmark-14-targets-internal-estimates) · [FAQ](#faq)
 
 ```bash
-bla harden .
+aegis harden .
 # or tell your agent: "Harden my software against REA"
 ```
 
@@ -29,23 +29,23 @@ bla harden .
 
 <p align="center">
   <a href="https://trendshift.io/repositories/323569" target="_blank" rel="noopener noreferrer">
-    <img src="docs/assets/bla-github-trending-badge.png" alt="GitHub Trending — #15 Repository Of The Day" width="280" height="56"/>
+    <img src="docs/assets/aegis-github-trending-badge.png" alt="GitHub Trending — #15 Repository Of The Day" width="280" height="56"/>
   </a>
 </p>
 
 > [!IMPORTANT]
-> BLA is a **defensive** tool for protecting **your own** software. See [DISCLAIMER.md](DISCLAIMER.md).
-> Get BLA from [qybaihe/bla](https://github.com/qybaihe/bla) or [npm `bla-agents`](https://www.npmjs.com/package/bla-agents).
+> AEGIS is a **defensive** tool for protecting **your own** software. See [DISCLAIMER.md](DISCLAIMER.md).
+> Get AEGIS from [qybaihe/bla](https://github.com/qybaihe/bla) or [npm `aegis-agents`](https://www.npmjs.com/package/aegis-agents).
 
 <div align="center">
-<img src="docs/assets/bla-vs-rea-showcase.svg" alt="Side-by-side: REA on an unprotected artifact vs BLA-protected output" width="1200" />
+<img src="docs/assets/aegis-vs-rea-showcase.svg" alt="Side-by-side: REA on an unprotected artifact vs AEGIS-protected output" width="1200" />
 </div>
 
 ---
 
-## What BLA does
+## What AEGIS does
 
-REA reverse-engineers release artifacts in one command. BLA is the Counter-REA half of that story:
+REA reverse-engineers release artifacts in one command. AEGIS is the Counter-REA half of that story:
 
 | Layer | What happens |
 | --- | --- |
@@ -56,19 +56,19 @@ REA reverse-engineers release artifacts in one command. BLA is the Counter-REA h
 One sentence covers the common case (auto-discovers `dist/` / `build/` / `.asar` / `.wasm` / `.sqlite` / models / … and runs audit → protect → verify):
 
 ```bash
-npx bla-agents harden .
-# MCP / agent: bla_harden   ·   "Harden my software against REA"
+npx aegis-agents harden .
+# MCP / agent: aegis_harden   ·   "Harden my software against REA"
 ```
 
-Same pipeline as `bla defend` / `bla_defend` when you already know the path; `harden` is the default one-command UX.
+Same pipeline as `aegis defend` / `aegis_defend` when you already know the path; `harden` is the default one-command UX.
 
 ## Quick start
 
 ```bash
 # Node.js ^22.23.4 or 24.x recommended (REA red-team needs zlib.zstd on 22.23+)
-npx bla-agents setup          # register MCP + skill with your coding agent
-npx bla-agents harden .       # one-command Counter-REA pass on the current project
-npx bla-agents benchmark      # 14-target showcase (local estimates + runtime checks)
+npx aegis-agents setup          # register MCP + skill with your coding agent
+npx aegis-agents harden .       # one-command Counter-REA pass on the current project
+npx aegis-agents benchmark      # 14-target showcase (local estimates + runtime checks)
 ```
 
 Ask your agent after setup (skill guides one-click harden):
@@ -83,7 +83,7 @@ Or run stages explicitly: `audit` · `protect` · `verify` · `defend` — see [
 
 ## Empirical results vs real REA
 
-These numbers come from running **real REA** against BLA-hardened samples on commodity hardware (`npm run redteam:rea`). Full machine-readable report: [`docs/redteam/empirical-rea-validation.md`](docs/redteam/empirical-rea-validation.md) / [`.json`](docs/redteam/empirical-rea-validation.json).
+These numbers come from running **real REA** against AEGIS-hardened samples on commodity hardware (`npm run redteam:rea`). Full machine-readable report: [`docs/redteam/empirical-rea-validation.md`](docs/redteam/empirical-rea-validation.md) / [`.json`](docs/redteam/empirical-rea-validation.json).
 
 **How to read this:** “Empirically verified” means the REA analyzer path actually returned the listed budget / capacity / redaction failure in this environment. It is **not** a claim about Ghidra/Frida/LLDB/Rizin/JADX sessions we did not run here.
 
@@ -91,7 +91,7 @@ These numbers come from running **real REA** against BLA-hardened samples on com
 
 Recorded under **Node v24.22.1** with optional **Wabt 1.0.42** + **tshark 4.4** when noted. Soft-skips keep Node 22 / CI green when tooling is absent.
 
-| Format | Before → after | REA outcome after BLA | Budget / error |
+| Format | Before → after | REA outcome after AEGIS | Budget / error |
 | --- | ---: | --- | --- |
 | **Go buildinfo** | 50 KiB → 1.16 MiB | capacity error | `MAX_BUILD_INFO_BYTES` (1 MiB) — *Go build-info string length exceeds the 1 MiB limit* |
 | **Erlang BEAM** | 84 B → 262 KiB | capacity error | `max_chunks` — *BEAM form exceeds the 64-chunk budget* |
@@ -156,9 +156,9 @@ We do **not** claim those paths are empirically bankrupt until `redteam:rea` (or
 
 ## Benchmark (14 targets, internal estimates)
 
-`npx bla-agents benchmark` runs a **local Counter-REA showcase**: exposure scores, **estimated** token/cost multipliers, and **measured** runtime equivalence. Token/$ columns are **internal estimates** derived from BLA's catalog of REA limits — they are **not** the same as the empirical REA process measurements above (those are byte-level analyzer failures with real error strings). `npm run verify:rea` is a **constant-drift harness only** and must never be cited as protection evidence; the only authoritative gate is `npm run redteam:rea`.
+`npx aegis-agents benchmark` runs a **local Counter-REA showcase**: exposure scores, **estimated** token/cost multipliers, and **measured** runtime equivalence. Token/$ columns are **internal estimates** derived from AEGIS's catalog of REA limits — they are **not** the same as the empirical REA process measurements above (those are byte-level analyzer failures with real error strings). `npm run verify:rea` is a **constant-drift harness only** and must never be cited as protection evidence; the only authoritative gate is `npm run redteam:rea`.
 
-Latest local run (bla-agents **v2.1.0**): aggregate **~639.5×** tokens · **~304.4×** cost · **14/14** runtime-exact.
+Latest local run (aegis-agents **v2.1.0**): aggregate **~639.5×** tokens · **~304.4×** cost · **14/14** runtime-exact.
 
 | Target | Unprotected (est.) | Protected (est.) | Token mult (est.) | Runtime |
 | --- | --- | --- | ---: | :---: |
@@ -179,7 +179,7 @@ Latest local run (bla-agents **v2.1.0**): aggregate **~639.5×** tokens · **~30
 
 ---
 
-## How BLA works
+## How AEGIS works
 
 1. **Exhaustion** — trip documented REA caps (`primitive-candidates`, ASAR header bytes, WASM interface representation, SQLite column evaluation, model JSON/ARRAY nesting, Go buildinfo, BEAM chunks, PCAP tshark JSON, fuse sentinels, …).
 2. **Deception** — canary credentials + system-diagnostic rabbit holes across Python/WASM/SQLite/models/DEX/IL2CPP/bplist/.NET/JVM/ZIP; decoy IPC / enclave manifests / VLQ maps.
@@ -192,20 +192,20 @@ Protections are format-native (no commercial packer / external LLVM required). R
 
 ## Project config defaults (P0)
 
-- **Per-project seed** — BLA mints a random seed into `.blarc` / `bla.config.json` on first use. Legacy shared fingerprints (`bla-shield-seed-v1`, …) are no longer the default.
+- **Per-project seed** — AEGIS mints a random seed into `.aegisrc` / `aegis.config.json` on first use. Legacy shared fingerprints (`aegis-shield-seed-v1`, …) are no longer the default.
 - **`--llm-directives`** — risky LLM-facing bait (fake COPPA/medical notices, dual-use imitation, in-band AI chat markers) is **off by default**; pass the flag (or `llmDirectives: true` / MCP `llm_directives`) to opt in.
-- **`--manifest`** — `.bla-manifest.json` is an **opt-in** attestation and is **unsigned by default**. Add `--sign-manifest --manifest-key <pem>` to attach an ed25519 signature (the SPKI public key is embedded in the manifest), or use `signManifest` + `manifestSigningKeyPath` from the API. Schema: [`defense-manifest-v1.json`](website/schemas/defense-manifest-v1.json).
+- **`--manifest`** — `.aegis-manifest.json` is an **opt-in** attestation and is **unsigned by default**. Add `--sign-manifest --manifest-key <pem>` to attach an ed25519 signature (the SPKI public key is embedded in the manifest), or use `signManifest` + `manifestSigningKeyPath` from the API. Schema: [`defense-manifest-v1.json`](website/schemas/defense-manifest-v1.json).
 
 ## FAQ
 
 <details>
-<summary><strong>Which agents can use BLA?</strong></summary>
+<summary><strong>Which agents can use AEGIS?</strong></summary>
 
-Any coding agent with local MCP or `SKILL.md` workflows. `npx bla-agents setup` configures Claude Code, Cursor, Codex, Gemini CLI, Windsurf, Google Antigravity, OpenCode, VS Code, and GitHub Copilot CLI. After setup, the bundled [`blind-llm-agents` skill](.agents/skills/blind-llm-agents/SKILL.md) is the one-click harden guide (`bla_harden` / `bla harden .`); MCP stays the execution layer.
+Any coding agent with local MCP or `SKILL.md` workflows. `npx aegis-agents setup` configures Claude Code, Cursor, Codex, Gemini CLI, Windsurf, Google Antigravity, OpenCode, VS Code, and GitHub Copilot CLI. After setup, the bundled [`aegis-counter-rea` skill](.agents/skills/aegis-counter-rea/SKILL.md) is the one-click harden guide (`aegis_harden` / `aegis harden .`); MCP stays the execution layer.
 </details>
 
 <details>
-<summary><strong>Does BLA change runtime output?</strong></summary>
+<summary><strong>Does AEGIS change runtime output?</strong></summary>
 
 No on the hot path. Budget guards sit behind $O(1)$ opaque predicates. Every benchmark target checks 100% input/output equivalence against the unprotected build.
 </details>
@@ -213,11 +213,11 @@ No on the hot path. Budget guards sit behind $O(1)$ opaque predicates. Every ben
 <details>
 <summary><strong>Do I need Ghidra, Hopper, IDA, or Wabt to protect files?</strong></summary>
 
-No. Shields are built into `bla-agents`. Wabt/tshark/Node 24 are optional — they unlock **empirical** red-team probes (`npm run redteam:rea`), not protection itself.
+No. Shields are built into `aegis-agents`. Wabt/tshark/Node 24 are optional — they unlock **empirical** red-team probes (`npm run redteam:rea`), not protection itself.
 </details>
 
 <details>
-<summary><strong>Is BLA for attacking other people's software?</strong></summary>
+<summary><strong>Is AEGIS for attacking other people's software?</strong></summary>
 
 No. See [DISCLAIMER.md](DISCLAIMER.md). Protective payloads activate under reverse-engineering inspection of artifacts **you** hardened.
 </details>
@@ -230,8 +230,8 @@ No. See [DISCLAIMER.md](DISCLAIMER.md). Protective payloads activate under rever
 - [One-click agent defense (skill-first)](docs/one-click-agent-defense.md)
 - [Weave-decoy MCP](docs/weave-decoy-mcp.md)
 - [Empirical REA validation](docs/redteam/empirical-rea-validation.md)
-- [`blind-llm-agents` skill](.agents/skills/blind-llm-agents/SKILL.md)
-- [Counter-REA matrix](.agents/skills/blind-llm-agents/references/counter-rea-matrix.md)
+- [`aegis-counter-rea` skill](.agents/skills/aegis-counter-rea/SKILL.md)
+- [Counter-REA matrix](.agents/skills/aegis-counter-rea/references/counter-rea-matrix.md)
 - [v1.4.0 release notes (staged)](docs/releases/v1.4.0.md)
 - [CHANGELOG](CHANGELOG.md)
 
@@ -250,7 +250,7 @@ npm run redteam:rea                        # authoritative (real REA)
 
 ## Community / 友情社区
 
-- 🎯 **[Public BLA CrackMe v6 (`challenge/v6/`)](challenge/v6/README.md)** — harden-native: a Node vault + HTML panel + WebAssembly core hardened by the real `bla harden` pipeline (`bankrupt`, LLM directives OFF, fixed seed). Run `npm run crackme:v6 -- '<key>'`; `SEAL.json` publishes digests only (no plaintext key/flag in git).
+- 🎯 **[Public AEGIS CrackMe v6 (`challenge/v6/`)](challenge/v6/README.md)** — harden-native: a Node vault + HTML panel + WebAssembly core hardened by the real `aegis harden` pipeline (`bankrupt`, LLM directives OFF, fixed seed). Run `npm run crackme:v6 -- '<key>'`; `SEAL.json` publishes digests only (no plaintext key/flag in git).
 - [LINUX DO (`linux.do`)](https://linux.do/) — 新的理想型社区
 
 ## License

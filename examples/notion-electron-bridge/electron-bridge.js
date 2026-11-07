@@ -3,9 +3,9 @@
  * Reference: REA Official Showcase (`https://rea.tools/showcase/notion/`)
  *
  * Run pre-flight audit:
- *   npx bla-shield audit examples/notion-electron-bridge/electron-bridge.js
+ *   npx aegis-shield audit examples/notion-electron-bridge/electron-bridge.js
  * Protect against REA:
- *   npx bla-shield protect examples/notion-electron-bridge/electron-bridge.js
+ *   npx aegis-shield protect examples/notion-electron-bridge/electron-bridge.js
  */
 
 const { contextBridge, ipcRenderer, ipcMain } = require("electron");

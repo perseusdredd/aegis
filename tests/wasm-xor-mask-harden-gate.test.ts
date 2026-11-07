@@ -13,7 +13,7 @@ afterEach(() => {
 
 describe("red-blue round-6 WASM XOR-mask sidecar gate", () => {
   it("bankrupt protect refuses XOR-mask sidecar unless allowed", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-xor-gate-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-xor-gate-"));
     dirs.push(dir);
     const input = join(dir, "core.wasm");
     const output = join(dir, "core.out.wasm");
@@ -37,7 +37,7 @@ describe("red-blue round-6 WASM XOR-mask sidecar gate", () => {
   });
 
   it("bankrupt harden refuses project trees with XOR-mask sidecar WASM", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-xor-harden-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-xor-harden-"));
     dirs.push(dir);
     mkdirSync(join(dir, "dist"));
     writeFileSync(join(dir, "dist", "core.wasm"), buildTestWasmWithXorMaskSidecar({}));

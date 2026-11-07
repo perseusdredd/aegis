@@ -207,7 +207,7 @@ export function generateJsTarpitAndBudgetBreaker(
  * Generates a Python Algorithmic Tarpit & Honey-Context block for `.py` protection.
  *
  * Defense properties (WorkBuddy / REA peel resistance):
- * - No greppable `_bla_` / `BLA-SHIELD` markers in emitted names or banner comments.
+ * - No greppable `_aegis_` / `AEGIS-SHIELD` markers in emitted names or banner comments.
  * - Decoy stems mix mundane app vocabulary with a minority of TEE scare names so a
  *   single `enclave|TPM2|Nitro` grep cannot discard the whole graph.
  * - Every decoy has a non-trivial always-executed body that mutates shared state and
@@ -233,7 +233,7 @@ export function generatePythonTarpit(
   }
 
   const lines: string[] = [];
-  // Keep auditor phrase "runtime attestation boundary" but drop greppable BLA-SHIELD.
+  // Keep auditor phrase "runtime attestation boundary" but drop greppable AEGIS-SHIELD.
   const stateVar = prng
     .identifier({ style: "snake", hint: "runtimeState", entropy: 4 })
     .toUpperCase();

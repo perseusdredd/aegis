@@ -30,7 +30,7 @@ const WHOLE_KEY_GATE = `
 
 describe("harden/protect lane-independence gate (red-blue round-1 P0)", () => {
   it("refuses independent 1-byte lane JS by default", () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-lane-refuse-"));
+    const root = mkdtempSync(join(tmpdir(), "aegis-lane-refuse-"));
     dirs.push(root);
     const src = join(root, "gate.js");
     writeFileSync(src, INDEPENDENT_GATE, "utf8");
@@ -59,7 +59,7 @@ describe("harden/protect lane-independence gate (red-blue round-1 P0)", () => {
   });
 
   it("passes whole-key mixing without allow flag", () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-lane-ok-"));
+    const root = mkdtempSync(join(tmpdir(), "aegis-lane-ok-"));
     dirs.push(root);
     const src = join(root, "gate.js");
     writeFileSync(src, WHOLE_KEY_GATE, "utf8");
@@ -73,7 +73,7 @@ describe("harden/protect lane-independence gate (red-blue round-1 P0)", () => {
   });
 
   it("allows independent lanes only with allowLaneIndependentGates", () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-lane-allow-"));
+    const root = mkdtempSync(join(tmpdir(), "aegis-lane-allow-"));
     dirs.push(root);
     const src = join(root, "gate.js");
     writeFileSync(src, INDEPENDENT_GATE, "utf8");

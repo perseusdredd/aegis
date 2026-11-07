@@ -3,14 +3,14 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 /** File name of the project-level summary `hardenProject` writes. */
-export const HARDEN_SUMMARY_FILE_NAME = "bla-harden-summary.json";
+export const HARDEN_SUMMARY_FILE_NAME = "aegis-harden-summary.json";
 
 /** Current summary schema; v2 adds `runId`. */
-export const HARDEN_SUMMARY_SCHEMA = "bla-harden-summary/v2";
+export const HARDEN_SUMMARY_SCHEMA = "aegis-harden-summary/v2";
 
 /** Stable inputs that identify one harden run's planned work. */
 export interface HardenRunIdentity {
-  readonly blaVersion: string;
+  readonly aegisVersion: string;
   readonly directory: string;
   readonly intensity: string;
   readonly weaveDecoys: boolean;
@@ -36,14 +36,14 @@ export function computeHardenRunId(identity: HardenRunIdentity): string {
     }))
     .sort((x, y) => (x.relativePath < y.relativePath ? -1 : x.relativePath > y.relativePath ? 1 : 0));
   const canonical = JSON.stringify({
-    blaVersion: identity.blaVersion,
+    aegisVersion: identity.aegisVersion,
     directory: identity.directory,
     intensity: identity.intensity,
     weaveDecoys: identity.weaveDecoys,
     selfSeal: identity.selfSeal,
     artifacts,
   });
-  return `bla-run-${createHash("sha256").update(canonical).digest("hex").slice(0, 24)}`;
+  return `aegis-run-${createHash("sha256").update(canonical).digest("hex").slice(0, 24)}`;
 }
 
 export interface HardenRunSummary {
@@ -90,14 +90,14 @@ export function readHardenRunSummary(
     parsed === null ||
     Array.isArray(parsed) ||
     typeof (parsed as { schema?: unknown }).schema !== "string" ||
-    !(parsed as { schema: string }).schema.startsWith("bla-harden-summary/")
+    !(parsed as { schema: string }).schema.startsWith("aegis-harden-summary/")
   ) {
-    throw new Error(`Not a BLA harden summary: ${summaryPath}`);
+    throw new Error(`Not a AEGIS harden summary: ${summaryPath}`);
   }
   const record = parsed as { schema: string; runId?: unknown };
   if (typeof record.runId !== "string" || record.runId.length === 0) {
     throw new Error(
-      `Harden summary has no runId (schema ${record.schema}); re-run bla_harden to produce ${HARDEN_SUMMARY_SCHEMA}: ${summaryPath}`,
+      `Harden summary has no runId (schema ${record.schema}); re-run aegis_harden to produce ${HARDEN_SUMMARY_SCHEMA}: ${summaryPath}`,
     );
   }
   const runId = record.runId;
@@ -135,5 +135,5 @@ export function computeArtifactRunId(input: {
     outputPath: resolve(input.outputPath),
     outputSha256: input.outputSha256,
   });
-  return `bla-run-${createHash("sha256").update(canonical).digest("hex").slice(0, 24)}`;
+  return `aegis-run-${createHash("sha256").update(canonical).digest("hex").slice(0, 24)}`;
 }

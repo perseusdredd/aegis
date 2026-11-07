@@ -32,7 +32,7 @@ export interface DefenseScoreHonestyInput {
   readonly selfSealEnabled?: boolean;
   /** True when WASM public-ABI rename pass actually rewrote non-ABI exports. */
   readonly wasmExportRenameApplied?: boolean;
-  /** True when remaining BLA-injected templates still hardcode classic golden constants. */
+  /** True when remaining AEGIS-injected templates still hardcode classic golden constants. */
   readonly numericTemplateLeakKnown?: boolean;
 }
 
@@ -84,7 +84,7 @@ export function collectDefenseScoreGaps(
     gaps.push({
       id: "numeric-template-hygiene-partial",
       summary:
-        "Known BLA-injected shield templates may still emit classic golden-ratio numeric probes bit-identically (issue #40.2).",
+        "Known AEGIS-injected shield templates may still emit classic golden-ratio numeric probes bit-identically (issue #40.2).",
       scoreCap: 90,
     });
   }

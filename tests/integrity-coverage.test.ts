@@ -87,7 +87,7 @@ describe("integrity coverage matrix (Direction-3)", () => {
   });
 
   it("interleaved self-seal hard-fails when a sibling is tampered", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-intcov-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-intcov-"));
     const sib = join(dir, "asset.bin");
     writeFileSync(sib, "clean-asset");
     const hex = createHash("sha256").update("clean-asset").digest("hex");

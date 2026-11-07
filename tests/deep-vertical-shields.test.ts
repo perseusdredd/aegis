@@ -29,7 +29,7 @@ import {
   protectAndroidDexBuffer,
   protectIl2cppMetadataBuffer,
 } from "../src/shields/formats/mobile-game.js";
-import { blaVitePlugin, BlaWebpackPlugin } from "../src/bundler/index.js";
+import { aegisVitePlugin, AegisWebpackPlugin } from "../src/bundler/index.js";
 
 describe("Deep Vertical Shields (Runtime Deception, Electron Fuses, SQLite, AI Models, DEX/IL2CPP, Bundlers)", () => {
   it("executes the Anti-CDP / Anti-Frida 'Truman Show' runtime deception shield without side effects", () => {
@@ -100,7 +100,7 @@ describe("Deep Vertical Shields (Runtime Deception, Electron Fuses, SQLite, AI M
     const beforeInfo = inspectSqliteBuffer(rawSqlite);
     expect(beforeInfo.validSqlite).toBe(true);
     expect(beforeInfo.tableNames).toContain("license_cache");
-    expect(beforeInfo.blaProtected).toBe(false);
+    expect(beforeInfo.aegisProtected).toBe(false);
 
     const protectedSqlite = protectSqliteBuffer(rawSqlite, {
       intensity: "bankrupt",
@@ -117,12 +117,12 @@ describe("Deep Vertical Shields (Runtime Deception, Electron Fuses, SQLite, AI M
 
     const afterInfo = inspectSqliteBuffer(protectedSqlite.buffer);
     expect(afterInfo.validSqlite).toBe(true);
-    expect(afterInfo.blaProtected).toBe(true);
+    expect(afterInfo.aegisProtected).toBe(true);
     expect(afterInfo.hasGeneratedTrapColumns).toBe(true);
 
     // Verify real application table (`license_cache`) is 100% intact AND
     // REA's bare read-only `SELECT * FROM enclave_key_hierarchy` fails on the virtual generated column!
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "bla-sqlite-verify-"));
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "aegis-sqlite-verify-"));
     const dbFile = path.join(tmpDir, "verify.sqlite");
     try {
       fs.writeFileSync(dbFile, protectedSqlite.buffer);
@@ -160,7 +160,7 @@ describe("Deep Vertical Shields (Runtime Deception, Electron Fuses, SQLite, AI M
     const beforeSt = inspectModelBuffer(rawSafetensors);
     expect(beforeSt.validModel).toBe(true);
     expect(beforeSt.format).toBe("safetensors");
-    expect(beforeSt.blaProtected).toBe(false);
+    expect(beforeSt.aegisProtected).toBe(false);
 
     const protSt = protectSafetensorsBuffer(rawSafetensors, {
       intensity: "bankrupt",
@@ -177,7 +177,7 @@ describe("Deep Vertical Shields (Runtime Deception, Electron Fuses, SQLite, AI M
     const afterSt = inspectModelBuffer(protSt.buffer);
     expect(afterSt.validModel).toBe(true);
     expect(afterSt.exceedsReaNestingLimit).toBe(true);
-    expect(afterSt.blaProtected).toBe(true);
+    expect(afterSt.aegisProtected).toBe(true);
 
     // GGUF v3 model shield
     const protGguf = protectGgufBuffer(Buffer.alloc(0), {
@@ -195,7 +195,7 @@ describe("Deep Vertical Shields (Runtime Deception, Electron Fuses, SQLite, AI M
     expect(afterGguf.validModel).toBe(true);
     expect(afterGguf.format).toBe("gguf");
     expect(afterGguf.exceedsReaNestingLimit).toBe(true);
-    expect(afterGguf.blaProtected).toBe(true);
+    expect(afterGguf.aegisProtected).toBe(true);
   });
 
   it("protects Android DEX (classes.dex) and Unity IL2CPP (global-metadata.dat) containers", () => {
@@ -208,7 +208,7 @@ describe("Deep Vertical Shields (Runtime Deception, Electron Fuses, SQLite, AI M
     const dexInfo = inspectAndroidDex(resDex.buffer);
     expect(dexInfo.validDex).toBe(true);
     expect(dexInfo.fileSize).toBe(resDex.buffer.length);
-    expect(dexInfo.blaProtected).toBe(true);
+    expect(dexInfo.aegisProtected).toBe(true);
 
     const resIl2cpp = protectIl2cppMetadataBuffer(Buffer.alloc(0), {
       intensity: "balanced",
@@ -219,8 +219,8 @@ describe("Deep Vertical Shields (Runtime Deception, Electron Fuses, SQLite, AI M
   });
 
   it("integrates seamlessly with Vite / Rollup and Webpack bundler plugins", () => {
-    const vitePlugin = blaVitePlugin({ intensity: "balanced", seed: "vite-seed" });
-    expect(vitePlugin.name).toBe("vite-plugin-bla-shield");
+    const vitePlugin = aegisVitePlugin({ intensity: "balanced", seed: "vite-seed" });
+    expect(vitePlugin.name).toBe("vite-plugin-aegis-shield");
     expect(vitePlugin.enforce).toBe("post");
 
     const chunkOut = vitePlugin.renderChunk(
@@ -228,7 +228,7 @@ describe("Deep Vertical Shields (Runtime Deception, Electron Fuses, SQLite, AI M
       { fileName: "assets/index-abc123.js" },
     );
     expect(chunkOut).not.toBeNull();
-    expect(chunkOut!.code).not.toMatch(/_bla|\$00_AAA|__bla/);
+    expect(chunkOut!.code).not.toMatch(/_aegis|\$00_AAA|__aegis/);
     expect(chunkOut!.map).toBeDefined();
     expect(chunkOut!.map!.sourceRoot).toBe("enclave://tee-runtime/");
 
@@ -239,7 +239,7 @@ describe("Deep Vertical Shields (Runtime Deception, Electron Fuses, SQLite, AI M
         size: () => 33,
       },
     };
-    const wp = new BlaWebpackPlugin({ intensity: "stealth", seed: "wp-seed" });
+    const wp = new AegisWebpackPlugin({ intensity: "stealth", seed: "wp-seed" });
     wp.apply({
       hooks: {
         compilation: {
@@ -258,6 +258,6 @@ describe("Deep Vertical Shields (Runtime Deception, Electron Fuses, SQLite, AI M
         },
       },
     });
-    expect(assets["main.bundle.js"]!.source()).not.toMatch(/_bla|\$00_AAA|__bla/);
+    expect(assets["main.bundle.js"]!.source()).not.toMatch(/_aegis|\$00_AAA|__aegis/);
   });
 });

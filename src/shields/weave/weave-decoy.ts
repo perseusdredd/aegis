@@ -1,6 +1,6 @@
 /**
  * Weave-decoy theory + surgical AST planner + structural weave verifier
- * for Counter-REA Agent-Driven Hardening (BLA 3.0).
+ * for Counter-REA Agent-Driven Hardening (AEGIS 3.0).
  *
  * DEFENSIVE ONLY: helps host coding agents entangle business-plausible decoys
  * with real customer call graphs and shared mutable state so REA/WorkBuddy-style
@@ -23,9 +23,9 @@ const traverse: TraverseFn =
     : _traverse.default;
 
 export const WEAVE_DECOY_DOC_PATH = "docs/weave-decoy-mcp.md" as const;
-export const WEAVE_DECOY_SCHEMA = "bla-weave-plan/v1" as const;
-export const WEAVE_VERIFY_SCHEMA = "bla-weave-verify/v1" as const;
-export const WEAVE_DIRECTIVES_URI = "bla://directives/weave-decoy" as const;
+export const WEAVE_DECOY_SCHEMA = "aegis-weave-plan/v1" as const;
+export const WEAVE_VERIFY_SCHEMA = "aegis-weave-verify/v1" as const;
+export const WEAVE_DIRECTIVES_URI = "aegis://directives/weave-decoy" as const;
 
 /** How far today's pipeline already weaves decoys into customer logic. */
 export type WeaveMaturity =
@@ -166,7 +166,7 @@ export interface WeaveAgentAction {
   readonly checkId: string;
   readonly targetSymbol?: string;
   readonly instruction: string;
-  readonly verifyTool: "bla_verify_weave" | "bla_lint" | "bla_verify";
+  readonly verifyTool: "aegis_verify_weave" | "aegis_lint" | "aegis_verify";
 }
 
 export interface WeaveFileVerification {
@@ -200,8 +200,8 @@ export const WEAVE_AGENT_PLAYBOOK: readonly WeaveAgentPlaybookPhase[] =
       id: "recon-and-gates",
       title: "Stage 1: Recon, Packaging Gates & Surgical Workorder",
       owner: "agent+mcp",
-      tools: ["bla_discover", "bla_lint", "bla_weave_plan", "bla_audit"],
-      goal: "Inventory targets, run bla_lint to catch packaging footguns (lane-independent gates, plaintext secrets, JS AES unwrap), and generate AST-level surgical workorders via bla_weave_plan.",
+      tools: ["aegis_discover", "aegis_lint", "aegis_weave_plan", "aegis_audit"],
+      goal: "Inventory targets, run aegis_lint to catch packaging footguns (lane-independent gates, plaintext secrets, JS AES unwrap), and generate AST-level surgical workorders via aegis_weave_plan.",
     },
     {
       stage: 2,
@@ -209,28 +209,28 @@ export const WEAVE_AGENT_PLAYBOOK: readonly WeaveAgentPlaybookPhase[] =
       title: "Stage 2: Agent-Led Source Refactoring & Structural Decoy Weave",
       owner: "agent-primary",
       tools: [
-        "bla_verify_weave",
-        "bla_encrypt_strings",
-        "bla_emit_headers",
-        "bla_bind_scope",
+        "aegis_verify_weave",
+        "aegis_encrypt_strings",
+        "aegis_emit_headers",
+        "aegis_bind_scope",
       ],
-      goal: "Host Agent refactors any blocking bla_lint gates in source code, weaves domain-plausible shadow business logic sharing mutable state slots per surgicalWorkorder, and validates source edits with bla_verify_weave.",
+      goal: "Host Agent refactors any blocking aegis_lint gates in source code, weaves domain-plausible shadow business logic sharing mutable state slots per surgicalWorkorder, and validates source edits with aegis_verify_weave.",
     },
     {
       stage: 3,
       id: "build-and-exhaustion-harden",
       title: "Stage 3: Build Artifacts & Inject Counter-REA Exhaustion Shield",
       owner: "mcp-primary",
-      tools: ["bla_harden", "bla_defend"],
-      goal: "Run project build (if applicable), then invoke bla_harden with weave_decoys:true and self_seal:true (or sidecar_entangle:true) to inject BPE token amplifiers, callgraph labyrinths, and format shields.",
+      tools: ["aegis_harden", "aegis_defend"],
+      goal: "Run project build (if applicable), then invoke aegis_harden with weave_decoys:true and self_seal:true (or sidecar_entangle:true) to inject BPE token amplifiers, callgraph labyrinths, and format shields.",
     },
     {
       stage: 4,
       id: "verify-equivalence-and-weave",
       title: "Stage 4: Equivalence, Weave Acceptance & Bankruptcy Verification",
       owner: "agent+mcp",
-      tools: ["bla_verify", "bla_verify_weave", "bla_polymorph_report"],
-      goal: "Run project test suite to prove 100% functional equivalence, run bla_verify_weave and bla_verify to confirm 0 agentActions remaining and >=10x token bankruptcy amplification.",
+      tools: ["aegis_verify", "aegis_verify_weave", "aegis_polymorph_report"],
+      goal: "Run project test suite to prove 100% functional equivalence, run aegis_verify_weave and aegis_verify to confirm 0 agentActions remaining and >=10x token bankruptcy amplification.",
     },
   ]);
 
@@ -284,11 +284,11 @@ export const WEAVE_FORBIDDEN: readonly WeaveForbiddenPattern[] = Object.freeze([
     id: "pure-noise-layer",
     titleZh: "纯噪声层 / 可整层剥离的 honeypot 文件",
     whyZh:
-      "WorkBuddy 类智能体会把空 `_bla_*`、同质 scare 包、与业务无关的 sidecar 识别为可丢弃噪声，难度不升反降。",
+      "WorkBuddy 类智能体会把空 `_aegis_*`、同质 scare 包、与业务无关的 sidecar 识别为可丢弃噪声，难度不升反降。",
   },
   {
     id: "greppable-banners",
-    titleZh: "可 grep 的 BLA-SHIELD / `_bla_` 横幅",
+    titleZh: "可 grep 的 AEGIS-SHIELD / `_aegis_` 横幅",
     whyZh: "提供「这是防护层」的明确证据，方便过滤器一刀切。",
   },
   {
@@ -304,7 +304,7 @@ export const WEAVE_FORBIDDEN: readonly WeaveForbiddenPattern[] = Object.freeze([
   {
     id: "offensive-content",
     titleZh: "破解 / RE / 绕过 PoC 与攻击剧本",
-    whyZh: "BLA 只做防御加固；MCP 与文档不得提供进攻内容。",
+    whyZh: "AEGIS 只做防御加固；MCP 与文档不得提供进攻内容。",
   },
 ]);
 
@@ -314,7 +314,7 @@ export const WEAVE_ACCEPTANCE_TESTS: readonly WeaveAcceptanceTest[] =
       id: "no-forbidden-markers",
       titleZh: "无禁止标记",
       checkEn:
-        "Hardened output has no greppable `_bla_` / `BLA-SHIELD` banners (auditor phrase `runtime attestation boundary` may remain).",
+        "Hardened output has no greppable `_aegis_` / `AEGIS-SHIELD` banners (auditor phrase `runtime attestation boundary` may remain).",
     },
     {
       id: "mixed-stems",
@@ -361,21 +361,21 @@ export const WEAVE_EXECUTOR_CHECKLIST: readonly WeaveChecklistStep[] =
       phase: "analyze",
       titleZh: "生成织入计划",
       actionEn:
-        "Call MCP `bla_weave_plan` on the project/build path; inspect each target's `surgicalWorkorder` (entryFunctions, sharedStateSlots, branchCandidates).",
+        "Call MCP `aegis_weave_plan` on the project/build path; inspect each target's `surgicalWorkorder` (entryFunctions, sharedStateSlots, branchCandidates).",
     },
     {
       id: "agent-source-weave",
       phase: "apply",
       titleZh: "Agent 源码级结构织入（可选但强推）",
       actionEn:
-        "Follow `surgicalWorkorder.agentRewriteRecipe` to weave domain-plausible helpers that read/write `sharedStateSlots` and are called from `entryFunctions`, then run `bla_verify_weave`.",
+        "Follow `surgicalWorkorder.agentRewriteRecipe` to weave domain-plausible helpers that read/write `sharedStateSlots` and are called from `entryFunctions`, then run `aegis_verify_weave`.",
     },
     {
       id: "prefer-pipeline-flag",
       phase: "apply",
       titleZh: "走 harden 管线旗标",
       actionEn:
-        "Call `bla_harden` / `bla_defend` / `bla_protect` with `weave_decoys: true` so Python structural customer-def weave runs (JS AST weave is always on).",
+        "Call `aegis_harden` / `aegis_defend` / `aegis_protect` with `weave_decoys: true` so Python structural customer-def weave runs (JS AST weave is always on).",
     },
     {
       id: "js-entangle",
@@ -396,7 +396,7 @@ export const WEAVE_EXECUTOR_CHECKLIST: readonly WeaveChecklistStep[] =
       phase: "verify",
       titleZh: "跑验收检查",
       actionEn:
-        "Call MCP `bla_verify_weave` (or CLI `bla verify-weave`) to execute WEAVE_ACCEPTANCE_TESTS checks; resolve any returned `agentActions` until `overallPassed: true`.",
+        "Call MCP `aegis_verify_weave` (or CLI `aegis verify-weave`) to execute WEAVE_ACCEPTANCE_TESTS checks; resolve any returned `agentActions` until `overallPassed: true`.",
     },
   ]);
 
@@ -441,7 +441,7 @@ function statusForMaturity(maturity: WeaveMaturity): WeavePlanStatus {
 function notesForMaturity(maturity: WeaveMaturity): string {
   switch (maturity) {
     case "woven":
-      return "JS AST / Python 结构织入已将诱饵织入真实函数体（opaque + tarpit/xref）。支持宿主 Agent 按 surgicalWorkorder 进一步织入业务级共享状态诱饵，并用 bla_verify_weave 验收。";
+      return "JS AST / Python 结构织入已将诱饵织入真实函数体（opaque + tarpit/xref）。支持宿主 Agent 按 surgicalWorkorder 进一步织入业务级共享状态诱饵，并用 aegis_verify_weave 验收。";
     case "warm-init-only":
       return "该格式目前以稠密诱饵 + 模块 warm-init / sidecar 为主；完整客户入口织入仍有限。";
     case "sidecar-decoy":
@@ -458,8 +458,8 @@ function actionsForMaturity(maturity: WeaveMaturity): readonly string[] {
     case "woven":
       return Object.freeze([
         "Inspect surgicalWorkorder (entryFunctions, sharedStateSlots, branchCandidates) for source-level Agent weave.",
-        "Run bla_harden/bla_protect with weave_decoys:true (JS always weaves; Python structural customer-def weave).",
-        "Run bla_verify_weave to verify opaque entanglement, shared-slot touch, and mixed stems on output.",
+        "Run aegis_harden/aegis_protect with weave_decoys:true (JS always weaves; Python structural customer-def weave).",
+        "Run aegis_verify_weave to verify opaque entanglement, shared-slot touch, and mixed stems on output.",
       ]);
     case "warm-init-only":
       return Object.freeze([
@@ -474,7 +474,7 @@ function actionsForMaturity(maturity: WeaveMaturity): readonly string[] {
       ]);
     case "gap":
       return Object.freeze([
-        "Use standard bla_harden today.",
+        "Use standard aegis_harden today.",
         "File follow-up only for defensive customer-path entanglement.",
       ]);
     default:
@@ -515,7 +515,7 @@ function hasScareStem(identifier: string): boolean {
 }
 
 const FORBIDDEN_BANNER_REGEX =
-  /(?:\b_bla_[a-zA-Z0-9_]*|\bBLA[-_]SHIELD\b|\bTODO:\s*decoy\b|\bfake_honeypot\b)/;
+  /(?:\b_aegis_[a-zA-Z0-9_]*|\bAEGIS[-_]SHIELD\b|\bTODO:\s*decoy\b|\bfake_honeypot\b)/;
 
 function classifyFunctionRole(
   name: string,
@@ -728,9 +728,9 @@ function buildJsSurgicalWorkorder(
 
   const agentRewriteRecipe = [
     `1. Shared State Carrier: Use \`${primarySlot}\` (${sharedStateSlots[0]!.kind}) in \`${relPath}\` so real business logic and shadow helpers mutate the same runtime state.`,
-    `2. Shadow Business Logic: Author 2–3 helper functions using 2/3 mundane stems (${mundaneStems.slice(0, 3).join(", ")}) and 1/3 security stems (${DEFAULT_SECURITY_STEMS.slice(0, 2).join(", ")}) that compute non-trivial state transitions on \`${primarySlot}\` (never empty stubs or \`_bla_*\` names).`,
+    `2. Shadow Business Logic: Author 2–3 helper functions using 2/3 mundane stems (${mundaneStems.slice(0, 3).join(", ")}) and 1/3 security stems (${DEFAULT_SECURITY_STEMS.slice(0, 2).join(", ")}) that compute non-trivial state transitions on \`${primarySlot}\` (never empty stubs or \`_aegis_*\` names).`,
     `3. Entry Entanglement: In \`${primaryEntry}\`${entryFunctions.length > 1 ? ` (and ${entryFunctions.slice(1, 3).map((f) => f.name).join(", ")})` : ""}, invoke the shadow helpers and guard the happy path with an opaque-true predicate over \`${primarySlot}\`.`,
-    `4. Verification Gate: Run MCP \`bla_verify_weave\` on \`${relPath}\` to confirm 0 unreferenced helpers, shared-state read/write coupling, and no forbidden banners.`,
+    `4. Verification Gate: Run MCP \`aegis_verify_weave\` on \`${relPath}\` to confirm 0 unreferenced helpers, shared-state read/write coupling, and no forbidden banners.`,
   ];
 
   return {
@@ -822,9 +822,9 @@ function buildPythonSurgicalWorkorder(
     },
     agentRewriteRecipe: [
       `1. Shared State Carrier: Use module dict \`${primarySlot}\` in \`${relPath}\` across customer defs and shadow helpers.`,
-      `2. Shadow Helpers: Add 2 non-trivial helper defs (using mundane + security stems, never \`pass\` or \`_bla_*\`) that update \`${primarySlot}\`.`,
-      `3. Customer Def Entanglement: Call the shadow helpers from \`${primaryEntry}\` and run \`bla_harden\` with \`weave_decoys: true\`.`,
-      `4. Verification Gate: Run \`bla_verify_weave\` on \`${relPath}\` to verify call-graph reachability and shared-state mutation.`,
+      `2. Shadow Helpers: Add 2 non-trivial helper defs (using mundane + security stems, never \`pass\` or \`_aegis_*\`) that update \`${primarySlot}\`.`,
+      `3. Customer Def Entanglement: Call the shadow helpers from \`${primaryEntry}\` and run \`aegis_harden\` with \`weave_decoys: true\`.`,
+      `4. Verification Gate: Run \`aegis_verify_weave\` on \`${relPath}\` to verify call-graph reachability and shared-state mutation.`,
     ],
   };
 }
@@ -858,7 +858,7 @@ function buildSurgicalWorkorderForFile(
 const SCAN_SKIP = new Set([
   ".git",
   "node_modules",
-  ".bla-hardened",
+  ".aegis-hardened",
   "dist",
   "coverage",
   ".venv",
@@ -900,7 +900,7 @@ function listCandidateFiles(root: string, limit: number): string[] {
     }
     for (const ent of entries) {
       if (out.length >= limit) break;
-      if (ent.name.startsWith(".") && ent.name !== ".blarc") {
+      if (ent.name.startsWith(".") && ent.name !== ".aegisrc") {
         if (SCAN_SKIP.has(ent.name)) continue;
       }
       if (SCAN_SKIP.has(ent.name)) continue;
@@ -961,7 +961,7 @@ function buildSiblingEntanglementCandidates(
   if (targets.length < 2) return Object.freeze([]);
   const rels = targets.map((t) => t.relativePath);
   const hints: string[] = [
-    `Multi-artifact tree (${targets.length} targets: ${rels.slice(0, 4).join(", ")}${rels.length > 4 ? ", …" : ""}): pass \`self_seal: true\` and \`sidecar_entangle: true\` to \`bla_harden\` so sibling SHA-256 digests are bound at runtime.`,
+    `Multi-artifact tree (${targets.length} targets: ${rels.slice(0, 4).join(", ")}${rels.length > 4 ? ", …" : ""}): pass \`self_seal: true\` and \`sidecar_entangle: true\` to \`aegis_harden\` so sibling SHA-256 digests are bound at runtime.`,
   ];
   const hasJs = targets.some(
     (t) => t.format === "javascript" || t.format === "typescript",
@@ -1031,7 +1031,7 @@ export function buildWeavePlan(
     buildSiblingEntanglementCandidates(targets);
   const summaryZh =
     overallStatus === "ready"
-      ? `目标以 JS/Python 源码织入成熟度为主（已提取 ${surgicalTargetsCount} 份 AST 级外科手术工单）；Agent 可先按 surgicalWorkorder 织入业务级共享状态诱饵并用 bla_verify_weave 验收，再执行 bla_harden(weave_decoys:true)。`
+      ? `目标以 JS/Python 源码织入成熟度为主（已提取 ${surgicalTargetsCount} 份 AST 级外科手术工单）；Agent 可先按 surgicalWorkorder 织入业务级共享状态诱饵并用 aegis_verify_weave 验收，再执行 aegis_harden(weave_decoys:true)。`
       : overallStatus === "partial"
         ? "部分格式已织入或仅有 warm-init/sidecar；按 checklist 执行（.py 需 weave_decoys:true 激活客户 def 织入）。"
         : overallStatus === "gap"
@@ -1064,7 +1064,7 @@ const PIPELINE_HOOK = Object.freeze({
   todayBehaviorZh:
     "weave_decoys=true 时：JS 保持现有 AST 织入；Python `.py` 对客户 FunctionDef 做结构织入；Python `.pyc` 向客户/模块 co_consts 追加未执行 decoy TYPE_CODE（append-only，保 FLAG_REF）。false 时 .py 为 warm-init-only、.pyc 为 trailer honey。报告标注 weaveDecoys。",
   followUpZh:
-    "BLA 3.0 已支持 surgicalWorkorder 源码级工单 + bla_verify_weave 结构化验收闭环。",
+    "AEGIS 3.0 已支持 surgicalWorkorder 源码级工单 + aegis_verify_weave 结构化验收闭环。",
 });
 
 /** Markdown theory pack returned by MCP resources/read (Chinese-friendly). */
@@ -1082,13 +1082,13 @@ export function getWeaveDirectivesMarkdown(): string {
     (s) => `- [${s.phase}] **${s.id}** — ${s.titleZh}: ${s.actionEn}`,
   ).join("\n");
 
-  return `# Weave-decoy directives (BLA Counter-REA 3.0)
+  return `# Weave-decoy directives (AEGIS Counter-REA 3.0)
 
 > 防御专用。禁止输出破解 / RE / 绕过 PoC。完整叙述见 \`${WEAVE_DECOY_DOC_PATH}\`。
 
 ## 为何空/同质 scare 诱饵失败（WorkBuddy）
 
-可剥离的空 \`_bla_*\`、同质 TEE 词表、与业务无关的 honeypot 层会被智能体整层过滤，难度不升。诱饵必须巧妙织入真实业务路径。
+可剥离的空 \`_aegis_*\`、同质 TEE 词表、与业务无关的 honeypot 层会被智能体整层过滤，难度不升。诱饵必须巧妙织入真实业务路径。
 
 ## 织入原则
 
@@ -1109,9 +1109,9 @@ ${acceptance}
 ## MCP
 
 1. \`resources/read\` → \`${WEAVE_DIRECTIVES_URI}\`
-2. \`bla_weave_plan\` → 只读计划 JSON（\`${WEAVE_DECOY_SCHEMA}\`，含 AST \`surgicalWorkorder\`）
-3. \`bla_verify_weave\` → 验证 Agent 织入后的源码/产物是否满足 6 项结构验收（\`${WEAVE_VERIFY_SCHEMA}\`）
-4. \`bla_harden\` / \`bla_defend\` / \`bla_protect\` 传 \`weave_decoys: true\`
+2. \`aegis_weave_plan\` → 只读计划 JSON（\`${WEAVE_DECOY_SCHEMA}\`，含 AST \`surgicalWorkorder\`）
+3. \`aegis_verify_weave\` → 验证 Agent 织入后的源码/产物是否满足 6 项结构验收（\`${WEAVE_VERIFY_SCHEMA}\`）
+4. \`aegis_harden\` / \`aegis_defend\` / \`aegis_protect\` 传 \`weave_decoys: true\`
 
 ## 管线现状
 
@@ -1275,7 +1275,7 @@ function isPureAssignmentTarget(idPath: any): boolean {
 }
 
 /**
- * Structural weave verifier (`bla_verify_weave` / CLI `bla verify-weave`).
+ * Structural weave verifier (`aegis_verify_weave` / CLI `aegis verify-weave`).
  * Evaluates JS/TS/Python files against WEAVE_ACCEPTANCE_TESTS and returns
  * concrete `agentActions` for any failed check so the host Agent can self-repair.
  */
@@ -1617,7 +1617,7 @@ function verifyJsWeaveFile(
     passed: bannerMatch === null,
     evidence:
       bannerMatch === null
-        ? "0 forbidden `_bla_*` / `BLA-SHIELD` markers found"
+        ? "0 forbidden `_aegis_*` / `AEGIS-SHIELD` markers found"
         : `Found forbidden marker '${bannerMatch[0]}'`,
     ...(bannerMatch !== null
       ? {
@@ -1632,7 +1632,7 @@ function verifyJsWeaveFile(
       checkId: "no-forbidden-markers",
       targetSymbol: bannerMatch?.[0],
       instruction: `Remove or rename forbidden marker '${bannerMatch?.[0]}' in ${relPath}; use domain-plausible business identifiers instead.`,
-      verifyTool: "bla_verify_weave",
+      verifyTool: "aegis_verify_weave",
     });
   }
 
@@ -1662,7 +1662,7 @@ function verifyJsWeaveFile(
         discoveredFunctions.length === 0
           ? `Add structured entry/helper functions in ${relPath} so weave verification can inspect identifier stems.`
           : `Rename homogeneous TEE/scare functions (${scareFns.join(", ")}) in ${relPath} so at least 2/3 of functions use mundane business stems.`,
-      verifyTool: "bla_verify_weave",
+      verifyTool: "aegis_verify_weave",
     });
   }
 
@@ -1706,7 +1706,7 @@ function verifyJsWeaveFile(
       file: relPath,
       checkId: "shared-state-mutation",
       instruction: `Couple entry functions and shadow helpers in ${relPath} via a shared module-level state object/Map (mutated in >=1 reachable function and genuinely read across >=2 reachable functions; write-only stores do not pass).`,
-      verifyTool: "bla_verify_weave",
+      verifyTool: "aegis_verify_weave",
     });
   }
 
@@ -1739,7 +1739,7 @@ function verifyJsWeaveFile(
         unreferencedFunctions.length > 0
           ? `Call unreferenced helper(s) [${unreferencedFunctions.join(", ")}] from entry function(s) [${[...entryFunctions].join(", ")}] in ${relPath}.`
           : `Weave at least one helper call from entry function [${[...entryFunctions].join(", ") || "main"}] in ${relPath}.`,
-      verifyTool: "bla_verify_weave",
+      verifyTool: "aegis_verify_weave",
     });
   }
 
@@ -1767,7 +1767,7 @@ function verifyJsWeaveFile(
         literalFalseBranchCount > 0
           ? `Replace literal-false dead branch in ${relPath} with a shared-state opaque predicate.`
           : `Add a shared-state conditional invariant in ${relPath} guarding the business happy path and shadow helper call.`,
-      verifyTool: "bla_verify_weave",
+      verifyTool: "aegis_verify_weave",
     });
   }
 
@@ -1796,7 +1796,7 @@ function verifyJsWeaveFile(
       checkId: "filter-resistance",
       targetSymbol: emptyOrStubFunctions[0],
       instruction: `Replace trivial/empty body in function(s) [${emptyOrStubFunctions.join(", ")}] in ${relPath} with non-trivial state computations over the shared state slot.`,
-      verifyTool: "bla_verify_weave",
+      verifyTool: "aegis_verify_weave",
     });
   }
 
@@ -2001,8 +2001,8 @@ function verifyPythonWeaveFile(
         priority: "high",
         file: relPath,
         checkId: c.id,
-        instruction: `Fix failed weave check '${c.id}' (${c.evidence}) in ${relPath}, or run bla_harden with weave_decoys:true.`,
-        verifyTool: "bla_verify_weave",
+        instruction: `Fix failed weave check '${c.id}' (${c.evidence}) in ${relPath}, or run aegis_harden with weave_decoys:true.`,
+        verifyTool: "aegis_verify_weave",
       });
     }
   }
@@ -2081,8 +2081,8 @@ export function verifyWeaveTarget(
     fileReports.length === 0
       ? "No JS/TS/Python source files found to verify weave entanglement."
       : overallPassed
-        ? `All ${fileReports.length} file(s) passed structural weave verification (weaveScore: ${weaveScore}/100). Ready for bla_harden.`
-        : `${fileReports.filter((f) => !f.passed).length}/${fileReports.length} file(s) need structural weave adjustments (weaveScore: ${weaveScore}/100). Follow the ${allActions.length} agentActions and re-run bla_verify_weave.`;
+        ? `All ${fileReports.length} file(s) passed structural weave verification (weaveScore: ${weaveScore}/100). Ready for aegis_harden.`
+        : `${fileReports.filter((f) => !f.passed).length}/${fileReports.length} file(s) need structural weave adjustments (weaveScore: ${weaveScore}/100). Follow the ${allActions.length} agentActions and re-run aegis_verify_weave.`;
 
   return {
     schema: WEAVE_VERIFY_SCHEMA,

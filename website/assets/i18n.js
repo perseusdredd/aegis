@@ -1,8 +1,8 @@
 /**
- * BLA (bla.tools) Multi-Language Dictionary & Instant Switcher
+ * AEGIS (aegis.tools) Multi-Language Dictionary & Instant Switcher
  * Supports: en, zh-CN, zh-TW, ja, ko, es, fr, de
  */
-window.BLA_I18N = {
+window.AEGIS_I18N = {
   en: {
     "nav.badge": "BLUE SHIELD v1.5",
     "nav.overview": "Overview",
@@ -22,11 +22,11 @@ window.BLA_I18N = {
     "hero.ctaPrimary": "Quick Start →",
     "hero.ctaSecondary": "View Benchmarks",
     "hero.starBtn": "Star on GitHub",
-    "hero.starWelcome": "⭐ Open-source under the MIT License — if BLA is helpful to your project, welcome to give us a Star on GitHub!",
+    "hero.starWelcome": "⭐ Open-source under the MIT License — if AEGIS is helpful to your project, welcome to give us a Star on GitHub!",
     "sim.eyebrow": "Static & Semantic Analysis Comparison",
-    "sim.title": "Unprotected Baseline vs. Protected with BLA (`bla-agents`)",
+    "sim.title": "Unprotected Baseline vs. Protected with AEGIS (`aegis-agents`)",
     "sim.lead":
-      'Select a target format below to see how <code>npx bla-agents harden</code> changes static analyzer output, resource budget consumption, and reconstruction status.',
+      'Select a target format below to see how <code>npx aegis-agents harden</code> changes static analyzer output, resource budget consumption, and reconstruction status.',
     "sim.tab.electron": "Electron .asar",
     "sim.tab.dxball": "JavaScript / TypeScript",
     "sim.tab.native": "Native ELF / Mach-O / PE",
@@ -37,16 +37,16 @@ window.BLA_I18N = {
     "sim.red.costLabel": "Estimated API Cost",
     "sim.red.verdictLabel": "Analysis Status",
     "sim.red.drawer": "View Baseline Static & Semantic Output",
-    "sim.blue.badge": "🔵 PROTECTED WITH BLA (`bla-agents`)",
+    "sim.blue.badge": "🔵 PROTECTED WITH AEGIS (`aegis-agents`)",
     "sim.blue.timeLabel": "Analysis Duration",
     "sim.blue.tokensLabel": "Estimated Token Usage",
     "sim.blue.costLabel": "Estimated API Cost",
     "sim.blue.verdictLabel": "Analysis Status",
     "sim.blue.drawer": "View Protected Analyzer Output",
-    "pillars.eyebrow": "How BLA Works",
+    "pillars.eyebrow": "How AEGIS Works",
     "pillars.title": "Three Defense Layers Aligned with Analyzer Internals",
     "pillars.lead":
-      'Rather than relying solely on identifier renaming, BLA targets the static resource limits, call-graph traversal budgets, and evidence rules used by automated reverse-engineering tools.',
+      'Rather than relying solely on identifier renaming, AEGIS targets the static resource limits, call-graph traversal budgets, and evidence rules used by automated reverse-engineering tools.',
     "pillars.c1.tag": "01 · Resource Budget Guards",
     "pillars.c1.title": "Saturate Static & Semantic Limits",
     "pillars.c1.desc":
@@ -58,7 +58,7 @@ window.BLA_I18N = {
     "pillars.c3.tag": "03 · One-Command Workflow",
     "pillars.c3.title": "MCP Server, CLI & Bundler Plugins",
     "pillars.c3.desc":
-      'Run <code>npx bla-agents setup</code> to register with Claude Code, Cursor, Codex, Windsurf, or Gemini CLI, then run the 5-stage protection pipeline with <code>bla_harden</code> or <code>npx bla-agents harden</code>.',
+      'Run <code>npx aegis-agents setup</code> to register with Claude Code, Cursor, Codex, Windsurf, or Gemini CLI, then run the 5-stage protection pipeline with <code>aegis_harden</code> or <code>npx aegis-agents harden</code>.',
     "formats.eyebrow": "19 Supported Artifact Formats",
     "formats.title": "Full-Stack & Binary Coverage, Zero External Dependencies",
     "formats.lead": "Every static, bytecode, database, model, and binary protection pass runs locally in Node.js 22.13+ / 24+.",
@@ -80,13 +80,13 @@ window.BLA_I18N = {
     "formats.f6.tag": "Android & Unity",
     "formats.f6.title": "DEX, APK & IL2CPP",
     "formats.f6.desc": "Appends decoy DEX string descriptors with recomputed SHA-1/Adler32 headers and adds decoy metadata entries in Unity global-metadata.dat.",
-    "footer.tagline": "<strong>BLA (`bla-agents`)</strong> · Blind LLM Agents · Software Protection MCP & CLI · MIT License",
+    "footer.tagline": "<strong>AEGIS (`aegis-agents`)</strong> · Blind LLM Agents · Software Protection MCP & CLI · MIT License",
     "gs.eyebrow": "Quick Start",
     "gs.title": "Configure Your Agent or Run from the Terminal",
     "gs.lead": "Requires Node.js 22.13+ or 24+. No external compilers or third-party packers required.",
     "gs.s1.tag": "Step 1 · Agent MCP Setup",
-    "gs.s1.title": "Register BLA with Your Coding Agent",
-    "gs.s1.desc": "Configures Claude Code, Cursor, Codex, Windsurf, Gemini CLI, and Antigravity with the <code>bla</code> MCP server and <code>blind-llm-agents</code> skill.",
+    "gs.s1.title": "Register AEGIS with Your Coding Agent",
+    "gs.s1.desc": "Configures Claude Code, Cursor, Codex, Windsurf, Gemini CLI, and Antigravity with the <code>aegis</code> MCP server and <code>aegis-counter-rea</code> skill.",
     "gs.s2.tag": "Step 2 · 5-Stage Protection Pipeline",
     "gs.s2.title": "Audit, Protect, and Verify in One Command",
     "gs.s2.desc": "Runs source-map exposure checks, static audit, format-specific protection, runtime equivalence verification, and manifest generation.",
@@ -99,26 +99,26 @@ window.BLA_I18N = {
     "gs.s3.c2.title": "Build-Time Protection",
     "gs.s3.c2.desc": "Integrates with Vite, Rollup, Webpack, and esbuild:",
     "sc.eyebrow": "8-Target Benchmark Suite",
-    "sc.title": "Unprotected Baseline vs. BLA Protected Output",
-    "sc.lead": 'Run all 8 benchmark targets locally with <code>npx bla-agents@latest benchmark</code>.',
+    "sc.title": "Unprotected Baseline vs. AEGIS Protected Output",
+    "sc.lead": 'Run all 8 benchmark targets locally with <code>npx aegis-agents@latest benchmark</code>.',
     "gd.eyebrow": "Technical Architecture Guides",
-    "gd.title": "How BLA Protects Build Artifacts",
+    "gd.title": "How AEGIS Protects Build Artifacts",
     "gd.lead": "Each protection pass is designed around the static analyzers, resource caps, and evidence rules used by automated reverse-engineering pipelines.",
     "faq.eyebrow": "Frequently Asked Questions",
-    "faq.title": "Common Questions About BLA (`bla-agents`)",
-    "faq.q1": "Why does BLA use a Blue theme?",
-    "faq.a1": "In security engineering, offensive and reverse-engineering tools are traditionally associated with Red Team workflows, while defensive protection tools represent Blue Team workflows. <strong>BLA</strong> (<code>bla-agents</code>) focuses on the defensive side: auditing exposure and protecting release artifacts.",
-    "faq.q2": "Does BLA affect runtime performance or change program output?",
+    "faq.title": "Common Questions About AEGIS (`aegis-agents`)",
+    "faq.q1": "Why does AEGIS use a Blue theme?",
+    "faq.a1": "In security engineering, offensive and reverse-engineering tools are traditionally associated with Red Team workflows, while defensive protection tools represent Blue Team workflows. <strong>AEGIS</strong> (<code>aegis-agents</code>) focuses on the defensive side: auditing exposure and protecting release artifacts.",
+    "faq.q2": "Does AEGIS affect runtime performance or change program output?",
     "faq.a2": "No. Static budget guards and call-graph state machines are placed behind O(1) bitwise invariants (such as <code>(Math.imul(x, x + 1) &amp; 1) === 0</code>) inside unreachable branches, so hot-path execution remains unchanged.",
     "faq.q3": "How do I run the full protection workflow in one step?",
-    "faq.a3": "Run <code>npx bla-agents@latest harden .</code> from your terminal, or ask your connected coding agent to call the <code>bla_harden</code> MCP tool. It executes release exposure checks, auditing, protection, and verification in sequence.",
+    "faq.a3": "Run <code>npx aegis-agents@latest harden .</code> from your terminal, or ask your connected coding agent to call the <code>aegis_harden</code> MCP tool. It executes release exposure checks, auditing, protection, and verification in sequence.",
 
-    "faq.q5": "What are BLA's honest limits?",
+    "faq.q5": "What are AEGIS's honest limits?",
 
     "crackme.title": "CrackMe v7 (Meridian) — Meridian calculator challenge",
-    "crackme.lede": "The public target is literally `bla harden` output: a small multi-format app (Node vault + HTML panel + WebAssembly core) hardened at bankrupt intensity.",
+    "crackme.lede": "The public target is literally `aegis harden` output: a small multi-format app (Node vault + HTML panel + WebAssembly core) hardened at bankrupt intensity.",
     "crackme.why.title": "Why v6",
-    "crackme.why.body": "v5.x was a hand-written crypto sponge, and the first v6 draft published per-file protect tiers. The Meridian calculator edition runs hardenProject() — the same pipeline as bla harden <dir> --intensity bankrupt — over a real app tree, with risky LLM directive layers OFF. The cleartext template is public; the challenge is recovering the per-build constants and logic from the hardened output.",
+    "crackme.why.body": "v5.x was a hand-written crypto sponge, and the first v6 draft published per-file protect tiers. The Meridian calculator edition runs hardenProject() — the same pipeline as aegis harden <dir> --intensity bankrupt — over a real app tree, with risky LLM directive layers OFF. The cleartext template is public; the challenge is recovering the per-build constants and logic from the hardened output.",
     "crackme.tiers.title": "Stages",
     "crackme.tiers.l1": "Stage A — 16 key-byte lanes sealed through the hardened core.wasm (mix/seal hidden among decoy exports)",
     "crackme.tiers.l2": "Stage B — the hardened panel.html derives an entitlement token the vault re-checks",
@@ -128,9 +128,9 @@ window.BLA_I18N = {
     "crackme.submit.body": "Hash the FLAG with SHA-256 and open a GitHub issue using the CrackMe v7 (Meridian) solve template. The hash must match flagSha256 in challenge/v7/SEAL.json (plaintext key and FLAG are not in git).",
     "crackme.cta": "Open challenge/v6 on GitHub",
     "crackme.honest.title": "Honest scope",
-    "crackme.honest.body": "BLA raises cost for automated AI reverse-engineering agents and plants decoys. It does not claim immunity to patient interactive human reverse engineering.",
-    "faq.a5": "BLA raises analyzer cost and plants decoys; it is not a magic anti-RE seal. Traditional interactive reverse engineering (Ghidra, Frida, LLDB, JADX sessions) is out of scope of the commodity REA red-team numbers. Try the public <a href=\"https://github.com/qybaihe/bla/tree/main/challenge/v6\">CrackMe v7 (Meridian)</a> to see how far an agent gets against a BLA-hardened fixture.",
-    "faq.q4": "Does BLA preserve existing GGUF model tensors and binary checksums?",
+    "crackme.honest.body": "AEGIS raises cost for automated AI reverse-engineering agents and plants decoys. It does not claim immunity to patient interactive human reverse engineering.",
+    "faq.a5": "AEGIS raises analyzer cost and plants decoys; it is not a magic anti-RE seal. Traditional interactive reverse engineering (Ghidra, Frida, LLDB, JADX sessions) is out of scope of the commodity REA red-team numbers. Try the public <a href=\"https://github.com/qybaihe/bla/tree/main/challenge/v6\">CrackMe v7 (Meridian)</a> to see how far an agent gets against a AEGIS-hardened fixture.",
+    "faq.q4": "Does AEGIS preserve existing GGUF model tensors and binary checksums?",
     "faq.a4": "Yes. <code>protectGgufBuffer</code> preserves all original GGUF v2/v3 KV entries and trailing tensor slices while appending metadata entries, and Android DEX protection recomputes both the 20-byte SHA-1 signature and Adler32 checksum."
   },
   "zh-CN": {
@@ -152,11 +152,11 @@ window.BLA_I18N = {
     "hero.ctaPrimary": "快速开始 →",
     "hero.ctaSecondary": "查看基准测试",
     "hero.starBtn": "在 GitHub 点亮 Star",
-    "hero.starWelcome": "⭐ 本项目基于 MIT 协议完全开源 —— 如果 BLA 对你的软件保护有帮助，欢迎来 GitHub 点一颗 Star 支持我们！",
+    "hero.starWelcome": "⭐ 本项目基于 MIT 协议完全开源 —— 如果 AEGIS 对你的软件保护有帮助，欢迎来 GitHub 点一颗 Star 支持我们！",
     "sim.eyebrow": "静态与语义分析对比",
-    "sim.title": "未保护基线 vs. BLA (`bla-agents`) 加固后",
+    "sim.title": "未保护基线 vs. AEGIS (`aegis-agents`) 加固后",
     "sim.lead":
-      '选择下方目标产物类型，查看执行 <code>npx bla-agents harden</code> 前后静态分析器的解析状态与分析开销变化。',
+      '选择下方目标产物类型，查看执行 <code>npx aegis-agents harden</code> 前后静态分析器的解析状态与分析开销变化。',
     "sim.tab.electron": "Electron .asar 桌面应用",
     "sim.tab.dxball": "JavaScript / TypeScript",
     "sim.tab.native": "原生二进制 ELF / Mach-O / PE",
@@ -167,7 +167,7 @@ window.BLA_I18N = {
     "sim.red.costLabel": "预估 API 成本",
     "sim.red.verdictLabel": "分析器状态",
     "sim.red.drawer": "查看未保护状态下的静态分析输出",
-    "sim.blue.badge": "🔵 加固后 — 启用 BLA 保护层",
+    "sim.blue.badge": "🔵 加固后 — 启用 AEGIS 保护层",
     "sim.blue.timeLabel": "分析耗时",
     "sim.blue.tokensLabel": "预估 Token 消耗",
     "sim.blue.costLabel": "预估 API 成本",
@@ -176,7 +176,7 @@ window.BLA_I18N = {
     "pillars.eyebrow": "工作原理",
     "pillars.title": "针对自动化逆向流程的三层防护架构",
     "pillars.lead":
-      '传统的变量重命名容易被大语言模型结合上下文推断还原。BLA 针对静态分析器的资源配额、调用图遍历与证据提取规则提供结构化保护。',
+      '传统的变量重命名容易被大语言模型结合上下文推断还原。AEGIS 针对静态分析器的资源配额、调用图遍历与证据提取规则提供结构化保护。',
     "pillars.c1.tag": "01 · 静态分析配额限制",
     "pillars.c1.title": "触发分析器资源上限与调用图扩展",
     "pillars.c1.desc":
@@ -188,7 +188,7 @@ window.BLA_I18N = {
     "pillars.c3.tag": "03 · 一键接入与加固流程",
     "pillars.c3.title": "支持 MCP 代理调用、CLI 与打包插件",
     "pillars.c3.desc":
-      '运行 <code>npx bla-agents setup</code> 即可注册至 Claude Code、Cursor、Codex、Windsurf 与 Gemini CLI，通过 <code>bla_harden</code> 或 <code>npx bla-agents harden</code> 一键完成 5 阶段加固与验证。',
+      '运行 <code>npx aegis-agents setup</code> 即可注册至 Claude Code、Cursor、Codex、Windsurf 与 Gemini CLI，通过 <code>aegis_harden</code> 或 <code>npx aegis-agents harden</code> 一键完成 5 阶段加固与验证。',
     "formats.eyebrow": "支持 19 种软件与模型产物",
     "formats.title": "全栈与原生二进制覆盖，零外部编译依赖",
     "formats.lead": "所有源码、字节码、数据库、模型与原生二进制处理模块均在本地 Node.js 22.13+ / 24+ 运行。",
@@ -210,13 +210,13 @@ window.BLA_I18N = {
     "formats.f6.tag": "Android 与 Unity",
     "formats.f6.title": "DEX, APK 与 IL2CPP",
     "formats.f6.desc": "追加 DEX 诱饵类型描述符并自动重算 SHA-1/Adler32 校验头，向 Unity global-metadata.dat 添加扩展元数据。",
-    "footer.tagline": "<strong>BLA (`bla-agents`)</strong> · Blind LLM Agents · 防御性软件保护工具 · MIT 开源协议",
+    "footer.tagline": "<strong>AEGIS (`aegis-agents`)</strong> · Blind LLM Agents · 防御性软件保护工具 · MIT 开源协议",
     "gs.eyebrow": "快速开始",
     "gs.title": "配置编程代理，或通过终端直接运行",
     "gs.lead": "要求 Node.js 22.13+ 或 24+，无需安装外部编译器或商业加壳工具。",
     "gs.s1.tag": "第一步 · 配置 Agent MCP",
-    "gs.s1.title": "将 BLA 注册到你的编程代理",
-    "gs.s1.desc": "自动为 Claude Code、Cursor、Codex、Windsurf、Gemini CLI 和 Antigravity 配置 <code>bla</code> MCP 服务与 <code>blind-llm-agents</code> 技能。",
+    "gs.s1.title": "将 AEGIS 注册到你的编程代理",
+    "gs.s1.desc": "自动为 Claude Code、Cursor、Codex、Windsurf、Gemini CLI 和 Antigravity 配置 <code>aegis</code> MCP 服务与 <code>aegis-counter-rea</code> 技能。",
     "gs.s2.tag": "第二步 · 执行 5 阶段加固流程",
     "gs.s2.title": "单条命令完成审计、保护与验证",
     "gs.s2.desc": "依次执行发布暴露检查、静态风险审计、格式保护层注入、运行时等价性验证与清单生成。",
@@ -229,27 +229,27 @@ window.BLA_I18N = {
     "gs.s3.c2.title": "打包时自动应用保护",
     "gs.s3.c2.desc": "支持 Vite、Rollup、Webpack 与 esbuild：",
     "sc.eyebrow": "8 项基准测试套件",
-    "sc.title": "未保护基线 vs. BLA 加固产物",
-    "sc.lead": '在本地终端运行 <code>npx bla-agents@latest benchmark</code> 即可复现全部 8 个测试目标的对比数据。',
+    "sc.title": "未保护基线 vs. AEGIS 加固产物",
+    "sc.lead": '在本地终端运行 <code>npx aegis-agents@latest benchmark</code> 即可复现全部 8 个测试目标的对比数据。',
     "gd.eyebrow": "技术架构指南",
-    "gd.title": "BLA 的保护机制与实现原理",
-    "gd.lead": "BLA 的各项保护策略均围绕自动化逆向工具的静态分析器、资源配额与证据提取规则设计。",
+    "gd.title": "AEGIS 的保护机制与实现原理",
+    "gd.lead": "AEGIS 的各项保护策略均围绕自动化逆向工具的静态分析器、资源配额与证据提取规则设计。",
     "faq.eyebrow": "常见问题解答 (FAQ)",
-    "faq.title": "关于 BLA (`bla-agents`) 的常见问题",
-    "faq.q1": "为什么 BLA 采用蓝色主题？",
-    "faq.a1": "在安全工程领域，进攻与逆向分析工具通常归属于红队（Red Team），而防御与保护工具归属于蓝队（Blue Team）。<strong>BLA</strong>（<code>bla-agents</code>）定位于蓝军防御侧，专注于发布产物的暴露面审计与抗逆向加固。",
-    "faq.q2": "使用 BLA 加固会影响软件运行性能或改变输出结果吗？",
+    "faq.title": "关于 AEGIS (`aegis-agents`) 的常见问题",
+    "faq.q1": "为什么 AEGIS 采用蓝色主题？",
+    "faq.a1": "在安全工程领域，进攻与逆向分析工具通常归属于红队（Red Team），而防御与保护工具归属于蓝队（Blue Team）。<strong>AEGIS</strong>（<code>aegis-agents</code>）定位于蓝军防御侧，专注于发布产物的暴露面审计与抗逆向加固。",
+    "faq.q2": "使用 AEGIS 加固会影响软件运行性能或改变输出结果吗？",
     "faq.a2": "不会。所有静态预算守卫与扩展状态机均位于 O(1) 位运算不透明谓词（如 <code>(Math.imul(x, x + 1) &amp; 1) === 0</code>）保护的不可达分支中，不会在正常热路径上执行。",
     "faq.q3": "如何在配置完成后一键执行完整的保护流程？",
-    "faq.a3": "在终端运行 <code>npx bla-agents@latest harden .</code>，或让已连接的编程代理调用 <code>bla_harden</code> MCP 工具，即可自动完成泄露检查、暴露审计、保护注入与结果验证。",
-    "faq.q4": "BLA 会影响 GGUF 模型权重或原生二进制的签名结构吗？",
+    "faq.a3": "在终端运行 <code>npx aegis-agents@latest harden .</code>，或让已连接的编程代理调用 <code>aegis_harden</code> MCP 工具，即可自动完成泄露检查、暴露审计、保护注入与结果验证。",
+    "faq.q4": "AEGIS 会影响 GGUF 模型权重或原生二进制的签名结构吗？",
     "faq.a4": "不会。<code>protectGgufBuffer</code> 会完整保留 GGUF v2/v3 原有的全部 KV 键值对与尾部张量数据，Android DEX 处理模块则会自动重新计算 20 字节 SHA-1 签名与 Adler32 校验和。"
-    "faq.q5": "BLA 的诚实边界是什么？",
+    "faq.q5": "AEGIS 的诚实边界是什么？",
 
-    "crackme.title": "CrackMe v7 (Meridian) — bla harden 原生产物挑战",
-    "crackme.lede": "公开靶机就是 `bla harden` 的真实输出：一个多格式小应用（Node vault + HTML 面板 + WebAssembly 核心）在 bankrupt 强度下加固。",
+    "crackme.title": "CrackMe v7 (Meridian) — aegis harden 原生产物挑战",
+    "crackme.lede": "公开靶机就是 `aegis harden` 的真实输出：一个多格式小应用（Node vault + HTML 面板 + WebAssembly 核心）在 bankrupt 强度下加固。",
     "crackme.why.title": "为什么做 v6",
-    "crackme.why.body": "v5.x 是手写密码海绵，v6 初稿是逐文件 protect 档位。Meridian calculator 版用 hardenProject()（即 bla harden <dir> --intensity bankrupt）加固真实应用目录，高风险 LLM 指令层保持关闭。明文模板公开，挑战在于从加固产物中还原每次构建的常量与逻辑。",
+    "crackme.why.body": "v5.x 是手写密码海绵，v6 初稿是逐文件 protect 档位。Meridian calculator 版用 hardenProject()（即 aegis harden <dir> --intensity bankrupt）加固真实应用目录，高风险 LLM 指令层保持关闭。明文模板公开，挑战在于从加固产物中还原每次构建的常量与逻辑。",
     "crackme.tiers.title": "关卡",
     "crackme.tiers.l1": "Stage A — 16 个密钥字节各自经过加固后的 core.wasm（mix/seal 藏在诱饵导出中）",
     "crackme.tiers.l2": "Stage B — 加固后的 panel.html 推导授权令牌，vault 复核",
@@ -259,8 +259,8 @@ window.BLA_I18N = {
     "crackme.submit.body": "对 FLAG 做 SHA-256，用 CrackMe v7 (Meridian) solve 模板开 GitHub Issue。哈希须匹配 challenge/v7/SEAL.json 中的 flagSha256（仓库不含明文密钥与 FLAG）。",
     "crackme.cta": "在 GitHub 打开 challenge/v6",
     "crackme.honest.title": "诚实边界",
-    "crackme.honest.body": "BLA 提高自动化 AI 逆向成本并投放诱饵；并不宣称能对抗耐心的交互式人工逆向。",
-    "faq.a5": "BLA 提高自动化分析成本并投放诱饵，并非万能反逆向封印。传统交互式逆向（Ghidra / Frida / LLDB / JADX 人工会话）不在现有 REA 红队数字范围内。欢迎挑战公开 <a href=\"https://github.com/qybaihe/bla/tree/main/challenge/v6\">CrackMe v7 (Meridian)</a>，观察代理在 BLA 加固样本上的表现。",
+    "crackme.honest.body": "AEGIS 提高自动化 AI 逆向成本并投放诱饵；并不宣称能对抗耐心的交互式人工逆向。",
+    "faq.a5": "AEGIS 提高自动化分析成本并投放诱饵，并非万能反逆向封印。传统交互式逆向（Ghidra / Frida / LLDB / JADX 人工会话）不在现有 REA 红队数字范围内。欢迎挑战公开 <a href=\"https://github.com/qybaihe/bla/tree/main/challenge/v6\">CrackMe v7 (Meridian)</a>，观察代理在 AEGIS 加固样本上的表现。",
   },
   "zh-TW": {
     "nav.badge": "藍軍防護 v1.1",
@@ -281,14 +281,14 @@ window.BLA_I18N = {
     "hero.ctaSecondary": "查看基準測試",
     "nav.star": "點亮 Star",
     "hero.starBtn": "在 GitHub 點亮 Star",
-    "hero.starWelcome": "⭐ 本專案基於 MIT 協議開源 —— 如果 BLA 對你有幫助，歡迎來 GitHub 點一顆 Star 支持我們！",
+    "hero.starWelcome": "⭐ 本專案基於 MIT 協議開源 —— 如果 AEGIS 對你有幫助，歡迎來 GitHub 點一顆 Star 支持我們！",
     "sim.eyebrow": "靜態與語義分析對比",
-    "sim.title": "未保護基線 vs. BLA (`bla-agents`) 加固後",
+    "sim.title": "未保護基線 vs. AEGIS (`aegis-agents`) 加固後",
     "pillars.eyebrow": "運作原理",
     "pillars.title": "針對自動化逆向流程的三層防護架構",
     "formats.eyebrow": "支援 19 種軟體與模型產物",
     "formats.title": "全端與原生二進位覆蓋，零外部編譯依賴",
-    "footer.tagline": "<strong>BLA (`bla-agents`)</strong> · Blind LLM Agents · 防禦性軟體保護工具 · MIT 開源協議"
+    "footer.tagline": "<strong>AEGIS (`aegis-agents`)</strong> · Blind LLM Agents · 防禦性軟體保護工具 · MIT 開源協議"
   },
   ja: {
     "nav.badge": "BLUE SHIELD v1.5",
@@ -311,12 +311,12 @@ window.BLA_I18N = {
     "hero.starBtn": "GitHub で Star する",
     "hero.starWelcome": "⭐ MIT ライセンスのオープンソースプロジェクトです — ぜひ GitHub で Star をお願いします！",
     "sim.eyebrow": "静的・意味解析の比較",
-    "sim.title": "未保護ベースライン vs. BLA (`bla-agents`) 保護適用後",
-    "pillars.eyebrow": "BLA の仕組み",
+    "sim.title": "未保護ベースライン vs. AEGIS (`aegis-agents`) 保護適用後",
+    "pillars.eyebrow": "AEGIS の仕組み",
     "pillars.title": "解析器の内部構造に対応した 3 層防御アーキテクチャ",
     "formats.eyebrow": "19 種類のアーティファクト形式に対応",
     "formats.title": "フルスタック & バイナリ対応、外部依存ゼロ",
-    "footer.tagline": "<strong>BLA (`bla-agents`)</strong> · Blind LLM Agents · Software Protection MCP & CLI · MIT License"
+    "footer.tagline": "<strong>AEGIS (`aegis-agents`)</strong> · Blind LLM Agents · Software Protection MCP & CLI · MIT License"
   },
   ko: {
     "nav.badge": "BLUE SHIELD v1.5",
@@ -339,10 +339,10 @@ window.BLA_I18N = {
     "hero.starBtn": "GitHub에서 Star 누르기",
     "hero.starWelcome": "⭐ MIT 라이선스 오픈소스 프로젝트입니다 — 도움이 되셨다면 GitHub에서 Star로 응원해 주세요!",
     "sim.eyebrow": "정적 및 의미 분석 비교",
-    "sim.title": "미보호 베이스라인 vs. BLA (`bla-agents`) 보호 적용 후",
+    "sim.title": "미보호 베이스라인 vs. AEGIS (`aegis-agents`) 보호 적용 후",
     "pillars.eyebrow": "작동 원리",
     "pillars.title": "자동화 역공학 분석기에 대응하는 3단계 보호 계층",
-    "footer.tagline": "<strong>BLA (`bla-agents`)</strong> · Blind LLM Agents · Software Protection MCP & CLI · MIT License"
+    "footer.tagline": "<strong>AEGIS (`aegis-agents`)</strong> · Blind LLM Agents · Software Protection MCP & CLI · MIT License"
   },
   es: {
     "nav.badge": "BLUE SHIELD v1.5",
@@ -361,7 +361,7 @@ window.BLA_I18N = {
     "hero.copied": "Copiado ✓",
     "hero.ctaPrimary": "Inicio rápido →",
     "hero.ctaSecondary": "Ver benchmarks",
-    "footer.tagline": "<strong>BLA (`bla-agents`)</strong> · Blind LLM Agents · Software Protection MCP & CLI · Licencia MIT"
+    "footer.tagline": "<strong>AEGIS (`aegis-agents`)</strong> · Blind LLM Agents · Software Protection MCP & CLI · Licencia MIT"
   },
   fr: {
     "nav.badge": "BLUE SHIELD v1.5",
@@ -380,7 +380,7 @@ window.BLA_I18N = {
     "hero.copied": "Copié ✓",
     "hero.ctaPrimary": "Démarrage rapide →",
     "hero.ctaSecondary": "Voir les benchmarks",
-    "footer.tagline": "<strong>BLA (`bla-agents`)</strong> · Blind LLM Agents · Software Protection MCP & CLI · Licence MIT"
+    "footer.tagline": "<strong>AEGIS (`aegis-agents`)</strong> · Blind LLM Agents · Software Protection MCP & CLI · Licence MIT"
   },
   de: {
     "nav.badge": "BLUE SHIELD v1.5",
@@ -391,7 +391,7 @@ window.BLA_I18N = {
     "nav.guides": "Leitfäden",
     "nav.faq": "FAQ",
     "hero.pill.red": "RE = Reverse Engineering",
-    "hero.pill.blue": "BL = Blaue Verteidigung (Blind LLM Agents)",
+    "hero.pill.blue": "BL = Aegisue Verteidigung (Blind LLM Agents)",
     "hero.title": 'Build-Artefakte schützen.<br /><span class="text-blue">Automatisiertes Reverse Engineering begrenzen.</span>',
     "hero.subtitle":
       "Ein MCP-Server und CLI zum Prüfen, Schützen und Verifizieren von JavaScript, Electron, WebAssembly, Python, SQLite, KI-Modellen und nativen Binärdateien bei 100 % identischem Laufzeitverhalten.",
@@ -399,6 +399,6 @@ window.BLA_I18N = {
     "hero.copied": "Kopiert ✓",
     "hero.ctaPrimary": "Schnellstart →",
     "hero.ctaSecondary": "Benchmarks ansehen",
-    "footer.tagline": "<strong>BLA (`bla-agents`)</strong> · Blind LLM Agents · Software Protection MCP & CLI · MIT-Lizenz"
+    "footer.tagline": "<strong>AEGIS (`aegis-agents`)</strong> · Blind LLM Agents · Software Protection MCP & CLI · MIT-Lizenz"
   }
 };

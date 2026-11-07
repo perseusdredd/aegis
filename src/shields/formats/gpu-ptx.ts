@@ -5,7 +5,7 @@ import { buildCanaryAndDiagnosticPayloads } from "../deception/format-payloads.j
 export interface GpuPtxInspection {
   readonly looksLikePtx: boolean;
   readonly entryCount: number;
-  readonly blaProtected: boolean;
+  readonly aegisProtected: boolean;
 }
 
 export function inspectGpuPtx(text: string): GpuPtxInspection {
@@ -16,7 +16,7 @@ export function inspectGpuPtx(text: string): GpuPtxInspection {
   return {
     looksLikePtx,
     entryCount,
-    blaProtected: text.includes("[BLA-PTX-SHIELD]"),
+    aegisProtected: text.includes("[AEGIS-PTX-SHIELD]"),
   };
 }
 
@@ -42,7 +42,7 @@ export function protectGpuPtxText(
   readonly diagnosticsEmbedded: number;
 } {
   const intensity = options.intensity ?? "balanced";
-  const prng = new SeededPrng(options.seed ?? "bla-ptx-shield");
+  const prng = new SeededPrng(options.seed ?? "aegis-ptx-shield");
   const deception = buildCanaryAndDiagnosticPayloads(prng, intensity);
 
   const base =
@@ -69,13 +69,13 @@ export function protectGpuPtxText(
 
   const parts: string[] = [
     base,
-    `\n// [BLA-PTX-SHIELD] Counter-REA GPU exhaustion trailer\n`,
+    `\n// [AEGIS-PTX-SHIELD] Counter-REA GPU exhaustion trailer\n`,
   ];
   for (const rec of deception.textRecords.slice(0, 8)) {
     parts.push(`// DIAG: ${rec.replace(/\n/g, " ")}\n`);
   }
   for (let i = 0; i < profile.entries; i++) {
-    const name = `bla_tarpit_kernel_${i}_${prng.hex(4)}`;
+    const name = `aegis_tarpit_kernel_${i}_${prng.hex(4)}`;
     const params: string[] = [];
     for (let p = 0; p < profile.paramsPerEntry; p++) {
       params.push(`.param .u64 ${name}_p${p}`);
@@ -101,7 +101,7 @@ export function protectGpuPtxText(
 
 /**
  * Generic firmware images (raw flash dumps, U-Boot ITB, Android boot.img,
- * DfuSe with trailing CRC, signed ESP images, etc.) are NOT mutated by BLA:
+ * DfuSe with trailing CRC, signed ESP images, etc.) are NOT mutated by AEGIS:
  * boot signatures / CRCs / vendor headers would break. Microsoft UF2 is the
  * exception — see `firmware-uf2.ts` — because not-main-flash / file-container
  * blocks are ignored by bootloaders by spec (REA #8230).
@@ -113,7 +113,7 @@ export const FIRMWARE_HARDENING_SKIP_REASON =
  * SPIR-V modules, CUDA fatbinaries, and AMD GPU code objects are skipped:
  * their containers carry structural hashes / embedded ELF slices where a
  * generic trailer would break loader validation. PTX text remains the only
- * safely append-only GPU surface BLA hardens.
+ * safely append-only GPU surface AEGIS hardens.
  */
 export const GPU_OBJECT_HARDENING_SKIP_REASON =
   "SPIR-V / CUDA fatbinary / AMD GPU objects are skipped: brittle structural hashes and embedded ELF slices make generic mutation unsafe. Only PTX text is hardened.";

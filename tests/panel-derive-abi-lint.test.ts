@@ -36,7 +36,7 @@ describe("panel-derive ABI lint/rewrite (red-blue round-3)", () => {
     expect(a.code).not.toContain(original);
     expect(a.code).toContain(a.renames[0]!.to);
     expect(panelDeriveSeedRoot("proj-seed-1:html-script-0")).toBe("proj-seed-1");
-    expect(panelDeriveReplacementName("proj-seed-1", original)).toMatch(/^_blaPd_[0-9a-f]{10}$/);
+    expect(panelDeriveReplacementName("proj-seed-1", original)).toMatch(/^_aegisPd_[0-9a-f]{10}$/);
   });
 
   it("leaves clean source unchanged", () => {
@@ -63,12 +63,12 @@ describe("panel offline oracle (red-blue round-4)", () => {
     expect(report.findings.some((f) => f.id === "stable-local-derive")).toBe(true);
   });
 
-  it("rewrites deriveLocal to seed-stable _blaPdLocal_*", () => {
+  it("rewrites deriveLocal to seed-stable _aegisPdLocal_*", () => {
     const body = `function deriveLocal(k) { return k; }\nconsole.log(deriveLocal("x"));\n`;
     const rw = rewriteStablePanelDeriveSymbols(body, "r4-panel-seed");
     expect(rw.rewrote).toBe(true);
     expect(rw.code).not.toContain("function deriveLocal");
-    expect(rw.renames.some((r) => r.from === "deriveLocal" && r.to.startsWith("_blaPdLocal_"))).toBe(
+    expect(rw.renames.some((r) => r.from === "deriveLocal" && r.to.startsWith("_aegisPdLocal_"))).toBe(
       true,
     );
   });

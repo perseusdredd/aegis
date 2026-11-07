@@ -454,7 +454,7 @@ function buildParserPlugins(
   return plugins;
 }
 
-export function transformJavaScriptWithBlaShield(
+export function transformJavaScriptWithAegisShield(
   source: string,
   options: JsTransformOptions = {},
 ): JsShieldTransformResult {
@@ -1322,7 +1322,7 @@ export function transformJavaScriptWithBlaShield(
     exportedSymbolsBefore.some((sym, idx) => sym !== exportedSymbolsAfter[idx])
   ) {
     throw new InvalidJavaScriptCarrierError(
-      "Internal error: BLA JavaScript transform mutated module export surface",
+      "Internal error: AEGIS JavaScript transform mutated module export surface",
     );
   }
 

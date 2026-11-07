@@ -16,7 +16,7 @@ export interface SystemDiagnosticDecoyResult {
 }
 
 /**
- * Generates BLA's System-Fault & Provider-Diagnostic Rabbit Hole Shield
+ * Generates AEGIS's System-Fault & Provider-Diagnostic Rabbit Hole Shield
  * (`system-diagnostic-decoy.ts`).
  *
  * Mirrors the exact provider/toolchain diagnostic schemas in `morluto/rea`:

@@ -24,7 +24,7 @@ import {
 } from "../../engine/integrity-coverage.js";
 import { findPythonPrologueInsertionOffset } from "../formats/python.js";
 
-export const SIDECAR_ENTANGLE_SCHEMA = "bla-sidecar-entangle/v1" as const;
+export const SIDECAR_ENTANGLE_SCHEMA = "aegis-sidecar-entangle/v1" as const;
 
 export interface SidecarEntanglePlanOptions {
   readonly entryPath: string;
@@ -87,7 +87,7 @@ export function planSidecarEntanglement(
   options: SidecarEntanglePlanOptions,
 ): SidecarEntanglePlan {
   const sidecars = (options.sidecarPaths ?? []).filter((p) => p.length > 0);
-  const seedTag = options.seedTag ?? "bla-sidecar-v1";
+  const seedTag = options.seedTag ?? "aegis-sidecar-v1";
   const planId = createHash("sha256")
     .update(options.entryPath)
     .update("\0")
@@ -209,7 +209,7 @@ export type SidecarBindingMode = "sidecars" | "full";
 export function computeSidecarBindingDigest(
   entry: SidecarBindingPart,
   sidecars: readonly SidecarBindingPart[],
-  seedTag = "bla-sidecar-v1",
+  seedTag = "aegis-sidecar-v1",
   mode: SidecarBindingMode = "sidecars",
 ): SidecarBindingDigest {
   const h = createHash("sha256");
@@ -266,9 +266,9 @@ export function generateSidecarJsPreamble(
   options: SidecarJsInjectOptions,
 ): SidecarJsInjectResult {
   const sidecars = (options.sidecarPaths ?? []).filter((p) => p.length > 0);
-  const seedTag = options.seedTag ?? "bla-sidecar-v1";
+  const seedTag = options.seedTag ?? "aegis-sidecar-v1";
   const softFold = options.softFold === true;
-  const bindingName = options.bindingName ?? "__blaSidecarDigest";
+  const bindingName = options.bindingName ?? "__aegisSidecarDigest";
   const expectedHex = options.expectedHex.toLowerCase();
   if (!/^[0-9a-f]{64}$/.test(expectedHex)) {
     throw new Error("expectedHex must be a 64-char lowercase hex SHA-256 digest");
@@ -468,9 +468,9 @@ export function generateSidecarPythonPreamble(
   options: SidecarPythonInjectOptions,
 ): SidecarPythonInjectResult {
   const sidecars = (options.sidecarPaths ?? []).filter((p) => p.length > 0);
-  const seedTag = options.seedTag ?? "bla-sidecar-v1";
+  const seedTag = options.seedTag ?? "aegis-sidecar-v1";
   const softFold = options.softFold === true;
-  const bindingName = options.bindingName ?? "__bla_sidecar_digest";
+  const bindingName = options.bindingName ?? "__aegis_sidecar_digest";
   const expectedHex = options.expectedHex.toLowerCase();
   if (!/^[0-9a-f]{64}$/.test(expectedHex)) {
     throw new Error("expectedHex must be a 64-char lowercase hex SHA-256 digest");
@@ -482,44 +482,44 @@ export function generateSidecarPythonPreamble(
   const expectedLiteral = JSON.stringify(expectedHex);
 
   const lines: string[] = [];
-  lines.push(`import hashlib as __bla_hashlib`);
-  lines.push(`import pathlib as __bla_pathlib`);
+  lines.push(`import hashlib as __aegis_hashlib`);
+  lines.push(`import pathlib as __aegis_pathlib`);
   lines.push(`${bindingName} = 0`);
   lines.push(`try:`);
-  lines.push(`    __bla_expected = ${expectedLiteral}`);
-  lines.push(`    __bla_h = __bla_hashlib.sha256()`);
-  lines.push(`    __bla_entry_label = ${entryLiteral}`);
-  lines.push(`    __bla_h.update(__bla_entry_label.encode("utf-8"))`);
-  lines.push(`    __bla_h.update(b"\\x00")`);
-  lines.push(`    __bla_sidecars = ${sidecarsLiteral}`);
-  lines.push(`    __bla_base = __bla_pathlib.Path(__file__).resolve().parent`);
-  lines.push(`    for __bla_sp in __bla_sidecars:`);
-  lines.push(`        __bla_h.update(__bla_sp.encode("utf-8"))`);
-  lines.push(`        __bla_h.update(b"\\x00")`);
-  lines.push(`        __bla_sp_path = __bla_pathlib.Path(__bla_sp)`);
-  lines.push(`        if not __bla_sp_path.is_absolute():`);
-  lines.push(`            __bla_sp_path = __bla_base / __bla_sp`);
+  lines.push(`    __aegis_expected = ${expectedLiteral}`);
+  lines.push(`    __aegis_h = __aegis_hashlib.sha256()`);
+  lines.push(`    __aegis_entry_label = ${entryLiteral}`);
+  lines.push(`    __aegis_h.update(__aegis_entry_label.encode("utf-8"))`);
+  lines.push(`    __aegis_h.update(b"\\x00")`);
+  lines.push(`    __aegis_sidecars = ${sidecarsLiteral}`);
+  lines.push(`    __aegis_base = __aegis_pathlib.Path(__file__).resolve().parent`);
+  lines.push(`    for __aegis_sp in __aegis_sidecars:`);
+  lines.push(`        __aegis_h.update(__aegis_sp.encode("utf-8"))`);
+  lines.push(`        __aegis_h.update(b"\\x00")`);
+  lines.push(`        __aegis_sp_path = __aegis_pathlib.Path(__aegis_sp)`);
+  lines.push(`        if not __aegis_sp_path.is_absolute():`);
+  lines.push(`            __aegis_sp_path = __aegis_base / __aegis_sp`);
   lines.push(`        try:`);
-  lines.push(`            __bla_h.update(__bla_sp_path.read_bytes())`);
+  lines.push(`            __aegis_h.update(__aegis_sp_path.read_bytes())`);
   lines.push(`        except Exception:`);
-  lines.push(`            __bla_h.update(("missing:" + str(__bla_sp)).encode("utf-8"))`);
-  lines.push(`        __bla_h.update(b"\\x00")`);
-  lines.push(`    __bla_h.update(${seedLiteral}.encode("utf-8"))`);
-  lines.push(`    __bla_hex = __bla_h.hexdigest()`);
-  lines.push(`    ${bindingName} = int(__bla_hex[:8], 16) & 0xffffffff`);
+  lines.push(`            __aegis_h.update(("missing:" + str(__aegis_sp)).encode("utf-8"))`);
+  lines.push(`        __aegis_h.update(b"\\x00")`);
+  lines.push(`    __aegis_h.update(${seedLiteral}.encode("utf-8"))`);
+  lines.push(`    __aegis_hex = __aegis_h.hexdigest()`);
+  lines.push(`    ${bindingName} = int(__aegis_hex[:8], 16) & 0xffffffff`);
   if (softFold) {
-    lines.push(`    if __bla_hex != __bla_expected:`);
+    lines.push(`    if __aegis_hex != __aegis_expected:`);
     lines.push(`        ${bindingName} = (${bindingName} ^ 0xffffffff) & 0xffffffff`);
   } else {
-    lines.push(`    if __bla_hex != __bla_expected:`);
+    lines.push(`    if __aegis_hex != __aegis_expected:`);
     lines.push(`        raise RuntimeError("integrity binding mismatch")`);
   }
-  lines.push(`except Exception as __bla_e2:`);
+  lines.push(`except Exception as __aegis_e2:`);
   if (softFold) {
     lines.push(`    ${bindingName} = 0`);
   } else {
     lines.push(
-      `    if isinstance(__bla_e2, RuntimeError) and str(__bla_e2) == "integrity binding mismatch":`,
+      `    if isinstance(__aegis_e2, RuntimeError) and str(__aegis_e2) == "integrity binding mismatch":`,
     );
     lines.push(`        raise`);
     lines.push(`    raise RuntimeError("integrity binding mismatch") from None`);

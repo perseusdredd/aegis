@@ -2,7 +2,7 @@
 
 > **防御专用（Counter-REA）**。本文只描述如何把诱饵巧妙织入真实业务路径，提升对 REA / WorkBuddy 类智能体的过滤难度。  
 > **禁止**：破解、逆向突破、绕过 PoC、攻击剧本。  
-> 给后续 AI 的入口：MCP resource `bla://directives/weave-decoy`、工具 `bla_weave_plan`、harden 旗标 `weave_decoys: true`。
+> 给后续 AI 的入口：MCP resource `aegis://directives/weave-decoy`、工具 `aegis_weave_plan`、harden 旗标 `weave_decoys: true`。
 
 ## 1. 背景：为什么「噪声诱饵」失败
 
@@ -10,10 +10,10 @@
 
 | 失败形态 | 智能体如何过滤 | 结果 |
 | :--- | :--- | :--- |
-| 空 / `pass` 桩、`_bla_*` 同质 honeypot | 未引用 + 空体启发式 | 整层丢弃 |
+| 空 / `pass` 桩、`_aegis_*` 同质 honeypot | 未引用 + 空体启发式 | 整层丢弃 |
 | 仅 TEE / TPM / Nitro / enclave 词表 | 一次 scare 正则 | 整图丢弃 |
 | 与业务无关的 sidecar「防护层」文件 | 「独立层」分类 | 难度不升反降 |
-| 可 grep 的 `BLA-SHIELD` 横幅 | 明确「这是防护」证据 | 方便一刀切 |
+| 可 grep 的 `AEGIS-SHIELD` 横幅 | 明确「这是防护」证据 | 方便一刀切 |
 
 **目标**：诱饵必须**巧妙织入**客户真实路径，使「丢掉诱饵层」等于破坏业务或验证失败。  
 **构建方式必须是结构纠缠，而不是规则引擎**（禁止「匹配业务名 → 注入固定片段」对照表；禁止同质 marker 模板当策略）。
@@ -41,7 +41,7 @@
 ## 4. 明确禁止
 
 - 纯噪声层、可整层剥离的 honeypot 目录/文件  
-- 可 grep 的 `BLA-SHIELD` / `_bla_` 横幅（审计短语 `runtime attestation boundary` 可保留）  
+- 可 grep 的 `AEGIS-SHIELD` / `_aegis_` 横幅（审计短语 `runtime attestation boundary` 可保留）  
 - 仅 TEE 词表的同质包  
 - 永不调用的 `pass` 桩冒充「加固」  
 - 规则式「名字匹配 → 注入」与同质 marker 模板当防护策略  
@@ -49,17 +49,17 @@
 
 ## 5. 后续 AI 执行清单（不依赖聊天记录）
 
-1. `resources/read` → `bla://directives/weave-decoy`（或读本文件）  
-2. `bla_weave_plan` → `{ "path": "<project-or-artifact>" }`，读取返回的 JSON 工单及每个目标的 `surgicalWorkorder`（`entryFunctions`、`sharedStateSlots`、`branchCandidates`、`agentRewriteRecipe`）  
-3. **Agent 源码级织入（Stage 2）**：按 `surgicalWorkorder` 在源码中编写共享同一运行时状态槽的领域诱饵函数并从真实入口调用，随后调用 **`bla_verify_weave`** 验证 6 项结构验收，确保 `overallPassed: true` 且 `agentActions` 清零  
-4. `bla_harden` / `bla_defend` / `bla_protect` 传 **`weave_decoys: true`**  
+1. `resources/read` → `aegis://directives/weave-decoy`（或读本文件）  
+2. `aegis_weave_plan` → `{ "path": "<project-or-artifact>" }`，读取返回的 JSON 工单及每个目标的 `surgicalWorkorder`（`entryFunctions`、`sharedStateSlots`、`branchCandidates`、`agentRewriteRecipe`）  
+3. **Agent 源码级织入（Stage 2）**：按 `surgicalWorkorder` 在源码中编写共享同一运行时状态槽的领域诱饵函数并从真实入口调用，随后调用 **`aegis_verify_weave`** 验证 6 项结构验收，确保 `overallPassed: true` 且 `agentActions` 清零  
+4. `aegis_harden` / `aegis_defend` / `aegis_protect` 传 **`weave_decoys: true`**  
 5. JS：验证现有 AST 织入，**不要**再堆 sidecar 噪声  
 6. Python `.py`：确认客户 `def` 体内出现共享槽 touch / 诱饵 xref；**不要**用空 scare 模块填补  
 7. 按 §6 验收；失败则回滚噪声改动
 
 ## 6. 验收（apply 后必须通过）
 
-1. **无禁止标记** — 无 `_bla_` / `BLA-SHIELD` 横幅  
+1. **无禁止标记** — 无 `_aegis_` / `AEGIS-SHIELD` 横幅  
 2. **词干混用** — 诱饵名非 100% TEE/enclave  
 3. **共享状态变异** — 诱饵体与织入语句修改同一共享槽  
 4. **客户入口边** — 静态 xref 从客户入口到达诱饵（JS；Python 在 `weave_decoys:true` 下经由客户 def 织入）  
@@ -70,11 +70,11 @@
 
 | 表面 | 作用 |
 | :--- | :--- |
-| Resource `bla://directives/weave-decoy` | 返回本理论的可执行 Markdown |
-| Tool `bla_weave_plan` | 只读：分析路径 → `bla-weave-plan/v1` JSON（含 AST 级 `surgicalWorkorder`） |
-| Tool `bla_verify_weave` | 只读：校验源码/产物的 6 项织入验收 → `bla-weave-verify/v1` JSON（含 `weaveScore` 与 `agentActions`） |
-| `bla_harden` / `bla_defend` / `bla_protect` 参数 `weave_decoys` | **真实管线属性**：激活 Python 客户 def 结构织入（JS 始终 AST 织入）；非仅报告布尔标注 |
-| `.blarc` / `bla.config.json` 字段 `weaveDecoys` | 与 CLI `--weave-decoys` / MCP `weave_decoys` 同义；CLI 读取后与旗标做 OR |
+| Resource `aegis://directives/weave-decoy` | 返回本理论的可执行 Markdown |
+| Tool `aegis_weave_plan` | 只读：分析路径 → `aegis-weave-plan/v1` JSON（含 AST 级 `surgicalWorkorder`） |
+| Tool `aegis_verify_weave` | 只读：校验源码/产物的 6 项织入验收 → `aegis-weave-verify/v1` JSON（含 `weaveScore` 与 `agentActions`） |
+| `aegis_harden` / `aegis_defend` / `aegis_protect` 参数 `weave_decoys` | **真实管线属性**：激活 Python 客户 def 结构织入（JS 始终 AST 织入）；非仅报告布尔标注 |
+| `.aegisrc` / `aegis.config.json` 字段 `weaveDecoys` | 与 CLI `--weave-decoys` / MCP `weave_decoys` 同义；CLI 读取后与旗标做 OR |
 
 实现入口：`src/shields/weave/weave-decoy.ts`、`src/shields/formats/python-ast-weave.ts`、`src/mcp/server.ts`。
 
@@ -82,7 +82,7 @@
 
 - 更多 sidecar 格式的入口纠缠验收（DESIGN + planner stub 已落地；完整 strip⇒fail rewrite 仍开）  
 - self-seal / defenseScore honesty soft-caps 已落地；onefile/peel 更深的分数模型仍开（#40）  
-- `bla lint-lanes` / WASM `wasmPreserveExports` 已落地；格式 densify 与更广的模板数值卫生仍开
+- `aegis lint-lanes` / WASM `wasmPreserveExports` 已落地；格式 densify 与更广的模板数值卫生仍开
 
 ## 相关文档
 

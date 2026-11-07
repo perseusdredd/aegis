@@ -3,7 +3,7 @@ import type { ProtectionIntensity } from "../../core/types.js";
 import type { ChaffPayload } from "../chaff/chaff-generator.js";
 
 /**
- * Generates BLA's "Truman Show" Shadow Runtime Deception Snippet.
+ * Generates AEGIS's "Truman Show" Shadow Runtime Deception Snippet.
  *
  * IMPORTANT SECURITY BOUNDARY CONTRACT (Issue #19):
  * - The shadow objects and no-op event listeners generated here are strictly

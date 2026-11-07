@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bla.tools/schemas/bla.config.v1.json",
-  "title": "BLA project config (.blarc / bla.config.json) v1",
+  "$id": "https://aegis.tools/schemas/aegis.config.v1.json",
+  "title": "AEGIS project config (.aegisrc / aegis.config.json) v1",
   "type": "object",
   "properties": {
     "$schema": {
@@ -24,12 +24,12 @@
     },
     "seed": {
       "type": "string",
-      "description": "Per-project PRNG seed. Prefer a random value persisted by BLA \u2014 never reuse legacy fixed fingerprints such as bla-shield-seed-v1."
+      "description": "Per-project PRNG seed. Prefer a random value persisted by AEGIS \u2014 never reuse legacy fixed fingerprints such as aegis-shield-seed-v1."
     },
     "emitManifest": {
       "type": "boolean",
       "default": false,
-      "description": "Opt-in unsigned .bla-manifest.json next to artifacts."
+      "description": "Opt-in unsigned .aegis-manifest.json next to artifacts."
     },
     "llmDirectives": {
       "type": "boolean",
@@ -65,7 +65,7 @@
     "allowStablePanelDeriveAbi": {
       "type": "boolean",
       "default": false,
-      "description": "Keep stable __vaultPanelDerive_* ABI (skip rewrite). Default false — maximum/bankrupt rewrite to _blaPd_* (red-blue round-3)."
+      "description": "Keep stable __vaultPanelDerive_* ABI (skip rewrite). Default false — maximum/bankrupt rewrite to _aegisPd_* (red-blue round-3)."
     },
     "allowPlaintextSeal": {
       "type": "boolean",

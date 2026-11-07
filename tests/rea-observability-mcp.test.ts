@@ -42,7 +42,7 @@ describe("REA observability engine (C2)", () => {
   });
 
   it("getRedteamReport returns unverified when report missing and REA unready", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-rt-missing-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-rt-missing-"));
     tempDirs.push(dir);
     const reportPath = join(dir, "no-report.json");
     const fakeRea = join(dir, "rea");
@@ -59,7 +59,7 @@ describe("REA observability engine (C2)", () => {
   });
 
   it("getRedteamReport reads a fixture report without needing REA", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-rt-fixture-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-rt-fixture-"));
     tempDirs.push(dir);
     const reportPath = join(dir, "empirical.json");
     const fixture = {
@@ -79,7 +79,7 @@ describe("REA observability engine (C2)", () => {
   });
 
   it("execute:true without REA dist is unverified (never silent pass)", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-rt-exec-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-rt-exec-"));
     tempDirs.push(dir);
     const fakeRea = join(dir, "rea");
     mkdirSync(join(fakeRea, "src"), { recursive: true });
@@ -96,9 +96,9 @@ describe("REA observability engine (C2)", () => {
 });
 
 describe("REA observability MCP tools (C2)", () => {
-  it("bla_rea_drift surfaces unverified as isError when REA absent", async () => {
+  it("aegis_rea_drift surfaces unverified as isError when REA absent", async () => {
     const missing = join(tmpdir(), `mcp-no-rea-${Date.now()}`);
-    const res = await call("bla_rea_drift", { rea_root: missing });
+    const res = await call("aegis_rea_drift", { rea_root: missing });
     expect(res?.error).toBeUndefined();
     const result = res!.result as {
       isError: boolean;
@@ -109,8 +109,8 @@ describe("REA observability MCP tools (C2)", () => {
     expect(result.structuredContent.notRedTeamEvidence).toBe(true);
   });
 
-  it("bla_redteam_report reads fixture; missing path is unverified isError", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-rt-mcp-"));
+  it("aegis_redteam_report reads fixture; missing path is unverified isError", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "aegis-rt-mcp-"));
     tempDirs.push(dir);
     const reportPath = join(dir, "empirical.json");
     writeFileSync(
@@ -118,7 +118,7 @@ describe("REA observability MCP tools (C2)", () => {
       JSON.stringify({ generatedAt: "fixture", pairs: [], unverified: ["demo"] }),
       "utf8",
     );
-    const ok = await call("bla_redteam_report", {
+    const ok = await call("aegis_redteam_report", {
       report_path: reportPath,
       rea_root: join(dir, "no-rea"),
     });
@@ -131,7 +131,7 @@ describe("REA observability MCP tools (C2)", () => {
     expect(okResult.structuredContent.status).toBe("available");
     expect(okResult.structuredContent.report.generatedAt).toBe("fixture");
 
-    const missing = await call("bla_redteam_report", {
+    const missing = await call("aegis_redteam_report", {
       report_path: join(dir, "absent.json"),
       rea_root: join(dir, "no-rea"),
     });

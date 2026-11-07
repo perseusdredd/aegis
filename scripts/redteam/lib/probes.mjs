@@ -248,12 +248,12 @@ export async function probeGo(rea, bytes, phase) {
   return base;
 }
 
-export async function probeFlutterPool(bla, bytes, phase, limits) {
+export async function probeFlutterPool(aegis, bytes, phase, limits) {
   const base = outcomeBase("flutter_pool", phase, bytes);
   try {
     // validateElf64Layout throws on invalid; returns layout summary otherwise.
-    const layout = bla.validateElf64Layout(bytes);
-    const names = bla.resolveElf64SectionNames(bytes, layout);
+    const layout = aegis.validateElf64Layout(bytes);
+    const names = aegis.resolveElf64SectionNames(bytes, layout);
     const iso = names.get(".isolate");
     if (!iso) {
       base.redactionOrAmbiguity = "no_isolate_section";
@@ -356,7 +356,7 @@ export async function probePcap(rea, bytes, phase) {
       "not empirically verified on this box (requires tshark)";
     return base;
   }
-  const dir = mkdtempSync(join(tmpdir(), "bla-rt-pcap-"));
+  const dir = mkdtempSync(join(tmpdir(), "aegis-rt-pcap-"));
   const path = join(dir, `${phase}.pcap`);
   writeFileSync(path, bytes);
   const proc = spawnSync(
@@ -403,7 +403,7 @@ export async function probePcap(rea, bytes, phase) {
 
 export async function probeSafetensors(rea, bytes, phase) {
   const base = outcomeBase("safetensors", phase, bytes);
-  const dir = mkdtempSync(join(tmpdir(), "bla-rt-st-"));
+  const dir = mkdtempSync(join(tmpdir(), "aegis-rt-st-"));
   const path = join(dir, `${phase}.safetensors`);
   writeFileSync(path, bytes);
   try {
@@ -433,7 +433,7 @@ export async function probeSafetensors(rea, bytes, phase) {
 
 export async function probeGguf(rea, bytes, phase) {
   const base = outcomeBase("gguf", phase, bytes);
-  const dir = mkdtempSync(join(tmpdir(), "bla-rt-gguf-"));
+  const dir = mkdtempSync(join(tmpdir(), "aegis-rt-gguf-"));
   const path = join(dir, `${phase}.gguf`);
   writeFileSync(path, bytes);
   try {
@@ -503,7 +503,7 @@ export async function probePtx(rea, bytes, phase) {
 
 export async function probeAsar(rea, bytes, phase) {
   const base = outcomeBase("electron_asar", phase, bytes);
-  const dir = mkdtempSync(join(tmpdir(), "bla-rt-asar-"));
+  const dir = mkdtempSync(join(tmpdir(), "aegis-rt-asar-"));
   const path = join(dir, `${phase}.asar`);
   writeFileSync(path, bytes);
   try {
@@ -561,12 +561,12 @@ export async function probeAsar(rea, bytes, phase) {
   return base;
 }
 
-export async function probeWasm(rea, bla, bytes, phase, sampleMeta = {}) {
+export async function probeWasm(rea, aegis, bytes, phase, sampleMeta = {}) {
   const base = outcomeBase("wasm_module", phase, bytes);
   const wabt = resolveWabtEnv();
   try {
     const valid = WebAssembly.validate(bytes);
-    const inspection = bla.inspectWasmBinary(bytes);
+    const inspection = aegis.inspectWasmBinary(bytes);
     base.metrics = {
       validates: valid,
       sectionCount: inspection.sectionCount,
@@ -585,7 +585,7 @@ export async function probeWasm(rea, bla, bytes, phase, sampleMeta = {}) {
 
     // Prefer real Wabt E2E when REA_WABT_BIN_DIRECTORY (or ~/opt/wabt-1.0.42) is present.
     if (wabt.available && typeof rea.WabtArtifactProvider === "function") {
-      const dir = mkdtempSync(join(tmpdir(), "bla-rt-wabt-"));
+      const dir = mkdtempSync(join(tmpdir(), "aegis-rt-wabt-"));
       const path = join(dir, `${phase}.wasm`);
       writeFileSync(path, bytes);
       const provider = new rea.WabtArtifactProvider(wabt.env);
@@ -648,8 +648,8 @@ export async function probeWasm(rea, bla, bytes, phase, sampleMeta = {}) {
     base.metrics.wabtSkipped =
       "REA_WABT_BIN_DIRECTORY / ~/opt/wabt-1.0.42 not available; using projected WasmInterfaceBudget";
     if (phase === "after" && sampleMeta.exceedsRepresentationBudget) {
-      const plan = bla.planWasmInterfaceBudgetExhaustion(
-        new bla.SeededPrng("bla-redteam-empirical-v1"),
+      const plan = aegis.planWasmInterfaceBudgetExhaustion(
+        new aegis.SeededPrng("aegis-redteam-empirical-v1"),
         "bankrupt",
       );
       const budget = new rea.WasmInterfaceBudget();
@@ -697,7 +697,7 @@ export async function probeWasm(rea, bla, bytes, phase, sampleMeta = {}) {
   return base;
 }
 
-export async function probeSqlite(rea, bla, bytes, phase) {
+export async function probeSqlite(rea, aegis, bytes, phase) {
   const base = outcomeBase("sqlite_db", phase, bytes);
   if (!bytes.length) {
     base.status = "skipped";
@@ -705,15 +705,15 @@ export async function probeSqlite(rea, bla, bytes, phase) {
     return base;
   }
   try {
-    const inspection = bla.inspectSqliteBuffer(bytes);
-    base.metrics.blaHoneyTables = inspection.honeyTablesCount;
-    base.metrics.blaTableCount =
+    const inspection = aegis.inspectSqliteBuffer(bytes);
+    base.metrics.aegisHoneyTables = inspection.honeyTablesCount;
+    base.metrics.aegisTableCount =
       inspection.tableNames?.length ?? inspection.tables?.length;
-    base.metrics.blaProtected = inspection.blaProtected === true;
+    base.metrics.aegisProtected = inspection.aegisProtected === true;
     base.metrics.hasGeneratedTrapColumns =
       inspection.hasGeneratedTrapColumns === true;
   } catch (err) {
-    base.metrics.blaInspectError = String(err?.message ?? err).slice(0, 160);
+    base.metrics.aegisInspectError = String(err?.message ?? err).slice(0, 160);
   }
 
   if (typeof rea.inspectSqliteDatabaseSnapshot !== "function") {
@@ -740,11 +740,11 @@ export async function probeSqlite(rea, bla, bytes, phase) {
   if (!hasLimits) {
     base.status = "capability_gated";
     base.redactionOrAmbiguity =
-      "REA SQLite inspection requires Node.js DatabaseSync.limits (24.15+ / 26+); honey/canary evidence recorded via BLA inspect instead";
+      "REA SQLite inspection requires Node.js DatabaseSync.limits (24.15+ / 26+); honey/canary evidence recorded via AEGIS inspect instead";
     return base;
   }
 
-  const dir = mkdtempSync(join(tmpdir(), "bla-rt-sqlite-"));
+  const dir = mkdtempSync(join(tmpdir(), "aegis-rt-sqlite-"));
   const path = join(dir, `${phase}.sqlite`);
   writeFileSync(path, bytes);
   try {
@@ -792,7 +792,7 @@ export async function probeSqlite(rea, bla, bytes, phase) {
           base.budgetName = "SqliteColumnEvaluationFailure";
           base.status = "budget_rejected";
           base.redactionOrAmbiguity =
-            "REA cannot evaluate BLA generated trap columns (unknown function enclave_unseal_payload); honey schema still disclosed";
+            "REA cannot evaluate AEGIS generated trap columns (unknown function enclave_unseal_payload); honey schema still disclosed";
           base.errorName = err?.constructor?.name ?? "SqliteColumnEvaluationFailure";
           base.errorMessage = msg.slice(0, 240);
           base.metrics.trapColumnFailure = true;
@@ -806,7 +806,7 @@ export async function probeSqlite(rea, bla, bytes, phase) {
     if (/DatabaseSync\.limits|24\.15|unavailable/i.test(msg)) {
       base.status = "capability_gated";
       base.redactionOrAmbiguity =
-        "REA SQLite inspection requires Node.js 24.15+ / 26+ DatabaseSync.limits; honey/canary evidence recorded via BLA inspect instead";
+        "REA SQLite inspection requires Node.js 24.15+ / 26+ DatabaseSync.limits; honey/canary evidence recorded via AEGIS inspect instead";
       base.errorName = err?.constructor?.name ?? "SqliteInspectionFailure";
       base.errorMessage = msg.slice(0, 240);
     } else if (/16 MiB|output-limit|reply budget/i.test(msg)) {
@@ -823,7 +823,7 @@ export async function probeSqlite(rea, bla, bytes, phase) {
 
 export async function probeElectronFuses(rea, bytes, phase) {
   const base = outcomeBase("electron_fuses", phase, bytes);
-  const dir = mkdtempSync(join(tmpdir(), "bla-rt-fuse-"));
+  const dir = mkdtempSync(join(tmpdir(), "aegis-rt-fuse-"));
   const path = join(dir, `${phase}.elf`);
   writeFileSync(path, bytes);
   try {
@@ -926,12 +926,12 @@ export function unverifiedAnalyzers() {
     {
       analyzer: "SPIR-V / CUDA fatbinary / AMD GPU object",
       reason:
-        "BLA skips these formats (GPU_OBJECT_HARDENING_SKIP_REASON); no shield to validate",
+        "AEGIS skips these formats (GPU_OBJECT_HARDENING_SKIP_REASON); no shield to validate",
     },
     {
       analyzer: "Firmware analysis",
       reason:
-        "BLA skips firmware (FIRMWARE_HARDENING_SKIP_REASON); needs vendor parsers",
+        "AEGIS skips firmware (FIRMWARE_HARDENING_SKIP_REASON); needs vendor parsers",
     },
   ];
 }

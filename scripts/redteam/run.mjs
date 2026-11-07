@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * Empirical red-team harness: unhardened vs BLA-hardened samples against
+ * Empirical red-team harness: unhardened vs AEGIS-hardened samples against
  * real in-process REA parsers. Writes docs/redteam/empirical-rea-validation.{md,json}.
  */
 import { spawnSync } from "node:child_process";
 import {
-  BLA_ROOT,
+  AEGIS_ROOT,
   REA_ROOT,
   resolveTsharkEnv,
   reaDistReady,
@@ -40,14 +40,14 @@ function tsharkVersion(env) {
 async function main() {
   if (!reaDistReady()) {
     // Honest agent-facing status: exit 0 keeps CI green when REA is optional,
-    // but never imply a red-team pass. MCP bla_redteam_report uses the same word.
+    // but never imply a red-team pass. MCP aegis_redteam_report uses the same word.
     console.log(
       "SKIP: sibling REA dist not ready (expected at ../rea or $REA_ROOT). " +
         "Red-team empirical gates require a local REA checkout; CI skips when absent.",
     );
     console.log(
       JSON.stringify({
-        schema: "bla-redteam-rea/v1",
+        schema: "aegis-redteam-rea/v1",
         status: "unverified",
         reason:
           "Sibling REA dist not ready — empirical redteam:rea did not run (not a pass).",
@@ -56,9 +56,9 @@ async function main() {
     process.exit(0);
   }
   const tshark = resolveTsharkEnv();
-  const { bla, intensity, seed, samples } = await buildSampleMatrix();
+  const { aegis, intensity, seed, samples } = await buildSampleMatrix();
   const rea = await loadReaProbes();
-  const limits = bla.REA_INTERNAL_LIMITS;
+  const limits = aegis.REA_INTERNAL_LIMITS;
 
   const pairs = [];
 
@@ -72,16 +72,16 @@ async function main() {
       before: goBefore,
       after: goAfter,
       sampleMeta: s.meta,
-      blaLimits: limits,
+      aegisLimits: limits,
     });
-    const flBefore = await probeFlutterPool(bla, s.before, "before", limits);
-    const flAfter = await probeFlutterPool(bla, s.after, "after", limits);
+    const flBefore = await probeFlutterPool(aegis, s.before, "before", limits);
+    const flAfter = await probeFlutterPool(aegis, s.after, "after", limits);
     pairs.push({
       format: "flutter_pool",
       before: flBefore,
       after: flAfter,
       sampleMeta: s.meta,
-      blaLimits: limits,
+      aegisLimits: limits,
     });
   }
 
@@ -92,7 +92,7 @@ async function main() {
       before: await probeBeam(rea, s.before, "before"),
       after: await probeBeam(rea, s.after, "after"),
       sampleMeta: s.meta,
-      blaLimits: limits,
+      aegisLimits: limits,
     });
   }
 
@@ -103,7 +103,7 @@ async function main() {
       before: await probeEvm(rea, s.before, "before"),
       after: await probeEvm(rea, s.after, "after"),
       sampleMeta: s.meta,
-      blaLimits: limits,
+      aegisLimits: limits,
     });
   }
 
@@ -114,7 +114,7 @@ async function main() {
       before: await probePcap(rea, s.before, "before"),
       after: await probePcap(rea, s.after, "after"),
       sampleMeta: s.meta,
-      blaLimits: limits,
+      aegisLimits: limits,
     });
   }
 
@@ -125,7 +125,7 @@ async function main() {
       before: await probeSafetensors(rea, s.before, "before"),
       after: await probeSafetensors(rea, s.after, "after"),
       sampleMeta: s.meta,
-      blaLimits: limits,
+      aegisLimits: limits,
     });
   }
 
@@ -136,7 +136,7 @@ async function main() {
       before: await probeGguf(rea, s.before, "before"),
       after: await probeGguf(rea, s.after, "after"),
       sampleMeta: s.meta,
-      blaLimits: limits,
+      aegisLimits: limits,
     });
   }
 
@@ -147,7 +147,7 @@ async function main() {
       before: await probePtx(rea, s.before, "before"),
       after: await probePtx(rea, s.after, "after"),
       sampleMeta: s.meta,
-      blaLimits: limits,
+      aegisLimits: limits,
     });
   }
 
@@ -159,7 +159,7 @@ async function main() {
       before: await probeAsar(rea, s.before, "before"),
       after: await probeAsar(rea, s.after, "after"),
       sampleMeta: s.meta,
-      blaLimits: limits,
+      aegisLimits: limits,
     });
   }
 
@@ -167,10 +167,10 @@ async function main() {
     const s = samples.wasm_module;
     pairs.push({
       format: "wasm_module",
-      before: await probeWasm(rea, bla, s.before, "before", s.meta),
-      after: await probeWasm(rea, bla, s.after, "after", s.meta),
+      before: await probeWasm(rea, aegis, s.before, "before", s.meta),
+      after: await probeWasm(rea, aegis, s.after, "after", s.meta),
       sampleMeta: s.meta,
-      blaLimits: limits,
+      aegisLimits: limits,
     });
   }
 
@@ -178,10 +178,10 @@ async function main() {
     const s = samples.sqlite_db;
     pairs.push({
       format: "sqlite_db",
-      before: await probeSqlite(rea, bla, s.before, "before"),
-      after: await probeSqlite(rea, bla, s.after, "after"),
+      before: await probeSqlite(rea, aegis, s.before, "before"),
+      after: await probeSqlite(rea, aegis, s.after, "after"),
       sampleMeta: s.meta,
-      blaLimits: limits,
+      aegisLimits: limits,
     });
   }
 
@@ -192,7 +192,7 @@ async function main() {
       before: await probeElectronFuses(rea, s.before, "before"),
       after: await probeElectronFuses(rea, s.after, "after"),
       sampleMeta: s.meta,
-      blaLimits: limits,
+      aegisLimits: limits,
     });
   }
 
@@ -203,7 +203,7 @@ async function main() {
       before: await probeJavascript(rea, s.before, "before"),
       after: await probeJavascript(rea, s.after, "after"),
       sampleMeta: s.meta,
-      blaLimits: limits,
+      aegisLimits: limits,
     });
   }
 
@@ -212,7 +212,7 @@ async function main() {
       timeZone: "Asia/Shanghai",
       hour12: false,
     }),
-    blaRoot: BLA_ROOT,
+    aegisRoot: AEGIS_ROOT,
     reaRoot: REA_ROOT,
     intensity,
     seed,

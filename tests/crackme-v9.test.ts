@@ -1,5 +1,5 @@
 /**
- * CrackMe v9 — Sovereign (BLA 3.0 4-Stage Agent-Driven Hardening Showcase).
+ * CrackMe v9 — Sovereign (AEGIS 3.0 4-Stage Agent-Driven Hardening Showcase).
  */
 import { createHash } from "node:crypto";
 import { existsSync, mkdtempSync, readFileSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
@@ -20,7 +20,7 @@ const libP: Promise<any> = import("../scripts/crackme/v9-lib.mjs");
 const seal = JSON.parse(readFileSync(SEAL_PATH, "utf8"));
 const sha = (b: Buffer | string) => createHash("sha256").update(b).digest("hex");
 
-describe("CrackMe v9 Sovereign (BLA 3.0 4-Stage Agent-Driven Hardening)", () => {
+describe("CrackMe v9 Sovereign (AEGIS 3.0 4-Stage Agent-Driven Hardening)", () => {
   it("SEAL pins 3.0 knobs (weaveDecoys, selfSeal, sidecarEntangle, weaveScore=100, integrityCoverageSelfVerified=true) and matches committed artifacts", async () => {
     const lib = await libP;
     expect(seal.schema).toBe(lib.SCHEMA);
@@ -44,7 +44,7 @@ describe("CrackMe v9 Sovereign (BLA 3.0 4-Stage Agent-Driven Hardening)", () => 
     expect(lib.sha256Hex(raw)).toBe(seal.artifacts["core.wasm"].sha256);
     for (const a of seal.hardenSummary) expect(a.success).toBe(true);
 
-    // Verify committed hardened directory passes bla_verify_weave at 100/100
+    // Verify committed hardened directory passes aegis_verify_weave at 100/100
     const postWeave = verifyWeaveTarget(HARDENED);
     expect(postWeave.overallPassed).toBe(true);
     expect(postWeave.weaveScore).toBe(100);
@@ -61,7 +61,7 @@ describe("CrackMe v9 Sovereign (BLA 3.0 4-Stage Agent-Driven Hardening)", () => 
       licText;
     expect(blob).not.toContain(process.env.CRACKME_V9_KEY || "___no_key___");
     expect(blob.toLowerCase()).not.toMatch(/crackme_v9_key|crackme_v9_flag/);
-    // bla_encrypt_strings masked all HONEYPOT_KEYS in license.cjs
+    // aegis_encrypt_strings masked all HONEYPOT_KEYS in license.cjs
     for (const hp of lib.HONEYPOT_KEYS) {
       expect(licText).not.toContain(hp);
     }
@@ -136,7 +136,7 @@ describe("CrackMe v9 Sovereign (BLA 3.0 4-Stage Agent-Driven Hardening)", () => 
     }
   }, 180_000);
 
-  it("DESIGN.md states v8 supersession + 4-stage BLA 3.0 playbook + covered seal.json + P2 honesty", () => {
+  it("DESIGN.md states v8 supersession + 4-stage AEGIS 3.0 playbook + covered seal.json + P2 honesty", () => {
     const d = readFileSync(join(V9, "DESIGN.md"), "utf8");
     expect(d).toMatch(/successor to CrackMe v8/i);
     expect(d).toMatch(/EXPECTED_SEAL_SHA256/);

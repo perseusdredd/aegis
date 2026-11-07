@@ -9,11 +9,11 @@
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
-  --bla-blue: #3b82f6;
-  --bla-blue-bright: #60a5fa;
-  --bla-blue-deep: #2563eb;
-  --bla-sky: #38bdf8;
-  --bla-blue-soft: rgba(59, 130, 246, 0.12);
+  --aegis-blue: #3b82f6;
+  --aegis-blue-bright: #60a5fa;
+  --aegis-blue-deep: #2563eb;
+  --aegis-sky: #38bdf8;
+  --aegis-blue-soft: rgba(59, 130, 246, 0.12);
   --rea-red: #ef4444;
   --rea-red-soft: rgba(239, 68, 68, 0.11);
   --amber: #f59e0b;
@@ -130,7 +130,7 @@ a {
 
 .lang-select:hover,
 .lang-select:focus {
-  border-color: var(--bla-sky);
+  border-color: var(--aegis-sky);
   background: var(--bg-elevated);
 }
 
@@ -138,7 +138,7 @@ a {
   width: 34px;
   height: 34px;
   border-radius: 9px;
-  background: linear-gradient(135deg, var(--bla-blue-bright), var(--bla-blue-deep));
+  background: linear-gradient(135deg, var(--aegis-blue-bright), var(--aegis-blue-deep));
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -155,8 +155,8 @@ a {
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 999px;
-  background: var(--bla-blue-soft);
-  color: var(--bla-blue-bright);
+  background: var(--aegis-blue-soft);
+  color: var(--aegis-blue-bright);
   border: 1px solid var(--border-blue);
 }
 
@@ -188,13 +188,13 @@ a {
   border-radius: 9px;
   font-size: 0.88rem;
   font-weight: 600;
-  background: var(--bla-blue-deep);
+  background: var(--aegis-blue-deep);
   color: #ffffff;
-  border: 1px solid var(--bla-blue-bright);
+  border: 1px solid var(--aegis-blue-bright);
 }
 
 .nav-cta:hover {
-  background: var(--bla-blue);
+  background: var(--aegis-blue);
 }
 
 .star-pill {
@@ -235,7 +235,7 @@ a {
 }
 
 .star-welcome a {
-  color: var(--bla-blue-bright);
+  color: var(--aegis-blue-bright);
   border-bottom: 1px dashed rgba(96, 165, 250, 0.45);
   padding-bottom: 2px;
 }
@@ -265,7 +265,7 @@ a {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--bla-blue-bright);
+  color: var(--aegis-blue-bright);
   margin-bottom: 14px;
 }
 
@@ -296,9 +296,9 @@ a {
   gap: 10px;
   padding: 6px 16px;
   border-radius: 999px;
-  background: var(--bla-blue-soft);
+  background: var(--aegis-blue-soft);
   border: 1px solid var(--border-blue);
-  color: var(--bla-blue-bright);
+  color: var(--aegis-blue-bright);
   font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 600;
@@ -354,7 +354,7 @@ a {
 .command-code {
   font-family: var(--font-mono);
   font-size: 0.98rem;
-  color: var(--bla-blue-bright);
+  color: var(--aegis-blue-bright);
   overflow-x: auto;
   white-space: nowrap;
 }
@@ -363,8 +363,8 @@ a {
   padding: 8px 14px;
   border-radius: 8px;
   border: 1px solid var(--border-blue);
-  background: var(--bla-blue-soft);
-  color: var(--bla-blue-bright);
+  background: var(--aegis-blue-soft);
+  color: var(--aegis-blue-bright);
   font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 600;
@@ -374,7 +374,7 @@ a {
 }
 
 .copy-btn:hover {
-  background: var(--bla-blue-deep);
+  background: var(--aegis-blue-deep);
   color: #ffffff;
 }
 
@@ -392,15 +392,15 @@ a {
   gap: 8px;
   padding: 13px 24px;
   border-radius: 11px;
-  background: var(--bla-blue-deep);
+  background: var(--aegis-blue-deep);
   color: #ffffff;
   font-weight: 700;
   font-size: 0.95rem;
-  border: 1px solid var(--bla-blue-bright);
+  border: 1px solid var(--aegis-blue-bright);
 }
 
 .btn-primary:hover {
-  background: var(--bla-blue);
+  background: var(--aegis-blue);
 }
 
 .btn-secondary {
@@ -453,8 +453,8 @@ a {
   font-weight: 600;
   padding: 3px 10px;
   border-radius: 999px;
-  background: var(--bla-blue-soft);
-  color: var(--bla-blue-bright);
+  background: var(--aegis-blue-soft);
+  color: var(--aegis-blue-bright);
   margin-bottom: 16px;
 }
 
@@ -493,8 +493,8 @@ a {
 
 .sim-tab.active,
 .sim-tab:hover {
-  border-color: var(--bla-blue-bright);
-  background: var(--bla-blue-soft);
+  border-color: var(--aegis-blue-bright);
+  background: var(--aegis-blue-soft);
   color: var(--text-primary);
 }
 
@@ -539,7 +539,7 @@ a {
 }
 
 .duel-badge.blue {
-  background: var(--bla-blue-soft);
+  background: var(--aegis-blue-soft);
   color: #93c5fd;
   border: 1px solid var(--border-blue);
 }
@@ -570,7 +570,7 @@ a {
 }
 
 .metric-val.blue {
-  color: var(--bla-blue-bright);
+  color: var(--aegis-blue-bright);
 }
 
 /* Collapsible Details Drawer (keeps pages clean like rea.tools) */
@@ -587,7 +587,7 @@ details.evidence-drawer summary {
   font-family: var(--font-mono);
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--bla-blue-bright);
+  color: var(--aegis-blue-bright);
   cursor: pointer;
   user-select: none;
 }

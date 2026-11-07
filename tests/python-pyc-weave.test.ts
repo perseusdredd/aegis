@@ -15,7 +15,7 @@ import { buildWeavePlan } from "../src/shields/weave/weave-decoy.js";
 import { PY3, python3 } from "./helpers/python-interpreter.js";
 
 function compileSamplePyc(): Buffer {
-  const dir = mkdtempSync(join(tmpdir(), "bla-pyc-weave-"));
+  const dir = mkdtempSync(join(tmpdir(), "aegis-pyc-weave-"));
   try {
     const srcPath = join(dir, "sample.py");
     const pycPath = join(dir, "sample.pyc");
@@ -46,7 +46,7 @@ function compileSamplePyc(): Buffer {
 }
 
 function importAndCall(pyc: Buffer): { calculate: number; convert: string; stats: number } {
-  const dir = mkdtempSync(join(tmpdir(), "bla-pyc-run-"));
+  const dir = mkdtempSync(join(tmpdir(), "aegis-pyc-run-"));
   try {
     const pycPath = join(dir, "sample.pyc");
     writeFileSync(pycPath, pyc);
@@ -76,7 +76,7 @@ print(mod.stats([1, 2, 3, 4]))
 
 function countCodeObjects(pyc: Buffer): number {
   // latin1 scan for TYPE_CODE bytes is noisy; use a marshal walk via python.
-  const dir = mkdtempSync(join(tmpdir(), "bla-pyc-count-"));
+  const dir = mkdtempSync(join(tmpdir(), "aegis-pyc-count-"));
   try {
     const pycPath = join(dir, "sample.pyc");
     writeFileSync(pycPath, pyc);
@@ -155,7 +155,7 @@ describe("python-pyc-weave", () => {
     expect(res.customerDefsWoven).toBe(0);
     expect(countCodeObjects(res.buffer)).toBe(before);
     expect(res.buffer.length).toBeGreaterThan(raw.length);
-    expect(inspectPythonPyc(res.buffer).blaProtected).toBe(true);
+    expect(inspectPythonPyc(res.buffer).aegisProtected).toBe(true);
     expect(importAndCall(res.buffer).calculate).toBe(5);
   });
 
@@ -172,7 +172,7 @@ describe("python-pyc-weave", () => {
     expect(res.decoyCodeObjectsInjected).toBeGreaterThanOrEqual(9);
     expect(countCodeObjects(res.buffer)).toBe(before + res.decoyCodeObjectsInjected);
     expect(res.buffer.toString("latin1")).toContain("PROTECTED_CANARY_CREDENTIAL=");
-    expect(inspectPythonPyc(res.buffer).blaProtected).toBe(true);
+    expect(inspectPythonPyc(res.buffer).aegisProtected).toBe(true);
     expect(importAndCall(res.buffer)).toEqual({
       calculate: 5,
       convert: "7",
@@ -181,7 +181,7 @@ describe("python-pyc-weave", () => {
   });
 
   it.skipIf(!PY3)("weave planner marks python-pyc as woven", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-pyc-plan-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-pyc-plan-"));
     try {
       const pycPath = join(dir, "app.pyc");
       writeFileSync(pycPath, compileSamplePyc());

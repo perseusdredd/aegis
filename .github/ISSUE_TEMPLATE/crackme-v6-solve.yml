@@ -1,5 +1,5 @@
 name: CrackMe v6 solve
-description: Submit a proof-of-solve for the public BLA-generated CrackMe v6 challenge
+description: Submit a proof-of-solve for the public AEGIS-generated CrackMe v6 challenge
 title: "CrackMe v6 solve: <short method>"
 labels: ["crackme", "challenge"]
 body:
@@ -11,7 +11,7 @@ body:
     id: stage
     attributes:
       label: Furthest stage understood
-      options: [Stage A (WASM lanes), Stage B (HTML panel), Stage C (full unlock), general BLA bypass]
+      options: [Stage A (WASM lanes), Stage B (HTML panel), Stage C (full unlock), general AEGIS bypass]
     validations:
       required: true
   - type: input
@@ -26,7 +26,7 @@ body:
     id: method
     attributes:
       label: Method notes
-      description: Short write-up (tooling, whether BLA layers mattered, suggested product fix).
+      description: Short write-up (tooling, whether AEGIS layers mattered, suggested product fix).
     validations:
       required: true
   - type: checkboxes
@@ -36,5 +36,5 @@ body:
       options:
         - label: I did not use a leaked maintainer secret / CI secret.
           required: true
-        - label: I understand BLA does not claim immunity to interactive human RE.
+        - label: I understand AEGIS does not claim immunity to interactive human RE.
           required: true

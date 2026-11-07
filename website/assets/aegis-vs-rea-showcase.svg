@@ -35,10 +35,10 @@
 
   <!-- Top Header -->
   <text x="600" y="38" text-anchor="middle" class="sans" font-size="20" font-weight="800" fill="#f8fafc">
-    ⚔️ RED vs. BLUE SHOWCASE: <tspan fill="#ef4444">REA (RED)</tspan> vs. <tspan fill="#60a5fa">npx bla-agents defend (BLUE)</tspan>
+    ⚔️ RED vs. BLUE SHOWCASE: <tspan fill="#ef4444">REA (RED)</tspan> vs. <tspan fill="#60a5fa">npx aegis-agents defend (BLUE)</tspan>
   </text>
 
-  <!-- ==================== LEFT SCREEN: BEFORE BLA (REA RED) ==================== -->
+  <!-- ==================== LEFT SCREEN: BEFORE AEGIS (REA RED) ==================== -->
   <g transform="translate(24, 58)">
     <rect width="564" height="568" rx="12" fill="url(#panelBg)" stroke="#ef4444" stroke-width="1.8" />
     <!-- Window Bar -->
@@ -47,7 +47,7 @@
     <circle cx="38" cy="19" r="6" fill="#f59e0b" />
     <circle cx="56" cy="19" r="6" fill="#3b82f6" />
     <text x="282" y="24" text-anchor="middle" class="mono" font-size="13" font-weight="700" fill="#fca5a5">
-      ❌ BEFORE BLA — Unprotected App vs. REA (RED)
+      ❌ BEFORE AEGIS — Unprotected App vs. REA (RED)
     </text>
 
     <!-- Terminal Lines -->
@@ -79,7 +79,7 @@
     <rect x="38" y="510" width="18" height="14" rx="7" fill="#ef4444" />
   </g>
 
-  <!-- ==================== RIGHT SCREEN: AFTER BLA (BLA BLUE) ==================== -->
+  <!-- ==================== RIGHT SCREEN: AFTER AEGIS (AEGIS BLUE) ==================== -->
   <g transform="translate(612, 58)">
     <rect width="564" height="568" rx="12" fill="url(#panelBg)" stroke="#3b82f6" stroke-width="2" class="pulse-border" />
     <!-- Window Bar -->
@@ -88,7 +88,7 @@
     <circle cx="38" cy="19" r="6" fill="#f59e0b" />
     <circle cx="56" cy="19" r="6" fill="#3b82f6" />
     <text x="282" y="24" text-anchor="middle" class="mono" font-size="13" font-weight="700" fill="#93c5fd">
-      🛡️ AFTER `npx bla-agents defend` — REA Exhausted &amp; Misled (BLUE)
+      🛡️ AFTER `npx aegis-agents defend` — REA Exhausted &amp; Misled (BLUE)
     </text>
 
     <!-- Terminal Lines -->

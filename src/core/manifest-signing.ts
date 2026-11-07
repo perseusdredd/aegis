@@ -9,7 +9,7 @@ import { readFileSync } from "node:fs";
 import { isAbsolute, resolve } from "node:path";
 
 /**
- * Optional ed25519 signing for `.bla-manifest.json` attestation manifests.
+ * Optional ed25519 signing for `.aegis-manifest.json` attestation manifests.
  *
  * The manifest payload itself stays plain JSON; signing is additive so
  * unsigned manifests remain valid. A signed manifest embeds `signature` with

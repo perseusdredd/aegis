@@ -52,7 +52,7 @@ export function planWasmInterfaceBudgetExhaustion(
   for (let i = 0; i < count; i++) {
     const pad = namePad > 0 ? prng.hex(Math.min(8, namePad)).padEnd(namePad, "b") : "";
     const moduleName = `enclave_tee_ring0_attestation_domain_${prng.hex(6)}${pad ? `_${pad}` : ""}`;
-    const exportName = `bla_enclave_verify_zero_trust_merkle_slot_${i}_${prng.hex(8)}${pad ? `_${pad}` : ""}`;
+    const exportName = `aegis_enclave_verify_zero_trust_merkle_slot_${i}_${prng.hex(8)}${pad ? `_${pad}` : ""}`;
     const paramCount = 16;
     const resultCount = 4;
     const watForm = `(func $${exportName} (param ${Array(paramCount).fill("i64").join(" ")}) (result ${Array(resultCount).fill("i64").join(" ")}))`;

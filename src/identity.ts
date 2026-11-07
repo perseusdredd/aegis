@@ -1,21 +1,28 @@
-export const BLA_IDENTITY = Object.freeze({
-  name: "BLA",
-  fullName: "Blind LLM Agents",
-  packageName: "bla-agents",
-  packageAlias: "bla-shield",
-  cliBinary: "bla",
-  cliAlias: "bla-agents",
+export const AEGIS_IDENTITY = Object.freeze({
+  name: "AEGIS",
+  fullName: "AEGIS Counter-REA Defense",
+  packageName: "aegis-agents",
+  packageAlias: "aegis-shield",
+  cliBinary: "aegis",
+  cliAlias: "aegis-agents",
   version: "3.0.1",
-  slogan: "Poison -> Exhaust -> Hallucinate. Make Reverse Engineering Bankrupt Again.",
+  slogan: "Rotate -> Deepen -> Measure. Make Reverse Engineering Bankrupt Again.",
   counterpart: {
     name: "REA",
     fullName: "Reverse Engineer Anything",
     packageName: "rea-agents",
     slogan: "Decompile -> Understand -> Recreate",
   },
+  upstream: {
+    name: "BLA",
+    fullName: "Blind LLM Agents",
+    repositoryUrl: "https://github.com/qybaihe/bla",
+    forkNote:
+      "AEGIS is a hardening fork of BLA. Shield engines and format coverage derive from BLA (MIT); AEGIS adds per-build rotation, deeper budget coverage, and real-REA measurement.",
+  },
   repositoryUrl: "https://github.com/qybaihe/bla",
-  mcpServerName: "bla",
-  skillName: "blind-llm-agents",
+  mcpServerName: "aegis",
+  skillName: "aegis-counter-rea",
 });
 
 /**

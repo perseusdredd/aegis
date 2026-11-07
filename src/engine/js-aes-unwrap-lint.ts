@@ -18,7 +18,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 
-export const JS_AES_UNWRAP_SCHEMA = "bla-js-aes-unwrap-lint/v1" as const;
+export const JS_AES_UNWRAP_SCHEMA = "aegis-js-aes-unwrap-lint/v1" as const;
 
 export type JsAesUnwrapFindingId =
   | "js-aes-wrap-key-material"
@@ -54,7 +54,7 @@ const SKIP_DIR_NAMES = new Set([
   ".git",
   ".hg",
   ".svn",
-  ".bla-hardened",
+  ".aegis-hardened",
   "coverage",
   ".next",
   ".turbo",

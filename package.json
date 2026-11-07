@@ -19,7 +19,7 @@
     "claude-code",
     "cursor"
   ],
-  "homepage": "https://bla.tools",
+  "homepage": "https://aegis.tools",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/qybaihe/bla.git"
@@ -28,10 +28,12 @@
     "url": "https://github.com/qybaihe/bla/issues"
   },
   "license": "MIT",
-  "author": "BLA Contributors",
+  "author": "AEGIS Contributors",
   "type": "module",
   "bin": {
-    "aegis": "./dist/cli.js"
+    "aegis": "./dist/cli.js",
+    "aegis-agents": "./dist/cli.js",
+    "aegis-shield": "./dist/cli.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -47,7 +49,7 @@
   },
   "files": [
     "dist",
-    ".agents/skills/blind-llm-agents",
+    ".agents/skills/aegis-counter-rea",
     "README.md",
     "LICENSE",
     "DISCLAIMER.md"
@@ -56,7 +58,7 @@
     "node": "^22.23.4 || >=24.0.0"
   },
   "scripts": {
-    "build": "node scripts/sync-version.mjs && tsc -p tsconfig.build.json && chmod +x dist/cli.js",
+    "build": "node scripts/sync-version.mjs && tsc -p tsconfig.build.json && node -e \"try{require('fs').chmodSync('dist/cli.js',0o755)}catch(e){}\"",
     "dev": "tsx src/cli.ts",
     "pretest": "npm run build",
     "test": "vitest run",
@@ -65,8 +67,8 @@
     "benchmark": "node dist/cli.js benchmark",
     "version": "node scripts/sync-version.mjs && git add src/identity.ts",
     "sync:site": "node scripts/sync-site.mjs",
-    "release:patch": "npm version patch -m 'chore(release): bla-agents v%s' && git push --follow-tags",
-    "release:minor": "npm version minor -m 'chore(release): bla-agents v%s' && git push --follow-tags",
+    "release:patch": "npm version patch -m 'chore(release): aegis-agents v%s' && git push --follow-tags",
+    "release:minor": "npm version minor -m 'chore(release): aegis-agents v%s' && git push --follow-tags",
     "prepublishOnly": "npm test",
     "verify:rea": "node scripts/verify-rea-constants.mjs",
     "redteam:rea": "node scripts/redteam/run.mjs",

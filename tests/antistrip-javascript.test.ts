@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import vm from "node:vm";
-import { transformJavaScriptWithBlaShield } from "../src/shields/javascript/ast-shield.js";
+import { transformJavaScriptWithAegisShield } from "../src/shields/javascript/ast-shield.js";
 
 const SAMPLE = `/**
  * 定价引擎 — 阶梯折扣与破产阈值
@@ -45,20 +45,20 @@ function runModule(code: string) {
 
 describe("JS anti-strip (critique claim 1)", () => {
   for (const intensity of ["stealth", "balanced", "bankrupt"] as const) {
-    it(`emits no greppable _bla / $00_AAA / __bla markers (${intensity})`, () => {
-      const out = transformJavaScriptWithBlaShield(SAMPLE, {
+    it(`emits no greppable _aegis / $00_AAA / __aegis markers (${intensity})`, () => {
+      const out = transformJavaScriptWithAegisShield(SAMPLE, {
         intensity,
         seed: `antistrip-${intensity}`,
         sourceType: "commonjs",
       });
-      expect(out.code).not.toMatch(/_bla/i);
+      expect(out.code).not.toMatch(/_aegis/i);
       expect(out.code).not.toMatch(/\$00_AAA/);
-      expect(out.code).not.toMatch(/__bla/i);
+      expect(out.code).not.toMatch(/__aegis/i);
       // Naive grep -v cannot shrink back near original line count
       const origLines = SAMPLE.split("\n").length;
       const lines = out.code.split("\n");
       expect(lines.length).toBeGreaterThan(origLines * 10);
-      const afterGrep = lines.filter((l) => !/_bla|\$00_AAA|__bla/i.test(l));
+      const afterGrep = lines.filter((l) => !/_aegis|\$00_AAA|__aegis/i.test(l));
       expect(afterGrep.length).toBe(lines.length);
       // Original Chinese comments must not survive verbatim
       expect(out.code).not.toMatch(/定价引擎/);
@@ -76,7 +76,7 @@ describe("JS anti-strip (critique claim 1)", () => {
   }
 
   it("opaque-true entanglement: deleting Math.imul-guarded blocks breaks runtime", () => {
-    const out = transformJavaScriptWithBlaShield(SAMPLE, {
+    const out = transformJavaScriptWithAegisShield(SAMPLE, {
       intensity: "balanced",
       seed: "antistrip-entangle",
       sourceType: "commonjs",

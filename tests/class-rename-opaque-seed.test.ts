@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import * as vm from "node:vm";
-import { transformJavaScriptWithBlaShield } from "../src/shields/javascript/ast-shield.js";
+import { transformJavaScriptWithAegisShield } from "../src/shields/javascript/ast-shield.js";
 
 function runCommonJs<T extends Record<string, unknown>>(
   code: string,
@@ -60,7 +60,7 @@ describe("Issue #40: class/new rename consistency + deterministic opaque seed", 
       }
       module.exports = { make, sameRef };
     `;
-    const result = transformJavaScriptWithBlaShield(source, {
+    const result = transformJavaScriptWithAegisShield(source, {
       intensity: "bankrupt",
       seed: "issue-40-class-rename",
       sourceType: "commonjs",
@@ -90,7 +90,7 @@ describe("Issue #40: class/new rename consistency + deterministic opaque seed", 
       }
       module.exports = { factory };
     `;
-    const result = transformJavaScriptWithBlaShield(source, {
+    const result = transformJavaScriptWithAegisShield(source, {
       intensity: "bankrupt",
       seed: "issue-40-nested-class",
       sourceType: "commonjs",
@@ -107,12 +107,12 @@ describe("Issue #40: class/new rename consistency + deterministic opaque seed", 
       function id(x) { return x ^ 1; }
       module.exports = { id };
     `;
-    const a = transformJavaScriptWithBlaShield(source, {
+    const a = transformJavaScriptWithAegisShield(source, {
       intensity: "maximum",
       seed: "issue-40-opaque-seed-stable",
       sourceType: "commonjs",
     });
-    const b = transformJavaScriptWithBlaShield(source, {
+    const b = transformJavaScriptWithAegisShield(source, {
       intensity: "maximum",
       seed: "issue-40-opaque-seed-stable",
       sourceType: "commonjs",

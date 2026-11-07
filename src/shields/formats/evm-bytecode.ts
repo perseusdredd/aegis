@@ -56,7 +56,7 @@ export interface EvmBytecodeInspection {
   readonly byteLength: number;
   readonly hasSolidityMetadata: boolean;
   readonly metadataBytes: number;
-  readonly blaProtected: boolean;
+  readonly aegisProtected: boolean;
 }
 
 export function inspectEvmBytecode(bytes: Buffer): EvmBytecodeInspection {
@@ -75,8 +75,8 @@ export function inspectEvmBytecode(bytes: Buffer): EvmBytecodeInspection {
     byteLength: bytes.length,
     hasSolidityMetadata,
     metadataBytes,
-    blaProtected:
-      text.includes("[BLA-EVM-SHIELD]") || text.includes("bla_evm_canary"),
+    aegisProtected:
+      text.includes("[AEGIS-EVM-SHIELD]") || text.includes("aegis_evm_canary"),
   };
 }
 
@@ -115,18 +115,18 @@ export function protectEvmBytecodeBuffer(
   readonly approachesInputBudget: boolean;
 } {
   const intensity = options.intensity ?? "balanced";
-  const prng = new SeededPrng(options.seed ?? "bla-evm-shield");
+  const prng = new SeededPrng(options.seed ?? "aegis-evm-shield");
   const deception = buildCanaryAndDiagnosticPayloads(prng, intensity);
 
   const base = stripTerminalMetadata(input.length > 0 ? input : Buffer.from([0x00]));
 
   const metaEntries: [string, string | Buffer][] = [
     ["solc", Buffer.from([0x00, 0x08, 0x1e])], // 0.8.30
-    ["bla", "[BLA-EVM-SHIELD]"],
-    ["bla_evm_canary", prng.hex(16)],
+    ["aegis", "[AEGIS-EVM-SHIELD]"],
+    ["aegis_evm_canary", prng.hex(16)],
   ];
   for (const rec of deception.textRecords.slice(0, 12)) {
-    const key = `bla_${metaEntries.length}`;
+    const key = `aegis_${metaEntries.length}`;
     metaEntries.push([key, rec.slice(0, 200)]);
   }
 

@@ -46,7 +46,7 @@ describe("integrity coverage honesty for host self-coverage", () => {
   });
 
   it("harden --self-seal reports a verified entry self-digest and the entry hard-fails on edit", () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-selfdig-harden-"));
+    const root = mkdtempSync(join(tmpdir(), "aegis-selfdig-harden-"));
     try {
       const src = join(root, "app");
       mkdirSync(src);

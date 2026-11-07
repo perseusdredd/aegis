@@ -74,7 +74,7 @@ export function protectDotnetManagedBuffer(
   readonly diagnosticsEmbedded: number;
 } {
   const intensity = options.intensity ?? "balanced";
-  const prng = new SeededPrng(options.seed ?? "bla-dotnet-v1");
+  const prng = new SeededPrng(options.seed ?? "aegis-dotnet-v1");
   const plan = planDotnetManagedBudgetExhaustion(prng, intensity);
   const deception = buildCanaryAndDiagnosticPayloads(prng, intensity);
   // Stay under REA_MAX_MANAGED_METADATA_REPRESENTATION_BYTES (64 MiB) while
@@ -82,7 +82,7 @@ export function protectDotnetManagedBuffer(
   const metadataSection = Buffer.from(
     [
       "",
-      "BLA_DOTNET_CLR_SHIELD_V1",
+      "AEGIS_DOTNET_CLR_SHIELD_V1",
       ...plan.decoyPInvokeImports,
       `charge:${plan.totalReaRepresentationChargeBytes}`,
       `maxRepresentationBytes:${REA_MAX_MANAGED_METADATA_REPRESENTATION_BYTES}`,

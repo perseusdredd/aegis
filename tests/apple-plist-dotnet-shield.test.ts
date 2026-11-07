@@ -16,7 +16,7 @@ describe("Apple PropertyList & .NET Managed Metadata Shields", () => {
     expect(res.triggersInternalSubsetBudgetAbort).toBe(true);
     expect(res.xmlPlist).toContain("<!DOCTYPE plist");
     expect(res.xmlPlist).toContain("[]>");
-    expect(res.xmlPlist).toContain("BLAEnclaveAttestationAuthority");
+    expect(res.xmlPlist).toContain("AEGISEnclaveAttestationAuthority");
   });
 
   it("models .NET ManagedDecodeBudget row (256B) and string (6x + 2) charges", () => {

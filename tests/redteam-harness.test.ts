@@ -158,7 +158,7 @@ describe("redteam:rea skip honesty", () => {
     const { spawnSync } = await import("node:child_process");
     const { mkdtempSync } = await import("node:fs");
     const { tmpdir } = await import("node:os");
-    const emptyRea = mkdtempSync(join(tmpdir(), "bla-no-rea-"));
+    const emptyRea = mkdtempSync(join(tmpdir(), "aegis-no-rea-"));
     const r = spawnSync(process.execPath, ["scripts/redteam/run.mjs"], {
       cwd: process.cwd(),
       encoding: "utf8",
@@ -169,10 +169,10 @@ describe("redteam:rea skip honesty", () => {
     const line = r.stdout
       .split("\n")
       .map((s) => s.trim())
-      .find((s) => s.startsWith("{") && s.includes("bla-redteam-rea"));
+      .find((s) => s.startsWith("{") && s.includes("aegis-redteam-rea"));
     expect(line).toBeTruthy();
     const payload = JSON.parse(line!);
-    expect(payload.schema).toBe("bla-redteam-rea/v1");
+    expect(payload.schema).toBe("aegis-redteam-rea/v1");
     expect(payload.status).toBe("unverified");
   });
 });

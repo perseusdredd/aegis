@@ -8,7 +8,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { defendTarget } from "../dist/index.js";
 
-const workDir = mkdtempSync(join(tmpdir(), "bla-demo-"));
+const workDir = mkdtempSync(join(tmpdir(), "aegis-demo-"));
 try {
   const targetFile = join(workDir, "licensing-core.js");
   writeFileSync(

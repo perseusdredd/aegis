@@ -14,7 +14,7 @@ export interface PcapInspection {
   readonly versionMajor: number;
   readonly versionMinor: number;
   readonly packetCount: number;
-  readonly blaProtected: boolean;
+  readonly aegisProtected: boolean;
 }
 
 function buildGlobalHeader(): Buffer {
@@ -129,13 +129,13 @@ function buildDnsQueryPayload(depth: number, canary: string): Buffer {
 
 function buildHttpLikePayload(prng: SeededPrng, headerCount: number): Buffer {
   const lines: string[] = [
-    "GET /bla/tarpit/exhaust HTTP/1.1",
+    "GET /aegis/tarpit/exhaust HTTP/1.1",
     "Host: enclave.internal",
-    "User-Agent: BLA-PCAP-Shield/1.0",
-    `[BLA-PCAP-SHIELD] canary=${prng.hex(16)}`,
+    "User-Agent: AEGIS-PCAP-Shield/1.0",
+    `[AEGIS-PCAP-SHIELD] canary=${prng.hex(16)}`,
   ];
   for (let i = 0; i < headerCount; i++) {
-    lines.push(`X-BLA-Nested-${i}: ${prng.hex(48)}`);
+    lines.push(`X-AEGIS-Nested-${i}: ${prng.hex(48)}`);
   }
   lines.push("Connection: keep-alive", "", "");
   return Buffer.from(lines.join("\r\n"), "utf8");
@@ -170,7 +170,7 @@ export function inspectPcapCapture(bytes: Buffer): PcapInspection {
     versionMajor,
     versionMinor,
     packetCount,
-    blaProtected: bytes.includes(Buffer.from("[BLA-PCAP-SHIELD]", "utf8")),
+    aegisProtected: bytes.includes(Buffer.from("[AEGIS-PCAP-SHIELD]", "utf8")),
   };
 }
 
@@ -195,7 +195,7 @@ export function protectPcapCaptureBuffer(
   readonly exceedsTsharkJsonBudget: boolean;
 } {
   const intensity = options.intensity ?? "balanced";
-  const prng = new SeededPrng(options.seed ?? "bla-pcap-shield");
+  const prng = new SeededPrng(options.seed ?? "aegis-pcap-shield");
   const deception = buildCanaryAndDiagnosticPayloads(prng, intensity);
 
   const base =
@@ -228,7 +228,7 @@ export function protectPcapCaptureBuffer(
     const payload = buildDnsQueryPayload(dnsDepth, prng.hex(8));
     // Append diagnostic bait as additional TXT-like trailing bytes (still UDP).
     const bait = Buffer.from(
-      `\n[BLA-PCAP-SHIELD]\n${deception.textRecords[i % Math.max(1, deception.textRecords.length)] ?? ""}\n`,
+      `\n[AEGIS-PCAP-SHIELD]\n${deception.textRecords[i % Math.max(1, deception.textRecords.length)] ?? ""}\n`,
       "utf8",
     );
     const full = Buffer.concat([payload, bait]);

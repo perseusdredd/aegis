@@ -6,7 +6,7 @@ function detectInitialLang() {
     return queryLang;
   }
   try {
-    const saved = localStorage.getItem("bla_lang");
+    const saved = localStorage.getItem("aegis_lang");
     if (saved && supported.includes(saved)) return saved;
   } catch {
     // ignore storage access issues
@@ -23,13 +23,13 @@ function detectInitialLang() {
 }
 
 function applyLanguage(lang) {
-  const dictRoot = window.BLA_I18N || {};
+  const dictRoot = window.AEGIS_I18N || {};
   const enDict = dictRoot.en || {};
   const langDict = dictRoot[lang] || enDict;
 
   document.documentElement.lang = lang;
   try {
-    localStorage.setItem("bla_lang", lang);
+    localStorage.setItem("aegis_lang", lang);
   } catch {
     // ignore
   }
@@ -46,13 +46,13 @@ function applyLanguage(lang) {
     if (val) el.innerHTML = val;
   });
 
-  const select = document.getElementById("bla-lang-select");
+  const select = document.getElementById("aegis-lang-select");
   if (select && select.value !== lang) {
     select.value = lang;
   }
 
-  window.BLA_CURRENT_LANG = lang;
-  window.dispatchEvent(new CustomEvent("bla:langchange", { detail: { lang } }));
+  window.AEGIS_CURRENT_LANG = lang;
+  window.dispatchEvent(new CustomEvent("aegis:langchange", { detail: { lang } }));
 }
 
 function formatStarCount(count) {
@@ -70,7 +70,7 @@ async function loadGitHubStars() {
   };
 
   try {
-    const cached = sessionStorage.getItem("bla_gh_stars");
+    const cached = sessionStorage.getItem("aegis_gh_stars");
     if (cached !== null) {
       renderStars(cached);
     }
@@ -87,7 +87,7 @@ async function loadGitHubStars() {
       if (typeof data.stargazers_count === "number") {
         renderStars(data.stargazers_count);
         try {
-          sessionStorage.setItem("bla_gh_stars", String(data.stargazers_count));
+          sessionStorage.setItem("aegis_gh_stars", String(data.stargazers_count));
         } catch {
           // ignore
         }
@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
   applyLanguage(initialLang);
   loadGitHubStars();
 
-  const select = document.getElementById("bla-lang-select");
+  const select = document.getElementById("aegis-lang-select");
   if (select) {
     select.addEventListener("change", (e) => {
       applyLanguage(e.target.value);
@@ -113,8 +113,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("[data-copy]").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const text = btn.getAttribute("data-copy") || "";
-      const dictRoot = window.BLA_I18N || {};
-      const lang = window.BLA_CURRENT_LANG || "en";
+      const dictRoot = window.AEGIS_I18N || {};
+      const lang = window.AEGIS_CURRENT_LANG || "en";
       const dict = dictRoot[lang] || dictRoot.en || {};
       try {
         await navigator.clipboard.writeText(text);

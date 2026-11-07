@@ -12,7 +12,7 @@ import {
 import { homedir } from "node:os";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { BLA_IDENTITY } from "../identity.js";
+import { AEGIS_IDENTITY } from "../identity.js";
 import {
   getClientConfigAdapter,
   normalizeClientId,
@@ -99,7 +99,7 @@ export interface InstalledClientRecord {
   readonly installedAt: string;
 }
 
-export interface BlaInstallManifest {
+export interface AegisInstallManifest {
   readonly version: 1;
   readonly updatedAt: string;
   readonly clients: Record<string, InstalledClientRecord>;
@@ -144,25 +144,25 @@ function hashMcpEntry(entry: McpServerRegistration): string {
   );
 }
 
-function isBlaOwnedMcpEntry(entry: McpServerRegistration): boolean {
+function isAegisOwnedMcpEntry(entry: McpServerRegistration): boolean {
   const cmd = entry.command.trim();
   const joinedArgs = entry.args.join(" ");
   if (
-    cmd === "bla" ||
-    cmd === "bla-agents" ||
-    cmd === "bla-shield" ||
-    cmd.endsWith("/bla") ||
-    cmd.endsWith("\\bla") ||
-    cmd.endsWith("/bla-agents") ||
-    cmd.endsWith("\\bla-agents") ||
-    cmd.endsWith("/bla-shield") ||
-    cmd.endsWith("\\bla-shield")
+    cmd === "aegis" ||
+    cmd === "aegis-agents" ||
+    cmd === "aegis-shield" ||
+    cmd.endsWith("/aegis") ||
+    cmd.endsWith("\\aegis") ||
+    cmd.endsWith("/aegis-agents") ||
+    cmd.endsWith("\\aegis-agents") ||
+    cmd.endsWith("/aegis-shield") ||
+    cmd.endsWith("\\aegis-shield")
   ) {
     return true;
   }
   if (
-    joinedArgs.includes(BLA_IDENTITY.packageName) ||
-    joinedArgs.includes(BLA_IDENTITY.packageAlias) ||
+    joinedArgs.includes(AEGIS_IDENTITY.packageName) ||
+    joinedArgs.includes(AEGIS_IDENTITY.packageAlias) ||
     joinedArgs.includes("dist/cli.js") ||
     joinedArgs.includes("src/cli.ts")
   ) {
@@ -174,7 +174,7 @@ function isBlaOwnedMcpEntry(entry: McpServerRegistration): boolean {
 function writeFileAtomicSync(targetPath: string, content: string | Buffer): void {
   const dir = dirname(targetPath);
   mkdirSync(dir, { recursive: true });
-  const tmpPath = `${targetPath}.bla-tmp-${process.pid}-${randomBytes(8).toString("hex")}`;
+  const tmpPath = `${targetPath}.aegis-tmp-${process.pid}-${randomBytes(8).toString("hex")}`;
   try {
     writeFileSync(tmpPath, content, { flag: "wx" });
     renameSync(tmpPath, targetPath);
@@ -191,10 +191,10 @@ function writeFileAtomicSync(targetPath: string, content: string | Buffer): void
 }
 
 export function getInstallManifestPath(home: string = homedir()): string {
-  return join(home, ".bla", "install-manifest.json");
+  return join(home, ".aegis", "install-manifest.json");
 }
 
-export function readInstallManifest(home: string = homedir()): BlaInstallManifest {
+export function readInstallManifest(home: string = homedir()): AegisInstallManifest {
   const manifestPath = getInstallManifestPath(home);
   if (!existsSync(manifestPath)) {
     return {
@@ -204,7 +204,7 @@ export function readInstallManifest(home: string = homedir()): BlaInstallManifes
     };
   }
   try {
-    const parsed = JSON.parse(readFileSync(manifestPath, "utf8")) as Partial<BlaInstallManifest>;
+    const parsed = JSON.parse(readFileSync(manifestPath, "utf8")) as Partial<AegisInstallManifest>;
     if (
       parsed &&
       parsed.version === 1 &&
@@ -228,9 +228,9 @@ export function readInstallManifest(home: string = homedir()): BlaInstallManifes
   };
 }
 
-function writeInstallManifest(home: string, manifest: BlaInstallManifest): string {
+function writeInstallManifest(home: string, manifest: AegisInstallManifest): string {
   const manifestPath = getInstallManifestPath(home);
-  const updated: BlaInstallManifest = {
+  const updated: AegisInstallManifest = {
     version: 1,
     updatedAt: new Date().toISOString(),
     clients: manifest.clients,
@@ -252,7 +252,7 @@ const SKILL_ENTRY_FILE = "SKILL.md";
 function resolveBundledSkillDirectory(): string | null {
   try {
     const thisDir = dirname(fileURLToPath(import.meta.url));
-    const candidate = resolve(thisDir, "../../.agents/skills/blind-llm-agents");
+    const candidate = resolve(thisDir, "../../.agents/skills/aegis-counter-rea");
     if (existsSync(join(candidate, SKILL_ENTRY_FILE))) return candidate;
   } catch {
     // fall through to inline fallback
@@ -263,13 +263,13 @@ function resolveBundledSkillDirectory(): string | null {
 function inlineFallbackSkill(): string {
   return [
     "---",
-    "name: blind-llm-agents",
-    "description: Audit, protect, and verify software artifacts (JavaScript/TypeScript, Electron ASAR, WebAssembly, Python, and Native Binaries) against AI reverse-engineering agents like REA using BLA.",
+    "name: aegis-counter-rea",
+    "description: Audit, protect, and verify software artifacts (JavaScript/TypeScript, Electron ASAR, WebAssembly, Python, and Native Binaries) against AI reverse-engineering agents like REA using AEGIS.",
     "---",
     "",
-    "# BLA: Blind LLM Agents (Counter-REA Defense Shield)",
+    "# AEGIS: Counter-REA Defense Shield",
     "",
-    "Use BLA (`bla_audit`, `bla_protect`, `bla_verify`, `bla_benchmark`, `bla_emit_headers`) whenever the user wants to:",
+    "Use AEGIS (`aegis_audit`, `aegis_protect`, `aegis_verify`, `aegis_benchmark`, `aegis_emit_headers`) whenever the user wants to:",
     "1. Audit how exposed an application, bundle, ASAR, WASM, Python `.pyc`, or native binary is to AI reverse-engineering tools (`rea`).",
     "2. Protect build artifacts before release by injecting Algorithmic Tarpits, REA Semantic Budget Breakers, Electron IPC Ambiguity, Honey Source Maps, and Architectural Chaff.",
     "3. Verify defense effectiveness and calculate attacker Token & Cost Amplification.",
@@ -294,7 +294,7 @@ function collectSkillFiles(root: string, dir: string, out: string[]): void {
 /**
  * Full installable skill bundle: SKILL.md first, then every supporting file
  * (references/, format appendices) so relative links in SKILL.md resolve after
- * `bla setup`. Falls back to the inline SKILL.md when the package tree is absent.
+ * `aegis setup`. Falls back to the inline SKILL.md when the package tree is absent.
  */
 export function resolveBundledSkillBundle(): readonly BundledSkillFile[] {
   const dir = resolveBundledSkillDirectory();
@@ -311,7 +311,7 @@ export function resolveBundledSkillBundle(): readonly BundledSkillFile[] {
   });
 }
 
-export const generateBlaSkillMarkdown = resolveBundledSkillContent;
+export const generateAegisSkillMarkdown = resolveBundledSkillContent;
 
 function removeOwnedSkillSupportFiles(
   skillDirectory: string,
@@ -377,9 +377,9 @@ export function runSetup(options: SetupRunOptions = {}): SetupRunResult {
   }
 
   const mcpCommand = options.mcpCommand ?? "npx";
-  // Pin the registered version to the BLA that is running setup so agent startup
+  // Pin the registered version to the AEGIS that is running setup so agent startup
   // never fetches a mutable `latest` tag from the registry (supply-chain hardening).
-  const mcpArgs = options.mcpArgs ? [...options.mcpArgs] : ["-y", `${BLA_IDENTITY.packageName}@${BLA_IDENTITY.version}`, "mcp"];
+  const mcpArgs = options.mcpArgs ? [...options.mcpArgs] : ["-y", `${AEGIS_IDENTITY.packageName}@${AEGIS_IDENTITY.version}`, "mcp"];
 
   const isDryRunOrPlanOnly = options.dryRun === true || options.yes === false;
   if (isDryRunOrPlanOnly) {
@@ -388,7 +388,7 @@ export function runSetup(options: SetupRunOptions = {}): SetupRunResult {
       displayName: c.displayName,
       format: c.format,
       configPath: c.configPath,
-      backupPath: existsSync(c.configPath) ? `${c.configPath}.bla-backup` : null,
+      backupPath: existsSync(c.configPath) ? `${c.configPath}.aegis-backup` : null,
       skillPath: join(c.skillDirectory, "SKILL.md"),
       mcpCommand,
       mcpArgs,
@@ -430,7 +430,7 @@ export function runSetup(options: SetupRunOptions = {}): SetupRunResult {
   for (const client of selected) {
     const adapter = getClientConfigAdapter(client.format);
     const skillPath = join(client.skillDirectory, "SKILL.md");
-    const backupPathCandidate = `${client.configPath}.bla-backup`;
+    const backupPathCandidate = `${client.configPath}.aegis-backup`;
     const configExistedBefore = existsSync(client.configPath);
     const skillDirectoryExistedBefore = existsSync(client.skillDirectory);
     const skillExistedBefore = existsSync(skillPath);
@@ -459,7 +459,7 @@ export function runSetup(options: SetupRunOptions = {}): SetupRunResult {
         continue;
       }
 
-      const readRes = adapter.readServer(existingRawContent, BLA_IDENTITY.mcpServerName);
+      const readRes = adapter.readServer(existingRawContent, AEGIS_IDENTITY.mcpServerName);
       if (readRes.status === "malformed") {
         anyError = true;
         completedActions.push({
@@ -499,7 +499,7 @@ export function runSetup(options: SetupRunOptions = {}): SetupRunResult {
             applied: false,
             error:
               readRes.error ??
-              `Invalid existing '${BLA_IDENTITY.mcpServerName}' MCP entry in '${client.configPath}'`,
+              `Invalid existing '${AEGIS_IDENTITY.mcpServerName}' MCP entry in '${client.configPath}'`,
           });
           continue;
         }
@@ -509,7 +509,7 @@ export function runSetup(options: SetupRunOptions = {}): SetupRunResult {
         const prevManifestRecord = updatedManifestClients[client.id];
         const entryHash = hashMcpEntry(readRes.entry);
         const ownedByManifest = prevManifestRecord?.writtenEntryHash === entryHash;
-        const ownedBySignature = isBlaOwnedMcpEntry(readRes.entry);
+        const ownedBySignature = isAegisOwnedMcpEntry(readRes.entry);
         const matchesRequested =
           readRes.entry.command === mcpCommand &&
           JSON.stringify(readRes.entry.args) === JSON.stringify(mcpArgs);
@@ -528,7 +528,7 @@ export function runSetup(options: SetupRunOptions = {}): SetupRunResult {
             selectionSource,
             status: "conflict",
             applied: false,
-            error: `Existing non-BLA MCP server '${BLA_IDENTITY.mcpServerName}' in '${client.configPath}'; refusing to overwrite without force`,
+            error: `Existing non-AEGIS MCP server '${AEGIS_IDENTITY.mcpServerName}' in '${client.configPath}'; refusing to overwrite without force`,
           });
           continue;
         }
@@ -595,7 +595,7 @@ export function runSetup(options: SetupRunOptions = {}): SetupRunResult {
     try {
       nextConfigContent = adapter.upsertServer(
         existingRawContent,
-        BLA_IDENTITY.mcpServerName,
+        AEGIS_IDENTITY.mcpServerName,
         registration,
       );
     } catch (err) {
@@ -618,7 +618,7 @@ export function runSetup(options: SetupRunOptions = {}): SetupRunResult {
       continue;
     }
 
-    // Non-clobbering backup: ONLY create `${configPath}.bla-backup` if it does not already exist!
+    // Non-clobbering backup: ONLY create `${configPath}.aegis-backup` if it does not already exist!
     let recordedBackupPath: string | null = null;
     let recordedBackupSha256: string | null = null;
     let configWritten = false;
@@ -642,7 +642,7 @@ export function runSetup(options: SetupRunOptions = {}): SetupRunResult {
     } catch (err) {
       // Roll the config back when the skill write failed after a successful
       // config write — never leave a half-installed registration (config
-      // pointing at BLA with no skill file).
+      // pointing at AEGIS with no skill file).
       if (configWritten) {
         try {
           if (configExistedBefore && existingRawContent !== null) {
@@ -743,7 +743,7 @@ export function runSetup(options: SetupRunOptions = {}): SetupRunResult {
     manifestPath,
     message:
       overallStatus === "applied"
-        ? `Configured BLA MCP server and skill for ${appliedCount} agent client(s). Restart your agent to load BLA tools, then run bla_harden . (or: Harden my software against REA).`
+        ? `Configured AEGIS MCP server and skill for ${appliedCount} agent client(s). Restart your agent to load AEGIS tools, then run aegis_harden . (or: Harden my software against REA).`
         : `Completed setup with status '${overallStatus}' (${appliedCount}/${completedActions.length} applied).`,
   };
 }
@@ -786,7 +786,7 @@ export function runUninstall(options: UninstallRunOptions = {}): UninstallRunRes
     let conflictReason: string | undefined;
     let errorMsg: string | undefined;
 
-    // 1. Check and remove MCP registration if owned by BLA
+    // 1. Check and remove MCP registration if owned by AEGIS
     if (existsSync(client.configPath)) {
       let rawConfig: string | null = null;
       try {
@@ -796,14 +796,14 @@ export function runUninstall(options: UninstallRunOptions = {}): UninstallRunRes
       }
 
       if (rawConfig !== null) {
-        const readRes = adapter.readServer(rawConfig, BLA_IDENTITY.mcpServerName);
+        const readRes = adapter.readServer(rawConfig, AEGIS_IDENTITY.mcpServerName);
         if (readRes.status === "malformed") {
           conflictReason =
             readRes.error ?? `Malformed configuration at '${client.configPath}'; refusing to modify`;
         } else if (readRes.status === "invalid_entry") {
           if (manifestRecord || options.force) {
             try {
-              const rem = adapter.removeServer(rawConfig, BLA_IDENTITY.mcpServerName);
+              const rem = adapter.removeServer(rawConfig, AEGIS_IDENTITY.mcpServerName);
               if (rem.removed) {
                 writeFileAtomicSync(client.configPath, rem.content);
                 mcpRemoved = true;
@@ -814,17 +814,17 @@ export function runUninstall(options: UninstallRunOptions = {}): UninstallRunRes
           } else {
             conflictReason =
               readRes.error ??
-              `Invalid non-BLA entry '${BLA_IDENTITY.mcpServerName}' in '${client.configPath}'; refusing to remove`;
+              `Invalid non-AEGIS entry '${AEGIS_IDENTITY.mcpServerName}' in '${client.configPath}'; refusing to remove`;
           }
         } else if (readRes.status === "valid" && readRes.entry) {
           const entryHash = hashMcpEntry(readRes.entry);
           const ownedByManifest = manifestRecord?.writtenEntryHash === entryHash;
-          const ownedBySignature = isBlaOwnedMcpEntry(readRes.entry);
+          const ownedBySignature = isAegisOwnedMcpEntry(readRes.entry);
           if (!ownedByManifest && !ownedBySignature && !options.force) {
-            conflictReason = `MCP entry '${BLA_IDENTITY.mcpServerName}' in '${client.configPath}' was not installed by BLA; preserving custom entry`;
+            conflictReason = `MCP entry '${AEGIS_IDENTITY.mcpServerName}' in '${client.configPath}' was not installed by AEGIS; preserving custom entry`;
           } else {
             try {
-              const rem = adapter.removeServer(rawConfig, BLA_IDENTITY.mcpServerName);
+              const rem = adapter.removeServer(rawConfig, AEGIS_IDENTITY.mcpServerName);
               if (rem.removed) {
                 writeFileAtomicSync(client.configPath, rem.content);
                 mcpRemoved = true;
@@ -837,7 +837,7 @@ export function runUninstall(options: UninstallRunOptions = {}): UninstallRunRes
       }
     }
 
-    // If MCP removal succeeded (or config had no conflicting BLA entry), check skill removal
+    // If MCP removal succeeded (or config had no conflicting AEGIS entry), check skill removal
     const canRemoveManifestRecord = !conflictReason && !errorMsg;
     if (canRemoveManifestRecord && manifestRecord) {
       delete remainingManifestClients[client.id];
@@ -863,7 +863,7 @@ export function runUninstall(options: UninstallRunOptions = {}): UninstallRunRes
         if (ownedByThisManifest || ownedByAnyManifest || ownedByFallbackUnmodified || options.force) {
           unlinkSync(skillPath);
           skillRemoved = true;
-          // Remove supporting bundle files BLA wrote (unmodified only), then
+          // Remove supporting bundle files AEGIS wrote (unmodified only), then
           // prune their now-empty subdirectories.
           removeOwnedSkillSupportFiles(
             client.skillDirectory,
@@ -885,7 +885,7 @@ export function runUninstall(options: UninstallRunOptions = {}): UninstallRunRes
         } else {
           conflictReason =
             conflictReason ??
-            `Skill file '${skillPath}' is not owned by BLA; preserving custom skill`;
+            `Skill file '${skillPath}' is not owned by AEGIS; preserving custom skill`;
         }
       } catch (err) {
         errorMsg =

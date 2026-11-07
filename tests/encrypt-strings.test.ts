@@ -22,7 +22,7 @@ describe("encrypt-strings (Direction-2)", () => {
   });
 
   it("encrypts FLAG + high-entropy in license.cjs and clears refuse lint", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-enc-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-enc-"));
     const src = `
 function unlock(key) {
   const flag = "FLAG{bla_v8_aegis_demo_fixture_not_the_real_prize}";
@@ -46,7 +46,7 @@ module.exports = { unlock };
     expect(report.postLintClean).toBe(true);
 
     const out = readFileSync(join(dir, "out", "license.cjs"), "utf8");
-    expect(out).toContain("_blaS");
+    expect(out).toContain("_aegisS");
     expect(out).not.toContain("FLAG{bla_v8_aegis_demo_fixture_not_the_real_prize}");
     expect(out).not.toContain("7f3a9c2e1b8d4f6a0e5c9b7d3a1f8e6c");
 
@@ -61,7 +61,7 @@ module.exports = { unlock };
   });
 
   it("same seed is reproducible; different seed differs", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-enc-repro-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-enc-repro-"));
     writeFileSync(
       join(dir, "license.cjs"),
       `module.exports.flag = "FLAG{repro_check_value_xx}";\n`,
@@ -91,7 +91,7 @@ module.exports = { unlock };
 
 
   it("encrypted stub does not trip lane-independence byte-compare lint", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-enc-lane-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-enc-lane-"));
     writeFileSync(
       join(dir, "license.cjs"),
       `function unlock(key){return key==="x"?"FLAG{lane_lint_safe_value_xx}":"no";}\nmodule.exports={unlock};\n`,
@@ -106,7 +106,7 @@ module.exports = { unlock };
   });
 
   it("leaves UI-only license alone (noop)", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-enc-ui-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-enc-ui-"));
     writeFileSync(
       join(dir, "license.cjs"),
       `module.exports = { title: "Enter license", hint: "16-char key" };\n`,

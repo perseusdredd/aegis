@@ -5,7 +5,7 @@ import type { SeededPrng } from "./prng.js";
  *
  * CRITICAL DEFENSIVE PROPERTY: every name drawn from this module must be
  * statistically indistinguishable from ordinary application identifiers.
- * No shared greppable substring (`_bla`, `$00_AAA`, `__bla_`, …) may appear
+ * No shared greppable substring (`_aegis`, `$00_AAA`, `__aegis_`, …) may appear
  * in the emitted artifact — a single `grep -v` must not be able to separate
  * injected noise from real code.
  */
@@ -192,7 +192,7 @@ export interface RealisticIdentifierOptions {
 
 /**
  * Draw a realistic identifier from a seeded distribution.
- * Guarantees: no `_bla`, `__bla`, `$00_AAA` substring; valid JS/TS/Python ident.
+ * Guarantees: no `_aegis`, `__aegis`, `$00_AAA` substring; valid JS/TS/Python ident.
  */
 export function realisticIdentifier(
   prng: SeededPrng,
@@ -272,7 +272,7 @@ export function realisticIdentifierBatch(
   return out;
 }
 
-/** Shared honey-table names for SQLite (no `_bla_` prefix; probe looks these up by name). */
+/** Shared honey-table names for SQLite (no `_aegis_` prefix; probe looks these up by name). */
 export const SQLITE_HONEY_TABLES = Object.freeze({
   keyHierarchy: "enclave_key_hierarchy",
   attestationLedger: "tpm2_attestation_ledger",
@@ -288,9 +288,9 @@ export const SQLITE_HONEY_TABLE_NAME_SET: ReadonlySet<string> = new Set(
 
 /** Forbidden greppable marker substrings that must NEVER appear in emitted artifacts. */
 export const FORBIDDEN_EMITTED_MARKERS: readonly RegExp[] = Object.freeze([
-  /_bla/i,
+  /_aegis/i,
   /\$00_AAA/,
-  /__bla/i,
+  /__aegis/i,
 ]);
 
 export function assertNoForbiddenMarkers(

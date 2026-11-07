@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { transformJavaScriptWithBlaShield } from "../src/shields/javascript/ast-shield.js";
+import { transformJavaScriptWithAegisShield } from "../src/shields/javascript/ast-shield.js";
 import { generateShadowHeapChurnShield } from "../src/shields/runtime/memory-diff-shield.js";
 import { generateFridaCaptureSaturation } from "../src/shields/exhaustion/frida-capture-saturation.js";
 import { generateChaffPayloads } from "../src/shields/chaff/chaff-generator.js";
@@ -8,7 +8,7 @@ import { SeededPrng } from "../src/core/prng.js";
 const GOLDEN_HEX = /0x9e3779b9/i;
 const GOLDEN_DEC = /\b2654435769\b/;
 
-describe("Issue #40: scrub BLA-injected golden constant templates", () => {
+describe("Issue #40: scrub AEGIS-injected golden constant templates", () => {
   it("memory-diff / frida / chaff generators never emit 0x9e3779b9 bit-identically", () => {
     for (const seed of [
       "issue-40-template-hygiene",
@@ -41,7 +41,7 @@ describe("Issue #40: scrub BLA-injected golden constant templates", () => {
       }
       module.exports = { schedule };
     `;
-    const result = transformJavaScriptWithBlaShield(source, {
+    const result = transformJavaScriptWithAegisShield(source, {
       intensity: "bankrupt",
       seed: "issue-40-injected-scrub",
       sourceType: "commonjs",

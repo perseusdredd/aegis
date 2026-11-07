@@ -23,9 +23,9 @@ import {
 import { protectNativeBinary } from "../src/shields/formats/native.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const BLA_ROOT = resolve(__dirname, "..");
+const AEGIS_ROOT = resolve(__dirname, "..");
 const REA_ROOT = resolve(
-  (process.env.REA_ROOT ?? "").trim() || join(BLA_ROOT, "..", "rea"),
+  (process.env.REA_ROOT ?? "").trim() || join(AEGIS_ROOT, "..", "rea"),
 );
 const REA_BUN_READER = join(REA_ROOT, "src/artifacts/BunStandaloneArtifactReader.ts");
 const REA_TSX = join(REA_ROOT, "node_modules/.bin/tsx");
@@ -102,7 +102,7 @@ describe("Bun standalone module graph counter (REA #6998)", () => {
 
   it("protectTarget leaves a runnable Bun-style executable intact and plants a decoy graph sidecar", () => {
     if (!existsSync(HOST_ELF)) return;
-    const dir = mkdtempSync(join(tmpdir(), "bla-bun-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-bun-"));
     try {
       const input = join(dir, "app");
       const output = join(dir, "out", "app");
@@ -124,7 +124,7 @@ describe("Bun standalone module graph counter (REA #6998)", () => {
 
   it("real REA BunStandaloneArtifactReader admits the decoy and publishes indexed-path limitations", () => {
     if (!existsSync(REA_BUN_READER) || !existsSync(REA_TSX)) return;
-    const dir = mkdtempSync(join(tmpdir(), "bla-bun-rea-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-bun-rea-"));
     try {
       const r = generateBunStandaloneDecoyGraph(new SeededPrng("rea-live"), "balanced");
       const decoy = join(dir, "app.bunfs-snapshot");

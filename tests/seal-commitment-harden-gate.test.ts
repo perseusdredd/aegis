@@ -11,7 +11,7 @@ afterEach(() => {
 });
 
 const ROUND2_SEAL = {
-  schema: "bla-redblue-r2-seal/v1",
+  schema: "aegis-redblue-r2-seal/v1",
   rounds: 28,
   scheduleSalt: 1374179543,
   revision: "7f325fec37206b637a224e9630b67c4a",
@@ -19,7 +19,7 @@ const ROUND2_SEAL = {
 };
 
 const ONE_WAY_SEAL = {
-  schema: "bla-entitlement-seal/v1",
+  schema: "aegis-entitlement-seal/v1",
   algorithm: "sha256",
   revision: "b38091d4a394ded9012846e8d4b647083b260beb6ee5ad1e42265fe6f107c660",
 };
@@ -37,7 +37,7 @@ const SAFE_JS = `
 
 describe("harden/protect seal-sidecar gate (red-blue round-2 P1)", () => {
   it("bankrupt harden refuses reversible plaintext seal.json by default", () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-seal-refuse-"));
+    const root = mkdtempSync(join(tmpdir(), "aegis-seal-refuse-"));
     dirs.push(root);
     writeFileSync(join(root, "gate.js"), SAFE_JS, "utf8");
     writeFileSync(join(root, "seal.json"), JSON.stringify(ROUND2_SEAL), "utf8");
@@ -64,7 +64,7 @@ describe("harden/protect seal-sidecar gate (red-blue round-2 P1)", () => {
   });
 
   it("bankrupt harden allows one-way sha256 seal.json", () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-seal-ok-"));
+    const root = mkdtempSync(join(tmpdir(), "aegis-seal-ok-"));
     dirs.push(root);
     writeFileSync(join(root, "gate.js"), SAFE_JS, "utf8");
     writeFileSync(join(root, "seal.json"), JSON.stringify(ONE_WAY_SEAL), "utf8");
@@ -79,7 +79,7 @@ describe("harden/protect seal-sidecar gate (red-blue round-2 P1)", () => {
   });
 
   it("allowPlaintextSeal overrides bankrupt refuse", () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-seal-allow-"));
+    const root = mkdtempSync(join(tmpdir(), "aegis-seal-allow-"));
     dirs.push(root);
     writeFileSync(join(root, "gate.js"), SAFE_JS, "utf8");
     writeFileSync(join(root, "seal.json"), JSON.stringify(ROUND2_SEAL), "utf8");
@@ -94,7 +94,7 @@ describe("harden/protect seal-sidecar gate (red-blue round-2 P1)", () => {
   });
 
   it("balanced intensity does not refuse (warning path only via lint)", () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-seal-bal-"));
+    const root = mkdtempSync(join(tmpdir(), "aegis-seal-bal-"));
     dirs.push(root);
     writeFileSync(join(root, "gate.js"), SAFE_JS, "utf8");
     writeFileSync(join(root, "seal.json"), JSON.stringify(ROUND2_SEAL), "utf8");
@@ -108,7 +108,7 @@ describe("harden/protect seal-sidecar gate (red-blue round-2 P1)", () => {
   });
 
   it("bankrupt protect refuses sibling seal.json", () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-seal-prot-"));
+    const root = mkdtempSync(join(tmpdir(), "aegis-seal-prot-"));
     dirs.push(root);
     const src = join(root, "gate.js");
     writeFileSync(src, SAFE_JS, "utf8");

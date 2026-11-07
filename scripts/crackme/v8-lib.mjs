@@ -632,7 +632,7 @@ export function assembleCoreWasm(masked, commitClear, seed) {
   ]);
   if (!WebAssembly.validate(bytes)) throw new Error("assembled wasm invalid");
   const out = Buffer.from(bytes);
-  out._blaMeta = {
+  out._aegisMeta = {
     padCount,
     unlockIdx,
     mixIdx,
@@ -883,13 +883,13 @@ export async function materializeTarget({ key, flag, seed = privateSeed(key, fla
   if (!sha256MaskKdf(keyBytes).equals(mask)) throw new Error("mask KDF mismatch");
 
   const wasm = assembleCoreWasm(masked, commit, seed);
-  const wasmMeta = wasm._blaMeta;
+  const wasmMeta = wasm._aegisMeta;
   if (!wasmMeta || wasmMeta.unlockIdx === 0) {
     throw new Error("R12 recipe: unlock body must not be at func idx 0");
   }
   const wasmLatin = wasm.toString("latin1");
   for (const bad of [
-    "R3PARM", "R3CIPH", "R2SEAL", "BLASALT", "BLAPARM",
+    "R3PARM", "R3CIPH", "R2SEAL", "AEGISSALT", "AEGISPARM",
   ]) {
     if (wasmLatin.includes(bad)) throw new Error("WASM unexpectedly contains " + bad);
   }
@@ -941,13 +941,13 @@ export function ensureDistBuilt() {
 }
 
 /**
- * Materialize cleartext then run real `bla harden` (bankrupt + self-seal, no allow-*).
+ * Materialize cleartext then run real `aegis harden` (bankrupt + self-seal, no allow-*).
  * Writes license.cjs / panel.html / core.wasm.gz / seal.json to outDir.
  */
 export async function hardenChallenge({ key, flag, outDir, seed = privateSeed(key, flag) }) {
   ensureDistBuilt();
   const { hardenProject } = await import("../../dist/engine/harden.js");
-  const { BLA_IDENTITY } = await import("../../dist/identity.js");
+  const { AEGIS_IDENTITY } = await import("../../dist/identity.js");
   const work = mkdtempSync(join(tmpdir(), "bla-crackme-v8-"));
   try {
     const stage = join(work, "app");
@@ -994,7 +994,7 @@ export async function hardenChallenge({ key, flag, outDir, seed = privateSeed(ke
     };
 
     return {
-      blaVersion: BLA_IDENTITY.version,
+      aegisVersion: AEGIS_IDENTITY.version,
       artifacts,
       hardenSummary: report.artifacts.map((a) => ({
         relativePath: a.relativePath.replaceAll("\\", "/"),

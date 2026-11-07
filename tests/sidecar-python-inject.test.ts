@@ -83,7 +83,7 @@ describe("sidecar Python inject strip⇒fail", () => {
   });
 
   it("runtime: intact sidecars pass; stripped sidecar fails closed", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-sidecar-py-inject-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-sidecar-py-inject-"));
     try {
       const entryPath = "main.py";
       const sibName = "sib.py";
@@ -119,7 +119,7 @@ describe("sidecar Python inject strip⇒fail", () => {
   });
 
   it("runtime: altered sidecar fails closed", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-sidecar-py-alter-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-sidecar-py-alter-"));
     try {
       const entryPath = "main.py";
       const sibName = "sib.bin";
@@ -153,7 +153,7 @@ describe("sidecar Python inject strip⇒fail", () => {
   });
 
   it("softFold flips digest u32 instead of raising when sidecar missing", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-sidecar-py-soft-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-sidecar-py-soft-"));
     try {
       const entryPath = "main.py";
       const sibName = "sib.py";
@@ -168,11 +168,11 @@ describe("sidecar Python inject strip⇒fail", () => {
         seedTag: "soft-py-v1",
         expectedHex: digest.hex,
         softFold: true,
-        bindingName: "__bla_sidecar_digest",
+        bindingName: "__aegis_sidecar_digest",
       });
       writeFileSync(
         join(dir, entryPath),
-        `${inject.preamble}\nprint(__bla_sidecar_digest)\n`,
+        `${inject.preamble}\nprint(__aegis_sidecar_digest)\n`,
         "utf8",
       );
       const out = runPython(join(dir, entryPath));

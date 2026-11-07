@@ -21,7 +21,7 @@ import { buildSampleSqliteDatabase } from "../src/shields/formats/sqlite.js";
 
 const tempDirs: string[] = [];
 function createTempDir(): string {
-  const dir = mkdtempSync(join(tmpdir(), "bla-harden-"));
+  const dir = mkdtempSync(join(tmpdir(), "aegis-harden-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -46,7 +46,7 @@ function minimalWasm(): Buffer {
   return Buffer.from([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]);
 }
 
-describe("bla_harden auto-discovery + one-sentence UX", () => {
+describe("aegis_harden auto-discovery + one-sentence UX", () => {
   it("discovers mixed artifact types under dist/ and hardens them all", () => {
     const root = createTempDir();
     const dist = join(root, "dist");
@@ -135,7 +135,7 @@ describe("bla_harden auto-discovery + one-sentence UX", () => {
     expect(report.hardenedCount).toBe(report.discoveredCount);
     expect(report.failedCount).toBe(0);
     expect(report.overallSuccess).toBe(true);
-    expect(report.oneSentenceUsage).toContain("bla_harden");
+    expect(report.oneSentenceUsage).toContain("aegis_harden");
 
     for (const a of report.artifacts) {
       expect(a.success).toBe(true);
@@ -159,7 +159,7 @@ describe("bla_harden auto-discovery + one-sentence UX", () => {
     }
   });
 
-  it("exposes bla_harden over MCP and CLI `bla harden`", async () => {
+  it("exposes aegis_harden over MCP and CLI `aegis harden`", async () => {
     const root = createTempDir();
     const dist = join(root, "dist");
     mkdirSync(dist, { recursive: true });
@@ -174,7 +174,7 @@ describe("bla_harden auto-discovery + one-sentence UX", () => {
       id: 7,
       method: "tools/call",
       params: {
-        name: "bla_harden",
+        name: "aegis_harden",
         arguments: { directory: root, intensity: "bankrupt" },
       },
     });
@@ -189,12 +189,12 @@ describe("bla_harden auto-discovery + one-sentence UX", () => {
       id: 8,
       method: "prompts/get",
       params: {
-        name: "bla-harden-project",
+        name: "aegis-harden-project",
         arguments: { directory: "." },
       },
     });
     const messages = (promptRes!.result as { messages: Array<{ content: { text: string } }> }).messages;
-    expect(messages[0]!.content.text).toContain("bla_harden");
+    expect(messages[0]!.content.text).toContain("aegis_harden");
 
     const log: string[] = [];
     const originalLog = console.log;
@@ -239,7 +239,7 @@ describe("bla_harden auto-discovery + one-sentence UX", () => {
     });
     expect(report.overallSuccess).toBe(true);
     expect(report.hardenedCount).toBeGreaterThanOrEqual(3);
-    expect(report.outputDirectory).toContain(".bla-hardened");
+    expect(report.outputDirectory).toContain(".aegis-hardened");
     expect(formatHardenProjectReport(report)).toContain("Output:");
   });
 

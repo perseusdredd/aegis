@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { transformJavaScriptWithBlaShield } from "../src/shields/javascript/ast-shield.js";
+import { transformJavaScriptWithAegisShield } from "../src/shields/javascript/ast-shield.js";
 import { recommendOpaqueSeedBinding } from "../src/shields/tarpit/opaque-predicates.js";
 
 describe("opaque-predicate seed strength (#40.4)", () => {
@@ -14,7 +14,7 @@ describe("opaque-predicate seed strength (#40.4)", () => {
 
   it("AST shield opaque seed is a wide deterministic integer, not hrtime/bit0-only", () => {
     const src = "export function f(n){ return n + 1; }\n";
-    const out = transformJavaScriptWithBlaShield(src, {
+    const out = transformJavaScriptWithAegisShield(src, {
       intensity: "balanced",
       seed: "opaque-strength-1",
     });
@@ -29,7 +29,7 @@ describe("opaque-predicate seed strength (#40.4)", () => {
     const n = Number(seedLit![1]);
     expect(n).toBeGreaterThan(0xff);
     // Deterministic across runs
-    const out2 = transformJavaScriptWithBlaShield(src, {
+    const out2 = transformJavaScriptWithAegisShield(src, {
       intensity: "balanced",
       seed: "opaque-strength-1",
     });

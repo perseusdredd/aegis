@@ -18,9 +18,9 @@ const updated = identityText.replace(
 
 if (updated !== identityText) {
   writeFileSync(identityPath, updated, "utf8");
-  console.log(`Synced BLA_IDENTITY.version -> ${version}`);
+  console.log(`Synced AEGIS_IDENTITY.version -> ${version}`);
 } else {
-  console.log(`BLA_IDENTITY.version already at ${version}`);
+  console.log(`AEGIS_IDENTITY.version already at ${version}`);
 }
 
 // Keep package-lock.json's root version in lockstep — `npm version` normally
@@ -43,8 +43,8 @@ try {
   console.warn(`Skipped package-lock.json sync: ${err instanceof Error ? err.message : String(err)}`);
 }
 
-// Keep CrackMe SEAL blaVersion labels in lockstep with package.json (CI
-// v7-seal rejects seal.blaVersion !== package.json.version). Digests stay
+// Keep CrackMe SEAL aegisVersion labels in lockstep with package.json (CI
+// v7-seal rejects seal.aegisVersion !== package.json.version). Digests stay
 // untouched — only the version metadata field is rewritten.
 for (const rel of [
   "challenge/v6/SEAL.json",
@@ -56,14 +56,14 @@ for (const rel of [
   try {
     const sealText = readFileSync(sealPath, "utf8");
     const next = sealText.replace(
-      /"blaVersion"\s*:\s*"[^"]+"/,
-      `"blaVersion": "${version}"`,
+      /"aegisVersion"\s*:\s*"[^"]+"/,
+      `"aegisVersion": "${version}"`,
     );
     if (next !== sealText) {
       writeFileSync(sealPath, next, "utf8");
-      console.log(`Synced ${rel} blaVersion -> ${version}`);
+      console.log(`Synced ${rel} aegisVersion -> ${version}`);
     } else {
-      console.log(`${rel} blaVersion already at ${version}`);
+      console.log(`${rel} aegisVersion already at ${version}`);
     }
   } catch (err) {
     console.warn(`Skipped ${rel}: ${err instanceof Error ? err.message : String(err)}`);

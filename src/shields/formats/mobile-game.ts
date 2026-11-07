@@ -22,7 +22,7 @@ export function inspectAndroidDex(bytes: Buffer): {
   readonly validDex: boolean;
   readonly version: string;
   readonly fileSize: number;
-  readonly blaProtected: boolean;
+  readonly aegisProtected: boolean;
 } {
   if (
     bytes.length < 112 ||
@@ -31,7 +31,7 @@ export function inspectAndroidDex(bytes: Buffer): {
     bytes[2] !== 0x78 ||
     bytes[3] !== 0x0a
   ) {
-    return { validDex: false, version: "000", fileSize: 0, blaProtected: false };
+    return { validDex: false, version: "000", fileSize: 0, aegisProtected: false };
   }
   const version = bytes.subarray(4, 7).toString("ascii");
   const fileSize = bytes.readUInt32LE(32);
@@ -40,9 +40,9 @@ export function inspectAndroidDex(bytes: Buffer): {
     validDex: true,
     version,
     fileSize,
-    blaProtected:
+    aegisProtected:
       textLatin1.includes("Lcom/enclave/sgx/TeeAttestationBridge;") ||
-      textLatin1.includes("BLA-DEX-SHIELD"),
+      textLatin1.includes("AEGIS-DEX-SHIELD"),
   };
 }
 
@@ -67,7 +67,7 @@ export function protectAndroidDexBuffer(
   readonly diagnosticsEmbedded: number;
 } {
   const intensity = options.intensity ?? "balanced";
-  const prng = new SeededPrng(options.seed ?? "bla-dex-shield-v1");
+  const prng = new SeededPrng(options.seed ?? "aegis-dex-shield-v1");
   const chaffPayloads = generateChaffPayloads(prng, intensity);
   const deception = buildCanaryAndDiagnosticPayloads(prng, intensity);
 
@@ -95,7 +95,7 @@ export function protectAndroidDexBuffer(
   // and plants JNI-mangled Java_* names that match the decoy .so exports (REA #7472).
   const jniNames = buildJniExportNames(prng, intensity === "stealth" ? 8 : intensity === "balanced" ? 16 : 48);
   const trailerText = [
-    "\0[BLA-DEX-SHIELD-V1]",
+    "\0[AEGIS-DEX-SHIELD-V1]",
     ...decoyClasses,
     ...jniNames,
     ...chaffPayloads.map((p) => p.rawText),
@@ -139,7 +139,7 @@ export function protectIl2cppMetadataBuffer(
   readonly diagnosticsEmbedded: number;
 } {
   const intensity = options.intensity ?? "balanced";
-  const prng = new SeededPrng(options.seed ?? "bla-il2cpp-shield-v1");
+  const prng = new SeededPrng(options.seed ?? "aegis-il2cpp-shield-v1");
   const chaffPayloads = generateChaffPayloads(prng, intensity);
   const deception = buildCanaryAndDiagnosticPayloads(prng, intensity);
 
@@ -163,7 +163,7 @@ export function protectIl2cppMetadataBuffer(
   }
 
   const trailer = Buffer.from(
-    `\0[BLA-IL2CPP-SHIELD]\0${literals.join("\0")}\0`,
+    `\0[AEGIS-IL2CPP-SHIELD]\0${literals.join("\0")}\0`,
     "utf8",
   );
 

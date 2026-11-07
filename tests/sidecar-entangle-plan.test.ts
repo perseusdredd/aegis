@@ -6,21 +6,21 @@ import {
 import { evaluateCoverageMatrix } from "../src/engine/integrity-coverage.js";
 
 describe("sidecar entry entanglement planner (Direction-3)", () => {
-  it("returns a bla-sidecar-entangle/v1 plan with stable planId + coverage matrix", () => {
+  it("returns a aegis-sidecar-entangle/v1 plan with stable planId + coverage matrix", () => {
     const fileBytes = {
       "dist/main.js": Buffer.from("entry-body-v1"),
-      "dist/main.js.bla-sidecar": Buffer.from("sidecar-a"),
+      "dist/main.js.aegis-sidecar": Buffer.from("sidecar-a"),
       "dist/assets.chaff": Buffer.from("chaff"),
     };
     const a = planSidecarEntanglement({
       entryPath: "dist/main.js",
-      sidecarPaths: ["dist/main.js.bla-sidecar", "dist/assets.chaff"],
+      sidecarPaths: ["dist/main.js.aegis-sidecar", "dist/assets.chaff"],
       seedTag: "test-seed",
       fileBytes,
     });
     const b = planSidecarEntanglement({
       entryPath: "dist/main.js",
-      sidecarPaths: ["dist/main.js.bla-sidecar", "dist/assets.chaff"],
+      sidecarPaths: ["dist/main.js.aegis-sidecar", "dist/assets.chaff"],
       seedTag: "test-seed",
       fileBytes,
     });
@@ -30,7 +30,7 @@ describe("sidecar entry entanglement planner (Direction-3)", () => {
     expect(a.planId).toBe(b.planId);
     expect(a.digestAlgorithm).toBe("sha256");
     expect(a.sidecarPaths).toHaveLength(2);
-    expect(a.coverageMatrix.schema).toBe("bla-integrity-coverage/v1");
+    expect(a.coverageMatrix.schema).toBe("aegis-integrity-coverage/v1");
     expect(evaluateCoverageMatrix(a.coverageMatrix).ok).toBe(true);
   });
 

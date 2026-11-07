@@ -1,15 +1,15 @@
 import { createRequire } from "node:module";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
-import { BLA_ROOT } from "./paths.mjs";
+import { AEGIS_ROOT } from "./paths.mjs";
 
 const distSpecifier = (p) => pathToFileURL(p).href;
 
 const require = createRequire(import.meta.url);
 
-/** Load BLA compiled modules (dist/). */
-export async function loadBla() {
-  const base = join(BLA_ROOT, "dist/shields/formats");
+/** Load AEGIS compiled modules (dist/). */
+export async function loadAegis() {
+  const base = join(AEGIS_ROOT, "dist/shields/formats");
   return {
     buildMappedGoFlutterElfFixture: (
       await import(distSpecifier(join(base, "go-flutter-exhaustion.js")))
@@ -44,21 +44,21 @@ export async function loadBla() {
       await import(distSpecifier(join(base, "electron-fuses.js")))
     ).inspectElectronFusesBuffer,
     planAsarHeaderAmplification: (
-      await import(distSpecifier(join(BLA_ROOT, "dist/shields/exhaustion/asar-header-amplifier.js")))
+      await import(distSpecifier(join(AEGIS_ROOT, "dist/shields/exhaustion/asar-header-amplifier.js")))
     ).planAsarHeaderAmplification,
     planWasmInterfaceBudgetExhaustion: (
       await import(
         distSpecifier(
-          join(BLA_ROOT, "dist/shields/exhaustion/wasm-interface-exhaustion.js"),
+          join(AEGIS_ROOT, "dist/shields/exhaustion/wasm-interface-exhaustion.js"),
         )
       )
     ).planWasmInterfaceBudgetExhaustion,
-    SeededPrng: (await import(distSpecifier(join(BLA_ROOT, "dist/core/prng.js")))).SeededPrng,
-    REA_INTERNAL_LIMITS: (await import(distSpecifier(join(BLA_ROOT, "dist/identity.js"))))
+    SeededPrng: (await import(distSpecifier(join(AEGIS_ROOT, "dist/core/prng.js")))).SeededPrng,
+    REA_INTERNAL_LIMITS: (await import(distSpecifier(join(AEGIS_ROOT, "dist/identity.js"))))
       .REA_INTERNAL_LIMITS,
-    transformJavaScriptWithBlaShield: (
-      await import(distSpecifier(join(BLA_ROOT, "dist/shields/javascript/ast-shield.js")))
-    ).transformJavaScriptWithBlaShield,
+    transformJavaScriptWithAegisShield: (
+      await import(distSpecifier(join(AEGIS_ROOT, "dist/shields/javascript/ast-shield.js")))
+    ).transformJavaScriptWithAegisShield,
   };
 }
 
@@ -136,8 +136,8 @@ export function buildMinimalPtx() {
   );
 }
 
-export function buildMinimalSafetensors(bla) {
-  return bla.buildSafetensorsBuffer(
+export function buildMinimalSafetensors(aegis) {
+  return aegis.buildSafetensorsBuffer(
     {
       weight: { dtype: "F32", shape: [2, 2], data_offsets: [0, 16] },
       __metadata__: { model: "redteam-demo" },
@@ -159,8 +159,8 @@ export function buildMinimalGguf() {
 
 
 /** Minimal Electron ASAR with package.json + main.js. */
-export function buildMinimalAsar(bla) {
-  return bla.packAsarBuffer([
+export function buildMinimalAsar(aegis) {
+  return aegis.packAsarBuffer([
     {
       relativePath: "package.json",
       content: Buffer.from(
@@ -195,49 +195,49 @@ export function buildMinimalWasm() {
  * Build the red-team sample matrix: one entry per empirically runnable format.
  */
 export async function buildSampleMatrix() {
-  const bla = await loadBla();
+  const aegis = await loadAegis();
   const intensity = "bankrupt";
-  const seed = "bla-redteam-empirical-v1";
+  const seed = "aegis-redteam-empirical-v1";
 
-  const elfRaw = bla.buildMappedGoFlutterElfFixture();
-  const elfHard = bla.protectNativeBinary(elfRaw, { intensity, seed });
+  const elfRaw = aegis.buildMappedGoFlutterElfFixture();
+  const elfHard = aegis.protectNativeBinary(elfRaw, { intensity, seed });
 
   const beamRaw = buildMinimalBeam();
-  const beamHard = bla.protectErlangBeamBuffer(beamRaw, { intensity, seed });
+  const beamHard = aegis.protectErlangBeamBuffer(beamRaw, { intensity, seed });
 
   const evmRaw = buildMinimalEvm();
-  const evmHard = bla.protectEvmBytecodeBuffer(evmRaw, { intensity, seed });
+  const evmHard = aegis.protectEvmBytecodeBuffer(evmRaw, { intensity, seed });
 
   const pcapRaw = buildMinimalPcap();
-  const pcapHard = bla.protectPcapCaptureBuffer(pcapRaw, {
+  const pcapHard = aegis.protectPcapCaptureBuffer(pcapRaw, {
     intensity,
     seed,
   });
 
   const ptxRaw = buildMinimalPtx();
-  const ptxHard = bla.protectGpuPtxText(ptxRaw.toString('utf8'), { intensity, seed });
+  const ptxHard = aegis.protectGpuPtxText(ptxRaw.toString('utf8'), { intensity, seed });
 
-  const stRaw = buildMinimalSafetensors(bla);
-  const stHard = bla.protectSafetensorsBuffer(stRaw, { intensity, seed });
+  const stRaw = buildMinimalSafetensors(aegis);
+  const stHard = aegis.protectSafetensorsBuffer(stRaw, { intensity, seed });
 
   let ggufRaw = buildMinimalGguf();
   let ggufHard;
   try {
-    ggufHard = bla.protectGgufBuffer(ggufRaw, { intensity, seed });
+    ggufHard = aegis.protectGgufBuffer(ggufRaw, { intensity, seed });
   } catch (err) {
     ggufHard = { buffer: ggufRaw, error: String(err?.message ?? err) };
   }
 
   // Electron ASAR — densify header past DEFAULT_ASAR_MAX_HEADER_BYTES (16 MiB).
-  const asarRaw = buildMinimalAsar(bla);
-  const asarFiles = [...bla.unpackAsarBuffer(asarRaw)];
-  const asarPlan = bla.planAsarHeaderAmplification(
-    new bla.SeededPrng(`${seed}:asar`),
+  const asarRaw = buildMinimalAsar(aegis);
+  const asarFiles = [...aegis.unpackAsarBuffer(asarRaw)];
+  const asarPlan = aegis.planAsarHeaderAmplification(
+    new aegis.SeededPrng(`${seed}:asar`),
     intensity,
   );
   for (const decoy of asarPlan.files) asarFiles.push(decoy);
   const asarHard = {
-    buffer: bla.packAsarBuffer(asarFiles),
+    buffer: aegis.packAsarBuffer(asarFiles),
     decoyFiles: asarPlan.files.length,
     estimatedHeaderBytes: asarPlan.estimatedHeaderBytes,
     exceedsDefaultAdmission: asarPlan.exceedsDefaultAdmission,
@@ -245,7 +245,7 @@ export async function buildSampleMatrix() {
 
   // WASM — bankrupt interface exhaustion past 32 MiB representation budget.
   const wasmRaw = buildMinimalWasm();
-  const wasmHard = bla.protectWasmBinary(wasmRaw, { intensity, seed });
+  const wasmHard = aegis.protectWasmBinary(wasmRaw, { intensity, seed });
 
   // SQLite — honey tables + canaries (REA inspect is Node 24.15+ gated).
   let sqliteRaw = Buffer.alloc(0);
@@ -256,8 +256,8 @@ export async function buildSampleMatrix() {
     canaryTokensEmbedded: 0,
   };
   try {
-    sqliteRaw = bla.buildSampleSqliteDatabase();
-    sqliteHard = bla.protectSqliteBuffer(sqliteRaw, { intensity, seed });
+    sqliteRaw = aegis.buildSampleSqliteDatabase();
+    sqliteHard = aegis.protectSqliteBuffer(sqliteRaw, { intensity, seed });
   } catch (err) {
     sqliteHard = {
       buffer: sqliteRaw,
@@ -293,14 +293,14 @@ function quote(qty, listPrice, margin) {
 module.exports = { balanced, bankrupt, quote, BASE_RATE, VAT_RATE };
 `;
   const jsRaw = Buffer.from(jsRawText, "utf8");
-  const jsHard = bla.transformJavaScriptWithBlaShield(jsRawText, {
+  const jsHard = aegis.transformJavaScriptWithAegisShield(jsRawText, {
     intensity,
     seed: `${seed}:js`,
     sourceType: "commonjs",
   });
 
   return {
-    bla,
+    aegis,
     intensity,
     seed,
     samples: {

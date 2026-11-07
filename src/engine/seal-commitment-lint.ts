@@ -17,7 +17,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 import { walkBounded } from "../core/walk.js";
 
-export const SEAL_COMMITMENT_SCHEMA = "bla-seal-commitment-lint/v1" as const;
+export const SEAL_COMMITMENT_SCHEMA = "aegis-seal-commitment-lint/v1" as const;
 
 export type SealCommitmentFindingId =
   | "plaintext-seal-sidecar"
@@ -77,7 +77,7 @@ const SKIP_DIR_NAMES = new Set([
   ".git",
   ".hg",
   ".svn",
-  ".bla-hardened",
+  ".aegis-hardened",
   "coverage",
   ".next",
   ".turbo",

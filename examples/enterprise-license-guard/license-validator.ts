@@ -2,9 +2,9 @@
  * Counter-Showcase #3: Enterprise Offline License & Crypto Entitlement Guard
  *
  * Run pre-flight audit:
- *   npx bla-shield audit examples/enterprise-license-guard/license-validator.ts
+ *   npx aegis-shield audit examples/enterprise-license-guard/license-validator.ts
  * Protect against REA:
- *   npx bla-shield protect examples/enterprise-license-guard/license-validator.ts
+ *   npx aegis-shield protect examples/enterprise-license-guard/license-validator.ts
  */
 
 export interface LicenseVerdict {

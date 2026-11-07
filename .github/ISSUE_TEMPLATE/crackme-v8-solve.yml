@@ -15,7 +15,7 @@ body:
         - Executed hardened app (intended)
         - Full WASM reverse of unlock
         - Packaging / lint footgun (should be closed in 2.0)
-        - BLA product gap / generic harden bypass
+        - AEGIS product gap / generic harden bypass
     validations:
       required: true
   - type: input
@@ -30,6 +30,6 @@ body:
     id: method
     attributes:
       label: Method notes
-      description: What you recovered (KDF, commitment layout, body-index, etc.) and whether a general BLA bypass was involved.
+      description: What you recovered (KDF, commitment layout, body-index, etc.) and whether a general AEGIS bypass was involved.
     validations:
       required: true

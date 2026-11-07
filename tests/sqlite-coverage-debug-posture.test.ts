@@ -25,7 +25,7 @@ import {
 import { generateRuntimeDeceptionSnippet } from "../src/shields/runtime/runtime-shield.js";
 import { SeededPrng } from "../src/core/prng.js";
 import { generateChaffPayloads } from "../src/shields/chaff/chaff-generator.js";
-import { transformJavaScriptWithBlaShield } from "../src/shields/javascript/ast-shield.js";
+import { transformJavaScriptWithAegisShield } from "../src/shields/javascript/ast-shield.js";
 
 describe("Issues #18, #19, #20, #21 — SQLite Consistency/Policy, Debug Posture & Server Coverage", () => {
   const tempDirs: string[] = [];
@@ -40,7 +40,7 @@ describe("Issues #18, #19, #20, #21 — SQLite Consistency/Policy, Debug Posture
   // ==========================================================================
   describe.skipIf(!isNodeSqliteAvailable())("Issue #18: SQLite DB/WAL consistency validation before protection", () => {
     it("rejects uncheckpointed WAL database (both by path and by main-file buffer) instead of dropping committed rows", () => {
-      const dir = mkdtempSync(join(tmpdir(), "bla-sqlite-wal-repro-"));
+      const dir = mkdtempSync(join(tmpdir(), "aegis-sqlite-wal-repro-"));
       tempDirs.push(dir);
       const dbPath = join(dir, "live.sqlite");
       const DatabaseSync = getDatabaseSyncClass();
@@ -77,7 +77,7 @@ describe("Issues #18, #19, #20, #21 — SQLite Consistency/Policy, Debug Posture
     });
 
     it("rejects hot rollback journal (-journal) and truncated/corrupt SQLite buffers", () => {
-      const dir = mkdtempSync(join(tmpdir(), "bla-sqlite-journal-"));
+      const dir = mkdtempSync(join(tmpdir(), "aegis-sqlite-journal-"));
       tempDirs.push(dir);
       const dbPath = join(dir, "app.sqlite");
       const validBytes = buildSampleSqliteDatabase();
@@ -97,7 +97,7 @@ describe("Issues #18, #19, #20, #21 — SQLite Consistency/Policy, Debug Posture
     });
 
     it("accepts a consistent standalone backup (VACUUM INTO) from a WAL database and preserves 100% of business rows", () => {
-      const dir = mkdtempSync(join(tmpdir(), "bla-sqlite-backup-"));
+      const dir = mkdtempSync(join(tmpdir(), "aegis-sqlite-backup-"));
       tempDirs.push(dir);
       const livePath = join(dir, "live.sqlite");
       const backupPath = join(dir, "standalone-backup.sqlite");
@@ -158,7 +158,7 @@ describe("Issues #18, #19, #20, #21 — SQLite Consistency/Policy, Debug Posture
 
       const inspection = inspectSqliteBuffer(protectedSqlite.buffer, customPolicy);
       expect(inspection.validSqlite).toBe(true);
-      expect(inspection.blaProtected).toBe(true);
+      expect(inspection.aegisProtected).toBe(true);
       expect(inspection.decorationState).toBe("decorated");
       expect(inspection.businessDataState).toBe("business-data-preserved");
       // Honey tables DO NOT establish confidentiality!
@@ -212,9 +212,9 @@ describe("Issues #18, #19, #20, #21 — SQLite Consistency/Policy, Debug Posture
   // ==========================================================================
   describe("Issue #19: Production debug exposure posture and decorative runtime boundary", () => {
     it("distinguishes exposed debuggable build configs, hardened production configs, and unknown configs", () => {
-      const debugDir = mkdtempSync(join(tmpdir(), "bla-debug-posture-exposed-"));
-      const prodDir = mkdtempSync(join(tmpdir(), "bla-debug-posture-hardened-"));
-      const emptyDir = mkdtempSync(join(tmpdir(), "bla-debug-posture-unknown-"));
+      const debugDir = mkdtempSync(join(tmpdir(), "aegis-debug-posture-exposed-"));
+      const prodDir = mkdtempSync(join(tmpdir(), "aegis-debug-posture-hardened-"));
+      const emptyDir = mkdtempSync(join(tmpdir(), "aegis-debug-posture-unknown-"));
       tempDirs.push(debugDir, prodDir, emptyDir);
 
       // 1. Debuggable fixture
@@ -432,7 +432,7 @@ describe("Issues #18, #19, #20, #21 — SQLite Consistency/Policy, Debug Posture
       });
       expect(expiredRes.status).toBe(401);
 
-      // 6. Client workflow produces identical results before and after BLA AST protection
+      // 6. Client workflow produces identical results before and after AEGIS AST protection
       const freshSession = service.issueSession({
         userId: "user_a_client",
         tenantId: "tenant_alpha",
@@ -449,7 +449,7 @@ describe("Issues #18, #19, #20, #21 — SQLite Consistency/Policy, Debug Posture
         }
         module.exports = { fetchTenantDoc };
       `;
-      const protectedClientCode = transformJavaScriptWithBlaShield(clientCode, {
+      const protectedClientCode = transformJavaScriptWithAegisShield(clientCode, {
         intensity: "balanced",
         seed: "client-workflow-seed",
       }).code;

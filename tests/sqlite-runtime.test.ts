@@ -28,7 +28,7 @@ describe("SQLite runtime floor", () => {
     if (SQLITE_AVAILABLE) {
       expect(() => getDatabaseSyncClass()).not.toThrow();
     } else {
-      expect(() => getDatabaseSyncClass()).toThrow(/BLA SQLite support requires Node/);
+      expect(() => getDatabaseSyncClass()).toThrow(/AEGIS SQLite support requires Node/);
     }
   });
 
@@ -73,7 +73,7 @@ describe("SQLite runtime floor", () => {
       );
       expect(result.status).not.toBe(0);
       expect(result.stderr).toContain(
-        "BLA SQLite support requires Node.js 22.x >=22.13.0 or Node.js >=24.0.0",
+        "AEGIS SQLite support requires Node.js 22.x >=22.13.0 or Node.js >=24.0.0",
       );
     },
   );

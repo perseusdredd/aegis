@@ -4,18 +4,18 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const MODULE_DIR = dirname(fileURLToPath(import.meta.url));
-export const BLA_PACKAGE_ROOT = resolve(MODULE_DIR, "../..");
+export const AEGIS_PACKAGE_ROOT = resolve(MODULE_DIR, "../..");
 
 /** Resolve sibling REA checkout the same way scripts/verify-rea-constants.mjs does. */
 export function resolveReaRoot(override?: string): string {
   const fromArg = (override ?? "").trim();
   const fromEnv = (process.env.REA_ROOT ?? "").trim();
-  return resolve(fromArg || fromEnv || join(BLA_PACKAGE_ROOT, "..", "rea"));
+  return resolve(fromArg || fromEnv || join(AEGIS_PACKAGE_ROOT, "..", "rea"));
 }
 
 export function reaCheckoutPresent(reaRoot = resolveReaRoot()): boolean {
   return (
-    reaRoot !== BLA_PACKAGE_ROOT &&
+    reaRoot !== AEGIS_PACKAGE_ROOT &&
     existsSync(reaRoot) &&
     existsSync(join(reaRoot, "src"))
   );
@@ -42,10 +42,10 @@ function clipObservabilityStream(text: string): string {
 export type ReaObservabilityStatus = "pass" | "fail" | "unverified" | "available";
 
 export interface ReaDriftReport {
-  readonly schema: "bla-rea-drift/v1";
+  readonly schema: "aegis-rea-drift/v1";
   readonly status: ReaObservabilityStatus;
   readonly reaRoot: string;
-  readonly blaRoot: string;
+  readonly aegisRoot: string;
   readonly exitCode: number | null;
   readonly reason?: string;
   readonly stdout: string;
@@ -63,12 +63,12 @@ export function runReaDriftCheck(options: {
   readonly reaRoot?: string;
   readonly timeoutMs?: number;
 } = {}): ReaDriftReport {
-  const blaRoot = BLA_PACKAGE_ROOT;
+  const aegisRoot = AEGIS_PACKAGE_ROOT;
   const reaRoot = resolveReaRoot(options.reaRoot);
   const base = {
-    schema: "bla-rea-drift/v1" as const,
+    schema: "aegis-rea-drift/v1" as const,
     reaRoot,
-    blaRoot,
+    aegisRoot,
     notRedTeamEvidence: true as const,
   };
 
@@ -77,13 +77,13 @@ export function runReaDriftCheck(options: {
       ...base,
       status: "unverified",
       exitCode: null,
-      reason: `Sibling REA checkout not found at ${reaRoot} (set REA_ROOT or place REA next to BLA). Drift check cannot run.`,
+      reason: `Sibling REA checkout not found at ${reaRoot} (set REA_ROOT or place REA next to AEGIS). Drift check cannot run.`,
       stdout: "",
       stderr: "",
     };
   }
 
-  const script = join(blaRoot, "scripts", "verify-rea-constants.mjs");
+  const script = join(aegisRoot, "scripts", "verify-rea-constants.mjs");
   if (!existsSync(script)) {
     return {
       ...base,
@@ -96,7 +96,7 @@ export function runReaDriftCheck(options: {
   }
 
   const result = spawnSync(process.execPath, [script], {
-    cwd: blaRoot,
+    cwd: aegisRoot,
     encoding: "utf8",
     env: { ...process.env, REA_ROOT: reaRoot },
     timeout: options.timeoutMs ?? 120_000,
@@ -129,17 +129,17 @@ export function runReaDriftCheck(options: {
 }
 
 export const REDTEAM_REPORT_JSON = join(
-  BLA_PACKAGE_ROOT,
+  AEGIS_PACKAGE_ROOT,
   "docs",
   "redteam",
   "empirical-rea-validation.json",
 );
 
 export interface RedteamReportResult {
-  readonly schema: "bla-redteam-report/v1";
+  readonly schema: "aegis-redteam-report/v1";
   readonly status: ReaObservabilityStatus;
   readonly reaRoot: string;
-  readonly blaRoot: string;
+  readonly aegisRoot: string;
   readonly reportPath: string;
   readonly reason?: string;
   readonly report?: unknown;
@@ -161,13 +161,13 @@ export function getRedteamReport(options: {
   readonly timeoutMs?: number;
   readonly reportPath?: string;
 } = {}): RedteamReportResult {
-  const blaRoot = BLA_PACKAGE_ROOT;
+  const aegisRoot = AEGIS_PACKAGE_ROOT;
   const reaRoot = resolveReaRoot(options.reaRoot);
   const reportPath = resolve(options.reportPath ?? REDTEAM_REPORT_JSON);
   const base = {
-    schema: "bla-redteam-report/v1" as const,
+    schema: "aegis-redteam-report/v1" as const,
     reaRoot,
-    blaRoot,
+    aegisRoot,
     reportPath,
   };
 
@@ -183,7 +183,7 @@ export function getRedteamReport(options: {
         stderr: "",
       };
     }
-    const script = join(blaRoot, "scripts", "redteam", "run.mjs");
+    const script = join(aegisRoot, "scripts", "redteam", "run.mjs");
     if (!existsSync(script)) {
       return {
         ...base,
@@ -196,7 +196,7 @@ export function getRedteamReport(options: {
       };
     }
     const result = spawnSync(process.execPath, [script], {
-      cwd: blaRoot,
+      cwd: aegisRoot,
       encoding: "utf8",
       env: { ...process.env, REA_ROOT: reaRoot },
       timeout: options.timeoutMs ?? 600_000,

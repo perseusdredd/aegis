@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * CrackMe v9 — Sovereign (BLA 3.0 Agent-Driven Hardening Showcase).
+ * CrackMe v9 — Sovereign (AEGIS 3.0 Agent-Driven Hardening Showcase).
  *
  * Advances over CrackMe v8 (Aegis):
- *   1. Full 4-Stage BLA 3.0 Agent-Driven Pipeline enforced at build time:
+ *   1. Full 4-Stage AEGIS 3.0 Agent-Driven Pipeline enforced at build time:
  *      - Stage 1: `scanPackagingGates` (0 blocking) + `buildWeavePlan` (`surgicalWorkorder`)
  *      - Stage 2: Agent-woven shared-state shadow business logic in `license.cjs` +
  *        `policy.py` verified at 100/100 (`weaveScore: 100`) by `verifyWeaveTarget`
@@ -111,7 +111,7 @@ function buildPanelHtml() {
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Sovereign Entitlement Panel (CrackMe v9 — BLA 3.0)</title>
+  <title>Sovereign Entitlement Panel (CrackMe v9 — AEGIS 3.0)</title>
   <style>
     body { font-family: ui-sans-serif, system-ui, sans-serif; margin: 2rem; background: #090d16; color: #e8eefc; }
     code { background: #161f33; padding: 0.15rem 0.4rem; border-radius: 4px; }
@@ -119,16 +119,16 @@ function buildPanelHtml() {
   </style>
 </head>
 <body>
-  <h1>Sovereign Entitlement Panel (BLA 3.0)</h1>
+  <h1>Sovereign Entitlement Panel (AEGIS 3.0)</h1>
   <p class="note">
     This panel does <strong>not</strong> derive or verify entitlement tokens in-browser.
     Run the Sovereign license gate on the operator host:
   </p>
   <p><code>node license.cjs &lt;16-char-key&gt;</code></p>
   <p class="note">
-    Built with the <strong>BLA 3.0 4-Stage Agent-Driven Hardening Playbook</strong>:
-    AST surgical weave workorders (<code>bla_weave_plan</code>), verified shared-state
-    shadow business logic (<code>bla_verify_weave</code> 100/100), covered <code>seal.json</code>
+    Built with the <strong>AEGIS 3.0 4-Stage Agent-Driven Hardening Playbook</strong>:
+    AST surgical weave workorders (<code>aegis_weave_plan</code>), verified shared-state
+    shadow business logic (<code>aegis_verify_weave</code> 100/100), covered <code>seal.json</code>
     SHA-256 pinning, <code>self_seal: true</code> + <code>sidecar_entangle: true</code> +
     <code>weave_decoys: true</code> across JS, WASM, HTML, and Python siblings.
   </p>
@@ -356,7 +356,7 @@ export async function materializeTarget({ key, flag, seed = privateSeed(key, fla
   if (!sha256MaskKdf(keyBytes).equals(mask)) throw new Error("mask KDF mismatch");
 
   const wasm = assembleCoreWasm(masked, commit, seed);
-  const wasmMeta = wasm._blaMeta;
+  const wasmMeta = wasm._aegisMeta;
   if (!wasmMeta || wasmMeta.unlockIdx === 0) {
     throw new Error("R12 recipe: unlock body must not be at func idx 0");
   }
@@ -368,7 +368,7 @@ export async function materializeTarget({ key, flag, seed = privateSeed(key, fla
     revision,
     certificateSha256: flagHash,
     notes:
-      "ONE-WAY seal covered by host EXPECTED_SEAL_SHA256. WASM unlock: SHA-256(key) mask KDF + seed-derived rounds/pad3 + entropy-pad pack + clear separate-segment SHA-256 commitment. Hardened with BLA 3.0 Playbook (weave_decoys + self_seal + sidecar_entangle).",
+      "ONE-WAY seal covered by host EXPECTED_SEAL_SHA256. WASM unlock: SHA-256(key) mask KDF + seed-derived rounds/pad3 + entropy-pad pack + clear separate-segment SHA-256 commitment. Hardened with AEGIS 3.0 Playbook (weave_decoys + self_seal + sidecar_entangle).",
   };
   const sealJsonStr = JSON.stringify(seal, null, 2) + "\n";
   const sealSha256 = sha256Hex(sealJsonStr);
@@ -406,7 +406,7 @@ export function ensureDistBuilt() {
 }
 
 /**
- * Execute the full BLA 3.0 4-Stage Agent-Driven Hardening Pipeline:
+ * Execute the full AEGIS 3.0 4-Stage Agent-Driven Hardening Pipeline:
  *   Stage 1: `scanPackagingGates` + `buildWeavePlan`
  *   Stage 2: `verifyWeaveTarget` on woven sources (must score 100/100)
  *   Stage 3: `hardenProject` with `weaveDecoys: true`, `selfSeal: true`, `sidecarEntangle: true`
@@ -420,7 +420,7 @@ export async function hardenChallenge({ key, flag, outDir, seed = privateSeed(ke
     hardenProject,
     scanPackagingGates,
     verifyWeaveTarget,
-    BLA_IDENTITY,
+    AEGIS_IDENTITY,
   } = await import("../../dist/index.js");
 
   const work = mkdtempSync(join(tmpdir(), "bla-crackme-v9-"));
@@ -432,21 +432,21 @@ export async function hardenChallenge({ key, flag, outDir, seed = privateSeed(ke
     // Stage 1: Surgical Weave Plan + Pre-Build Weave Verification
     const plan = buildWeavePlan(stage);
     if (plan.surgicalTargetsCount < 2) {
-      throw new Error(`Stage 1 bla_weave_plan expected >=2 surgical targets, got ${plan.surgicalTargetsCount}`);
+      throw new Error(`Stage 1 aegis_weave_plan expected >=2 surgical targets, got ${plan.surgicalTargetsCount}`);
     }
     const preWeave = verifyWeaveTarget(stage);
     if (!preWeave.overallPassed || preWeave.weaveScore !== 100) {
-      throw new Error(`Stage 2 pre-harden bla_verify_weave failed: ${preWeave.summary}`);
+      throw new Error(`Stage 2 pre-harden aegis_verify_weave failed: ${preWeave.summary}`);
     }
 
-    // Stage 2: Apply bla_encrypt_strings (XOR keystream) and verify 0 blocking bla_lint gates
+    // Stage 2: Apply aegis_encrypt_strings (XOR keystream) and verify 0 blocking aegis_lint gates
     const encRes = encryptStrings({ path: stage, seed });
     if (encRes.status === "error" || encRes.totalEncrypted < 1) {
-      throw new Error("Stage 2 bla_encrypt_strings failed to mask sensitive literals");
+      throw new Error("Stage 2 aegis_encrypt_strings failed to mask sensitive literals");
     }
     const gates = scanPackagingGates({ directory: stage, intensity: INTENSITY });
     if (gates.shouldRefuseBankrupt) {
-      throw new Error(`Stage 2 bla_lint refused after remediation: ${gates.oneLineAdvice}`);
+      throw new Error(`Stage 2 aegis_lint refused after remediation: ${gates.oneLineAdvice}`);
     }
 
     // Stage 3: Counter-REA Exhaustion Harden (weaveDecoys + selfSeal + sidecarEntangle)
@@ -473,7 +473,7 @@ export async function hardenChallenge({ key, flag, outDir, seed = privateSeed(ke
     // Stage 4: Post-Harden Weave Verification
     const postWeave = verifyWeaveTarget(hardened);
     if (!postWeave.overallPassed || postWeave.weaveScore !== 100) {
-      throw new Error(`Stage 4 post-harden bla_verify_weave failed: ${postWeave.summary}`);
+      throw new Error(`Stage 4 post-harden aegis_verify_weave failed: ${postWeave.summary}`);
     }
 
     // Copy covered seal.json beside hardened artifacts
@@ -502,7 +502,7 @@ export async function hardenChallenge({ key, flag, outDir, seed = privateSeed(ke
     };
 
     return {
-      blaVersion: BLA_IDENTITY.version,
+      aegisVersion: AEGIS_IDENTITY.version,
       sealSha256: mat.sealSha256,
       weaveScore: postWeave.weaveScore,
       integrityCoverageSelfVerified: report.integrityCoverageSelfVerified,

@@ -5,14 +5,14 @@
  * Packaging gates refuse bankrupt when the matrix fails the four predicates
  * below — no probabilistic claims, no forged lint.
  *
- * Schema: bla-integrity-coverage/v1
+ * Schema: aegis-integrity-coverage/v1
  */
 
 import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 
-export const INTEGRITY_COVERAGE_SCHEMA = "bla-integrity-coverage/v1" as const;
+export const INTEGRITY_COVERAGE_SCHEMA = "aegis-integrity-coverage/v1" as const;
 
 export interface CoverageMatrix {
   readonly schema: typeof INTEGRITY_COVERAGE_SCHEMA;
@@ -282,7 +282,7 @@ export function finalizeCoverageMatrixHashes(
 
 const MATRIX_NAMES = new Set([
   "integrity-coverage.json",
-  ".bla-integrity-coverage.json",
+  ".aegis-integrity-coverage.json",
 ]);
 
 export interface IntegrityCoverageFileReport extends CoverageEvaluation {
@@ -342,7 +342,7 @@ export function discoverAndLintIntegrityCoverage(
           missingHashNodes: [],
           invalidHashNodes: [],
           checkerCount: 0,
-          oneLineAdvice: "ERROR: integrity-coverage.json is not valid bla-integrity-coverage/v1 JSON.",
+          oneLineAdvice: "ERROR: integrity-coverage.json is not valid aegis-integrity-coverage/v1 JSON.",
           path: full,
           matrix: null,
           parseError: err instanceof Error ? err.message : String(err),

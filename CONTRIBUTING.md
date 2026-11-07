@@ -1,4 +1,4 @@
-# Contributing to BLA (`bla-shield`)
+# Contributing to AEGIS (`aegis-shield`)
 
 Thank you for helping software developers fight back against automated AI reverse engineering!
 

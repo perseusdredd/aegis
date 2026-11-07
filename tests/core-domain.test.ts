@@ -17,7 +17,7 @@ import { findPythonPrologueInsertionOffset, protectPythonSource } from "../src/s
 
 describe("core domain modules previously without dedicated tests", () => {
   describe("detector", () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bla-detector-"));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "aegis-detector-"));
     afterEach(() => {
       fs.rmSync(dir, { recursive: true, force: true });
     });
@@ -93,15 +93,15 @@ describe("core domain modules previously without dedicated tests", () => {
 
     it("rejects forbidden emitted markers", () => {
       expect(() => assertNoForbiddenMarkers("safe_customer_def")).not.toThrow();
-      expect(() => assertNoForbiddenMarkers("nope _bla x")).toThrow();
-      expect(() => assertNoForbiddenMarkers("nope __bla x")).toThrow();
+      expect(() => assertNoForbiddenMarkers("nope _aegis x")).toThrow();
+      expect(() => assertNoForbiddenMarkers("nope __aegis x")).toThrow();
       // legacy greppable placeholder is also forbidden
       expect(() => assertNoForbiddenMarkers("clean $00_AAA")).toThrow();
     });
   });
 
   describe("sarif", () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bla-sarif-"));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "aegis-sarif-"));
     afterEach(() => {
       fs.rmSync(dir, { recursive: true, force: true });
     });
@@ -140,7 +140,7 @@ describe("core domain modules previously without dedicated tests", () => {
       expect(typeof banner).toBe("string");
       expect(banner.length).toBeGreaterThan(0);
 
-      const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bla-report-"));
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), "aegis-report-"));
       const target = path.join(dir, "x.py");
       fs.writeFileSync(target, "x = 1\n", "utf8");
       const report = auditTarget(target);

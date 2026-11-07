@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import vm from "node:vm";
-import { BLA_IDENTITY } from "../identity.js";
+import { AEGIS_IDENTITY } from "../identity.js";
 import type { BenchmarkReport, ShowcaseCaseResult } from "../core/types.js";
 import { isNodeSqliteAvailable } from "../core/sqlite-runtime.js";
 import { packAsarBuffer } from "../shields/formats/asar.js";
@@ -153,10 +153,10 @@ function runCommonJsModule(code: string): Record<string, unknown> {
 }
 
 /**
- * Runs the Counter-REA Showcase Benchmark (`bla benchmark`), including BEAM/EVM/PCAP/PTX.
+ * Runs the Counter-REA Showcase Benchmark (`aegis benchmark`), including BEAM/EVM/PCAP/PTX.
  */
 export async function runShowcaseBenchmark(): Promise<BenchmarkReport> {
-  const tempDir = mkdtempSync(join(tmpdir(), "bla-benchmark-"));
+  const tempDir = mkdtempSync(join(tmpdir(), "aegis-benchmark-"));
   const cases: ShowcaseCaseResult[] = [];
 
   try {
@@ -292,7 +292,7 @@ export async function runShowcaseBenchmark(): Promise<BenchmarkReport> {
       );
       const res = protectTarget({ inputPath: modelPath, outputPath: outModelPath, intensity: "bankrupt" });
       const afterAudit = auditTarget(outModelPath);
-      const functionalOk = afterAudit.protectionStatus === "BLA_PROTECTED";
+      const functionalOk = afterAudit.protectionStatus === "AEGIS_PROTECTED";
       cases.push(buildCaseResult("safetensors-model", "Proprietary Edge AI Model (.safetensors)", "REA inspect_model_artifact", res, functionalOk));
     }
 
@@ -308,7 +308,7 @@ export async function runShowcaseBenchmark(): Promise<BenchmarkReport> {
       writeFileSync(dexPath, baseDex);
       const res = protectTarget({ inputPath: dexPath, outputPath: outDexPath, intensity: "bankrupt" });
       const afterAudit = auditTarget(outDexPath);
-      const functionalOk = afterAudit.protectionStatus === "BLA_PROTECTED";
+      const functionalOk = afterAudit.protectionStatus === "AEGIS_PROTECTED";
       cases.push(buildCaseResult("android-dex", "Android Dalvik Bytecode (classes.dex)", "REA search_android_classes (JADX/JEB)", res, functionalOk));
     }
 
@@ -318,12 +318,12 @@ export async function runShowcaseBenchmark(): Promise<BenchmarkReport> {
       const outPlistPath = join(tempDir, "Info.shielded.plist");
       writeFileSync(
         plistPath,
-        `<?xml version="1.0" encoding="UTF-8"?>\n<plist version="1.0"><dict><key>CFBundleIdentifier</key><string>com.bla.desktop</string></dict></plist>`,
+        `<?xml version="1.0" encoding="UTF-8"?>\n<plist version="1.0"><dict><key>CFBundleIdentifier</key><string>com.aegis.desktop</string></dict></plist>`,
         "utf8",
       );
       const res = protectTarget({ inputPath: plistPath, outputPath: outPlistPath, intensity: "bankrupt" });
       const afterAudit = auditTarget(outPlistPath);
-      const functionalOk = afterAudit.protectionStatus === "BLA_PROTECTED";
+      const functionalOk = afterAudit.protectionStatus === "AEGIS_PROTECTED";
       cases.push(buildCaseResult("apple-plist", "Apple Bundle PropertyList (Info.plist)", "REA inspect_apple_bundle", res, functionalOk));
     }
 
@@ -337,7 +337,7 @@ export async function runShowcaseBenchmark(): Promise<BenchmarkReport> {
       writeFileSync(dllPath, peClr);
       const res = protectTarget({ inputPath: dllPath, outputPath: outDllPath, intensity: "bankrupt" });
       const afterAudit = auditTarget(outDllPath);
-      const functionalOk = afterAudit.protectionStatus === "BLA_PROTECTED";
+      const functionalOk = afterAudit.protectionStatus === "AEGIS_PROTECTED";
       cases.push(buildCaseResult("dotnet-managed", ".NET Managed CLR Assembly (.dll)", "REA inspect_dotnet_assembly", res, functionalOk));
     }
 
@@ -388,7 +388,7 @@ export async function runShowcaseBenchmark(): Promise<BenchmarkReport> {
       writeFileSync(beamPath, seed);
       const res = protectTarget({ inputPath: beamPath, outputPath: outBeamPath, intensity: "bankrupt" });
       const afterAudit = auditTarget(outBeamPath);
-      const functionalOk = afterAudit.protectionStatus === "BLA_PROTECTED";
+      const functionalOk = afterAudit.protectionStatus === "AEGIS_PROTECTED";
       cases.push(buildCaseResult("erlang-beam", "Erlang/OTP BEAM Module (.beam)", "REA inspect_erlang_beam", res, functionalOk));
     }
 
@@ -401,7 +401,7 @@ export async function runShowcaseBenchmark(): Promise<BenchmarkReport> {
       const res = protectTarget({ inputPath: evmPath, outputPath: outEvmPath, intensity: "bankrupt" });
       const afterAudit = auditTarget(outEvmPath);
       const functionalOk =
-        afterAudit.protectionStatus === "BLA_PROTECTED" &&
+        afterAudit.protectionStatus === "AEGIS_PROTECTED" &&
         res.metrics.protectedBytes >= 4_000_000;
       cases.push(buildCaseResult("evm-bytecode", "EVM Contract Bytecode (Solidity metadata)", "REA inspect_evm_bytecode / evmole", res, functionalOk));
     }
@@ -419,7 +419,7 @@ export async function runShowcaseBenchmark(): Promise<BenchmarkReport> {
       writeFileSync(pcapPath, hdr);
       const res = protectTarget({ inputPath: pcapPath, outputPath: outPcapPath, intensity: "bankrupt" });
       const afterAudit = auditTarget(outPcapPath);
-      const functionalOk = afterAudit.protectionStatus === "BLA_PROTECTED";
+      const functionalOk = afterAudit.protectionStatus === "AEGIS_PROTECTED";
       cases.push(buildCaseResult("pcap-capture", "libpcap Network Capture (.pcap)", "REA inspect_pcap_capture (tshark JSON)", res, functionalOk));
     }
 
@@ -434,7 +434,7 @@ export async function runShowcaseBenchmark(): Promise<BenchmarkReport> {
       );
       const res = protectTarget({ inputPath: ptxPath, outputPath: outPtxPath, intensity: "bankrupt" });
       const afterAudit = auditTarget(outPtxPath);
-      const functionalOk = afterAudit.protectionStatus === "BLA_PROTECTED";
+      const functionalOk = afterAudit.protectionStatus === "AEGIS_PROTECTED";
       cases.push(buildCaseResult("gpu-ptx", "NVIDIA PTX Text Module (.ptx)", "REA inspect_gpu_artifact (PTX)", res, functionalOk));
     }
 
@@ -449,7 +449,7 @@ export async function runShowcaseBenchmark(): Promise<BenchmarkReport> {
 
   return {
     timestamp: new Date().toISOString(),
-    blaVersion: BLA_IDENTITY.version,
+    aegisVersion: AEGIS_IDENTITY.version,
     cases,
     aggregateTokenMultiplier: Number((totalAfterTokens / Math.max(1, totalBeforeTokens)).toFixed(1)),
     aggregateCostMultiplier: Number((totalAfterCost / Math.max(0.01, totalBeforeCost)).toFixed(1)),

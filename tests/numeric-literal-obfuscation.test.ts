@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import * as vm from "node:vm";
-import { transformJavaScriptWithBlaShield } from "../src/shields/javascript/ast-shield.js";
+import { transformJavaScriptWithAegisShield } from "../src/shields/javascript/ast-shield.js";
 
 describe("Issue #40: numeric literal de-literalization", () => {
   it("removes bit-identical customer magic integers at bankrupt while preserving runtime values", () => {
@@ -12,7 +12,7 @@ describe("Issue #40: numeric literal de-literalization", () => {
       }
       module.exports = { schedule };
     `;
-    const result = transformJavaScriptWithBlaShield(source, {
+    const result = transformJavaScriptWithAegisShield(source, {
       intensity: "bankrupt",
       seed: "issue-40-numeric-probe",
       sourceType: "commonjs",
@@ -62,14 +62,14 @@ describe("Issue #40: numeric literal de-literalization", () => {
       const tiny = 3;
       module.exports = { n, tiny };
     `;
-    const balanced = transformJavaScriptWithBlaShield(source, {
+    const balanced = transformJavaScriptWithAegisShield(source, {
       intensity: "balanced",
       seed: "issue-40-balanced",
       sourceType: "commonjs",
     });
     expect(balanced.code).toMatch(/2654435769|0x9e3779b9/i);
 
-    const bankrupt = transformJavaScriptWithBlaShield(source, {
+    const bankrupt = transformJavaScriptWithAegisShield(source, {
       intensity: "bankrupt",
       seed: "issue-40-tiny",
       sourceType: "commonjs",

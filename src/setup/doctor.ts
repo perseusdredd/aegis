@@ -5,13 +5,13 @@ import { homedir } from "node:os";
 import { delimiter, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { getDatabaseSyncClass } from "../core/sqlite-runtime.js";
-import { BLA_IDENTITY, REA_INTERNAL_LIMITS } from "../identity.js";
+import { AEGIS_IDENTITY, REA_INTERNAL_LIMITS } from "../identity.js";
 import { protectZipOrApkBuffer } from "../shields/formats/archive.js";
 import { packAsarBuffer } from "../shields/formats/asar.js";
 import { protectNativeBinary } from "../shields/formats/native.js";
 import { protectPythonSource } from "../shields/formats/python.js";
 import { protectWasmBinary } from "../shields/formats/wasm.js";
-import { transformJavaScriptWithBlaShield } from "../shields/javascript/ast-shield.js";
+import { transformJavaScriptWithAegisShield } from "../shields/javascript/ast-shield.js";
 import {
   readClientMcpConfig,
   resolveSupportedAgentClients,
@@ -77,7 +77,7 @@ export interface DoctorDiagnosticReport {
   readonly healthy: boolean;
   readonly exitCode: 0 | 1;
   readonly status: "pass" | "warn" | "fail";
-  readonly blaVersion: string;
+  readonly aegisVersion: string;
   readonly nodeVersion: string;
   readonly platform: string;
   readonly arch: string;
@@ -175,7 +175,7 @@ function probeLocalMcpHandshake(
     let execArgs = [...args];
 
     // Never execute arbitrary unknown commands or network `npx` downloads during doctor probes.
-    // Only allow trusted local Node/BLA invocations.
+    // Only allow trusted local Node/AEGIS invocations.
     const baseCmd = command.split(/[/\\]/).pop() ?? "";
     if (baseCmd === "npx" || baseCmd === "npx.cmd") {
       if (!existsSync(distCli)) {
@@ -187,9 +187,9 @@ function probeLocalMcpHandshake(
       baseCmd !== "node" &&
       baseCmd !== "node.exe" &&
       command !== process.execPath &&
-      baseCmd !== "bla" &&
-      baseCmd !== "bla-agents" &&
-      baseCmd !== "bla-shield"
+      baseCmd !== "aegis" &&
+      baseCmd !== "aegis-agents" &&
+      baseCmd !== "aegis-shield"
     ) {
       return false;
     }
@@ -202,7 +202,7 @@ function probeLocalMcpHandshake(
         params: {
           protocolVersion: "2024-11-05",
           capabilities: {},
-          clientInfo: { name: "bla-doctor-probe", version: BLA_IDENTITY.version },
+          clientInfo: { name: "aegis-doctor-probe", version: AEGIS_IDENTITY.version },
         },
       }) + "\n";
 
@@ -224,7 +224,7 @@ function probeLocalMcpHandshake(
         id?: number;
         result?: { serverInfo?: { name?: string } };
       };
-      if (parsed.jsonrpc === "2.0" && parsed.id === 1 && parsed.result?.serverInfo?.name === "bla") {
+      if (parsed.jsonrpc === "2.0" && parsed.id === 1 && parsed.result?.serverInfo?.name === "aegis") {
         return true;
       }
     }
@@ -237,7 +237,7 @@ function probeLocalMcpHandshake(
 function checkEngines(sqliteOverride?: boolean): DoctorDiagnosticReport["engines"] {
   let javascriptAstShield: EngineHealthStatus = "ready";
   try {
-    const out = transformJavaScriptWithBlaShield("const __blaProbe = 1;\n", {
+    const out = transformJavaScriptWithAegisShield("const __aegisProbe = 1;\n", {
       intensity: "stealth",
       seed: "doctor-probe",
     });
@@ -339,7 +339,7 @@ export function runDoctor(homeDirOrOptions?: string | DoctorOptions): DoctorDiag
   const agentStatuses: DoctorClientDiagnostic[] = clients.map((c) => {
     const clientIssues: string[] = [];
     const skillPath = join(c.skillDirectory, "SKILL.md");
-    const readRes = readClientMcpConfig(c.configPath, c.format, BLA_IDENTITY.mcpServerName);
+    const readRes = readClientMcpConfig(c.configPath, c.format, AEGIS_IDENTITY.mcpServerName);
 
     const configStatus: DoctorConfigStatus = readRes.status;
     const configured = configStatus === "valid" && readRes.entry !== null;
@@ -352,7 +352,7 @@ export function runDoctor(homeDirOrOptions?: string | DoctorOptions): DoctorDiag
       );
     } else if (configStatus === "invalid_entry") {
       clientIssues.push(
-        readRes.error ?? `Invalid '${BLA_IDENTITY.mcpServerName}' MCP entry for ${c.displayName}`,
+        readRes.error ?? `Invalid '${AEGIS_IDENTITY.mcpServerName}' MCP entry for ${c.displayName}`,
       );
     }
 
@@ -416,7 +416,7 @@ export function runDoctor(homeDirOrOptions?: string | DoctorOptions): DoctorDiag
       }
       if (skillMissingFiles.length > 0) {
         clientIssues.push(
-          `Skill bundle for ${c.displayName} is incomplete (missing: ${skillMissingFiles.join(", ")}); re-run \`bla setup --yes\``,
+          `Skill bundle for ${c.displayName} is incomplete (missing: ${skillMissingFiles.join(", ")}); re-run \`aegis setup --yes\``,
         );
       }
     }
@@ -500,7 +500,7 @@ export function runDoctor(homeDirOrOptions?: string | DoctorOptions): DoctorDiag
     healthy,
     exitCode: healthy ? 0 : 1,
     status: overallStatus,
-    blaVersion: BLA_IDENTITY.version,
+    aegisVersion: AEGIS_IDENTITY.version,
     nodeVersion: process.version,
     platform: `${platform}-${process.arch}`,
     arch: process.arch,

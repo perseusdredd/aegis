@@ -88,7 +88,7 @@ describe("REA domain shields — Go / Flutter / BEAM / EVM / PCAP / PTX", () => 
     expect(go.buffer.includes(Buffer.from("ff20476f206275696c64696e663a", "hex"))).toBe(
       true,
     );
-    expect(go.buffer.toString("latin1")).toContain("[BLA-GO-BUILDINFO]");
+    expect(go.buffer.toString("latin1")).toContain("[AEGIS-GO-BUILDINFO]");
     expect(go.buffer.toString("latin1")).toContain(".gopclntab");
     expect(go.buffer.toString("latin1")).toContain("runtime.moduledata");
 
@@ -102,7 +102,7 @@ describe("REA domain shields — Go / Flutter / BEAM / EVM / PCAP / PTX", () => 
     expect(flutter.classLikeTokens).toBeGreaterThan(
       REA_INTERNAL_LIMITS.DART_MAX_POOL_TOKENS,
     );
-    expect(flutter.buffer.toString("utf8")).toContain("[BLA-FLUTTER-POOL-EXHAUST]");
+    expect(flutter.buffer.toString("utf8")).toContain("[AEGIS-FLUTTER-POOL-EXHAUST]");
     expect(flutter.buffer.toString("utf8")).toContain("package:enclave_tarpit_0/");
 
     const protectedElf = protectNativeBinary(shieldedElfFixture(), {
@@ -182,7 +182,7 @@ describe("REA domain shields — Go / Flutter / BEAM / EVM / PCAP / PTX", () => 
     expect(res.chunksInjected).toBeGreaterThan(0);
     expect(res.atomsInjected).toBeGreaterThan(0);
     expect(res.canaryTokensEmbedded).toBeGreaterThan(0);
-    expect(res.buffer.toString("utf8")).toContain("[BLA-BEAM-SHIELD]");
+    expect(res.buffer.toString("utf8")).toContain("[AEGIS-BEAM-SHIELD]");
 
     const after = inspectErlangBeam(res.buffer);
     expect(after.validMagic).toBe(true);
@@ -194,7 +194,7 @@ describe("REA domain shields — Go / Flutter / BEAM / EVM / PCAP / PTX", () => 
     expect(res.buffer.toString("utf8")).toContain("demo_mod");
     expect(res.buffer.toString("utf8")).toContain("module_info");
 
-    const tmp = path.join(os.tmpdir(), `bla-beam-${Date.now()}.beam`);
+    const tmp = path.join(os.tmpdir(), `aegis-beam-${Date.now()}.beam`);
     fs.writeFileSync(tmp, res.buffer);
     expect(detectArtifactFormat(tmp)).toBe("erlang-beam");
     fs.unlinkSync(tmp);
@@ -210,8 +210,8 @@ describe("REA domain shields — Go / Flutter / BEAM / EVM / PCAP / PTX", () => 
     expect(res.canaryTokensEmbedded).toBeGreaterThan(0);
     const after = inspectEvmBytecode(res.buffer);
     expect(after.hasSolidityMetadata).toBe(true);
-    expect(after.blaProtected).toBe(true);
-    expect(res.buffer.toString("utf8")).toContain("[BLA-EVM-SHIELD]");
+    expect(after.aegisProtected).toBe(true);
+    expect(res.buffer.toString("utf8")).toContain("[AEGIS-EVM-SHIELD]");
     // Original runtime prefix preserved
     expect(res.buffer.subarray(0, runtime.length).equals(runtime)).toBe(true);
     // Metadata length suffix consistent
@@ -221,11 +221,11 @@ describe("REA domain shields — Go / Flutter / BEAM / EVM / PCAP / PTX", () => 
 
     const trailer = buildSolidityMetadataTrailer([
       ["solc", Buffer.from([0, 8, 30])],
-      ["bla", "ok"],
+      ["aegis", "ok"],
     ]);
     expect(trailer.length).toBeGreaterThan(4);
 
-    const tmp = path.join(os.tmpdir(), `bla-evm-${Date.now()}.evm`);
+    const tmp = path.join(os.tmpdir(), `aegis-evm-${Date.now()}.evm`);
     fs.writeFileSync(tmp, res.buffer);
     expect(detectArtifactFormat(tmp)).toBe("evm-bytecode");
     fs.unlinkSync(tmp);
@@ -241,12 +241,12 @@ describe("REA domain shields — Go / Flutter / BEAM / EVM / PCAP / PTX", () => 
     const after = inspectPcapCapture(res.buffer);
     expect(after.validMagic).toBe(true);
     expect(after.packetCount).toBe(res.packetsInjected);
-    expect(after.blaProtected).toBe(true);
-    expect(res.buffer.includes(Buffer.from("[BLA-PCAP-SHIELD]", "utf8"))).toBe(
+    expect(after.aegisProtected).toBe(true);
+    expect(res.buffer.includes(Buffer.from("[AEGIS-PCAP-SHIELD]", "utf8"))).toBe(
       true,
     );
 
-    const tmp = path.join(os.tmpdir(), `bla-pcap-${Date.now()}.pcap`);
+    const tmp = path.join(os.tmpdir(), `aegis-pcap-${Date.now()}.pcap`);
     fs.writeFileSync(tmp, res.buffer);
     expect(detectArtifactFormat(tmp)).toBe("pcap-capture");
     fs.unlinkSync(tmp);
@@ -256,18 +256,18 @@ describe("REA domain shields — Go / Flutter / BEAM / EVM / PCAP / PTX", () => 
     const src = `.version 7.5\n.target sm_70\n.address_size 64\n\n.visible .entry real_kernel(.param .u64 a)\n{\n  ret;\n}\n`;
     const res = protectGpuPtxText(src, { intensity: "balanced", seed: "ptx-test" });
     expect(res.entriesInjected).toBeGreaterThanOrEqual(16);
-    expect(res.text).toContain("[BLA-PTX-SHIELD]");
+    expect(res.text).toContain("[AEGIS-PTX-SHIELD]");
     expect(res.text).toContain("real_kernel"); // original preserved
     expect(res.text.indexOf("real_kernel")).toBeLessThan(
-      res.text.indexOf("[BLA-PTX-SHIELD]"),
+      res.text.indexOf("[AEGIS-PTX-SHIELD]"),
     );
     const after = inspectGpuPtx(res.text);
     expect(after.looksLikePtx).toBe(true);
     expect(after.entryCount).toBeGreaterThan(1);
-    expect(after.blaProtected).toBe(true);
+    expect(after.aegisProtected).toBe(true);
     expect(FIRMWARE_HARDENING_SKIP_REASON.toLowerCase()).toContain("firmware");
 
-    const tmp = path.join(os.tmpdir(), `bla-ptx-${Date.now()}.ptx`);
+    const tmp = path.join(os.tmpdir(), `aegis-ptx-${Date.now()}.ptx`);
     fs.writeFileSync(tmp, res.text);
     expect(detectArtifactFormat(tmp)).toBe("gpu-ptx");
     fs.unlinkSync(tmp);
@@ -314,10 +314,10 @@ describe("REA domain shields — Go / Flutter / BEAM / EVM / PCAP / PTX", () => 
 
     const after = inspectUf2Firmware(res.buffer);
     expect(after.validMagic).toBe(true);
-    expect(after.blaProtected).toBe(true);
+    expect(after.aegisProtected).toBe(true);
     expect(after.blockCount).toBe(1 + res.blocksInjected);
 
-    const tmp = path.join(os.tmpdir(), `bla-uf2-${Date.now()}.uf2`);
+    const tmp = path.join(os.tmpdir(), `aegis-uf2-${Date.now()}.uf2`);
     fs.writeFileSync(tmp, res.buffer);
     expect(detectArtifactFormat(tmp)).toBe("firmware-uf2");
     fs.unlinkSync(tmp);
@@ -358,7 +358,7 @@ describe("REA domain shields — Go / Flutter / BEAM / EVM / PCAP / PTX", () => 
     expect(goSlice.includes(Buffer.from("ff20476f206275696c64696e663a", "hex"))).toBe(
       true,
     );
-    expect(goSlice.toString("latin1")).toContain("[BLA-GO-MAPPED]");
+    expect(goSlice.toString("latin1")).toContain("[AEGIS-GO-MAPPED]");
 
     // Pool strings sit inside the isolate region (after preserved snapshot header)
     const isoSlice = res.buffer.subarray(isoSec.offset, isoSec.offset + isoSec.size);
@@ -366,7 +366,7 @@ describe("REA domain shields — Go / Flutter / BEAM / EVM / PCAP / PTX", () => 
     expect(isoSlice.toString("utf8")).toContain("package:m0/b.dart");
     expect(isoSlice.toString("utf8")).toContain("dart:d0");
     expect(isoSlice.toString("utf8")).toContain("Node_0_X");
-    expect(isoSlice.toString("utf8")).toContain("[BLA-FLUTTER-MAPPED]");
+    expect(isoSlice.toString("utf8")).toContain("[AEGIS-FLUTTER-MAPPED]");
   });
 
   it("expands OTP28+ compact AtU8 atom tables while keeping compact encoding", () => {
@@ -416,7 +416,7 @@ describe("REA domain shields — Go / Flutter / BEAM / EVM / PCAP / PTX", () => 
     // Still compact: declared count is negative
     const afterChunks = res.buffer.toString("latin1");
     expect(afterChunks).toContain("compact_mod");
-    expect(afterChunks).toContain("[BLA-BEAM-SHIELD]");
+    expect(afterChunks).toContain("[AEGIS-BEAM-SHIELD]");
     // Locate AtU8 payload and assert compact sign bit preserved
     const atu8At = res.buffer.indexOf(Buffer.from("AtU8", "latin1"));
     expect(atu8At).toBeGreaterThanOrEqual(0);
@@ -450,7 +450,7 @@ describe("REA domain shields — Go / Flutter / BEAM / EVM / PCAP / PTX", () => 
     expect(bankrupt.paddingBytes).toBeGreaterThan(3_000_000);
     const after = inspectEvmBytecode(bankrupt.buffer);
     expect(after.hasSolidityMetadata).toBe(true);
-    expect(after.blaProtected).toBe(true);
+    expect(after.aegisProtected).toBe(true);
   });
 
   it("bankrupt PCAP decoys estimate past TSHARK_JSON_MAX_BYTES while staying valid libpcap", () => {
@@ -466,9 +466,9 @@ describe("REA domain shields — Go / Flutter / BEAM / EVM / PCAP / PTX", () => 
     const after = inspectPcapCapture(res.buffer);
     expect(after.validMagic).toBe(true);
     expect(after.packetCount).toBe(res.packetsInjected);
-    expect(after.blaProtected).toBe(true);
+    expect(after.aegisProtected).toBe(true);
     // Nested HTTP headers present
-    expect(res.buffer.includes(Buffer.from("X-BLA-Nested-0:", "utf8"))).toBe(true);
+    expect(res.buffer.includes(Buffer.from("X-AEGIS-Nested-0:", "utf8"))).toBe(true);
   });
 
   it("documents SPIR-V / CUDA fatbinary / AMD GPU object skip alongside firmware", () => {

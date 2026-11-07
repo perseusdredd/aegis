@@ -1,4 +1,4 @@
-import { BLA_IDENTITY } from "../identity.js";
+import { AEGIS_IDENTITY } from "../identity.js";
 import type {
   AuditReport,
   BenchmarkReport,
@@ -25,7 +25,7 @@ const ANSI = {
 export function formatBanner(): string {
   return [
     `${ANSI.bold}${ANSI.cyan}╔══════════════════════════════════════════════════════════════════════════════╗${ANSI.reset}`,
-    `${ANSI.bold}${ANSI.cyan}║  🛡️  BLA: Blind LLM Agents (${BLA_IDENTITY.packageName} v${BLA_IDENTITY.version})                             ║${ANSI.reset}`,
+    `${ANSI.bold}${ANSI.cyan}║  🛡️  AEGIS: Blind LLM Agents (${AEGIS_IDENTITY.packageName} v${AEGIS_IDENTITY.version})                             ║${ANSI.reset}`,
     `${ANSI.bold}${ANSI.cyan}║  ${ANSI.yellow}Poison -> Exhaust -> Hallucinate. Make Reverse Engineering Bankrupt Again.${ANSI.cyan}  ║${ANSI.reset}`,
     `${ANSI.bold}${ANSI.cyan}╚══════════════════════════════════════════════════════════════════════════════╝${ANSI.reset}`,
   ].join("\n");
@@ -33,7 +33,7 @@ export function formatBanner(): string {
 
 export function formatAuditReport(report: AuditReport): string {
   const statusColor =
-    report.protectionStatus === "BLA_PROTECTED"
+    report.protectionStatus === "AEGIS_PROTECTED"
       ? ANSI.green
       : report.protectionStatus === "PARTIALLY_SHIELDED"
         ? ANSI.yellow
@@ -79,7 +79,7 @@ export function formatAuditReport(report: AuditReport): string {
   }
 
   lines.push("");
-  if (report.protectionStatus !== "BLA_PROTECTED") {
+  if (report.protectionStatus !== "AEGIS_PROTECTED") {
     lines.push(
       `${ANSI.bold}${ANSI.red}⚠️  ${report.headlineWarning}${ANSI.reset}`,
     );
@@ -113,7 +113,7 @@ export function formatProtectionResult(res: ProtectionResult): string {
   return [
     formatBanner(),
     "",
-    `${ANSI.bold}${ANSI.green}🛡️  BLA Adversarial Shield Successfully Injected!${ANSI.reset} (${res.elapsedMs} ms)`,
+    `${ANSI.bold}${ANSI.green}🛡️  AEGIS Adversarial Shield Successfully Injected!${ANSI.reset} (${res.elapsedMs} ms)`,
     "",
     `  ${ANSI.bold}Input Target:${ANSI.reset}      ${res.inputPath}`,
     `  ${ANSI.bold}Protected Output:${ANSI.reset}  ${ANSI.cyan}${res.outputPath}${ANSI.reset}`,
@@ -129,7 +129,7 @@ export function formatProtectionResult(res: ProtectionResult): string {
       ? [`  ${ANSI.red}⚠ ${res.metrics.inlineScriptsFailed} inline <script> body(ies) shipped UNPROTECTED (AST shield failed on them)${ANSI.reset}`]
       : []),
     "",
-    `${ANSI.bold}${ANSI.cyan}── Before vs. After BLA Impact (Claude Opus 4 / REA Loop) ──────────────────────${ANSI.reset}`,
+    `${ANSI.bold}${ANSI.cyan}── Before vs. After AEGIS Impact (Claude Opus 4 / REA Loop) ──────────────────────${ANSI.reset}`,
     `  • REA Exposure Score:       ${ANSI.red}${res.beforeAudit.exposureScore}/100 (${res.beforeAudit.protectionStatus})${ANSI.reset}  -->  ${ANSI.green}${ANSI.bold}${res.afterAudit.exposureScore}/100 (${res.afterAudit.protectionStatus})${ANSI.reset}`,
     `  • REA Examination Status:   ${ANSI.red}${res.beforeAudit.reaSimulation.examinationStatus.toUpperCase()}${ANSI.reset}                   -->  ${ANSI.green}${ANSI.bold}${res.afterAudit.reaSimulation.examinationStatus.toUpperCase()} (${res.afterAudit.reaSimulation.triggeredResourceLimits.join(", ")})${ANSI.reset}`,
     `  • Obligation Graph Nodes:   ${res.beforeAudit.reaSimulation.obligationLedgerNodes} nodes                    -->  ${ANSI.bold}${res.afterAudit.reaSimulation.obligationLedgerNodes} nodes${ANSI.reset}`,
@@ -179,9 +179,9 @@ export function formatBenchmarkReport(bench: BenchmarkReport): string {
   const lines: string[] = [
     formatBanner(),
     "",
-    `${ANSI.bold}${ANSI.magenta}⚡ BLA vs. REA — ${bench.cases.length}-Target Counter-Showcase Benchmark Suite${ANSI.reset}`,
+    `${ANSI.bold}${ANSI.magenta}⚡ AEGIS vs. REA — ${bench.cases.length}-Target Counter-Showcase Benchmark Suite${ANSI.reset}`,
     "",
-    `${ANSI.bold}Showcase Target                          | Before BLA (REA Alone)        | After BLA Shield (Poison + Tarpit)       | Token Mult | Runtime Check${ANSI.reset}`,
+    `${ANSI.bold}Showcase Target                          | Before AEGIS (REA Alone)        | After AEGIS Shield (Poison + Tarpit)       | Token Mult | Runtime Check${ANSI.reset}`,
     `─────────────────────────────────────────┼───────────────────────────────┼──────────────────────────────────────────┼────────────┼──────────────`,
   ];
 
@@ -207,7 +207,7 @@ export function formatDoctorReport(doc: DoctorDiagnosticReport): string {
   const lines: string[] = [
     formatBanner(),
     "",
-    `${ANSI.bold}BLA Doctor Readiness:${ANSI.reset} ${ANSI.green}HEALTHY${ANSI.reset} (v${doc.blaVersion} on Node ${doc.nodeVersion}, ${doc.platform})`,
+    `${ANSI.bold}AEGIS Doctor Readiness:${ANSI.reset} ${ANSI.green}HEALTHY${ANSI.reset} (v${doc.aegisVersion} on Node ${doc.nodeVersion}, ${doc.platform})`,
     "",
     `${ANSI.bold}Protection Subsystems:${ANSI.reset}`,
     `  • JavaScript/TypeScript AST & Semantic Budget Breaker: ${ANSI.green}${doc.engines.javascriptAstShield}${ANSI.reset}`,
@@ -254,7 +254,7 @@ export function formatOneClickDefenseReport(rep: OneClickDefenseReport): string 
   const lines: string[] = [
     formatBanner(),
     "",
-    `${ANSI.bold}${ANSI.blue}⚡ BLA One-Click Counter-REA Defense Hardening Complete!${ANSI.reset}`,
+    `${ANSI.bold}${ANSI.blue}⚡ AEGIS One-Click Counter-REA Defense Hardening Complete!${ANSI.reset}`,
     "",
     `  ${ANSI.bold}Input Target:${ANSI.reset}      ${rep.inputPath}`,
     `  ${ANSI.bold}Hardened Output:${ANSI.reset}   ${ANSI.cyan}${rep.outputPath}${ANSI.reset}`,

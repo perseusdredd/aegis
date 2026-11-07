@@ -22,7 +22,7 @@ import { dirname, join, resolve } from "node:path";
 import { extractWasmDataPayloads } from "./wasm-xor-mask-sidecar-lint.js";
 
 export const WASM_SEAL_XOR_KNOWN_PLAINTEXT_SCHEMA =
-  "bla-wasm-seal-xor-known-plaintext-lint/v1" as const;
+  "aegis-wasm-seal-xor-known-plaintext-lint/v1" as const;
 
 export type WasmSealXorKnownPlaintextFindingId =
   | "wasm-seal-xor-known-plaintext"
@@ -58,7 +58,7 @@ const SKIP_DIR_NAMES = new Set([
   ".git",
   ".hg",
   ".svn",
-  ".bla-hardened",
+  ".aegis-hardened",
   "coverage",
   ".next",
   ".turbo",
@@ -170,7 +170,7 @@ export function resolveSiblingSealPath(wasmPath: string, explicit?: string): str
     return existsSync(abs) && statSync(abs).isFile() ? abs : null;
   }
   const dir = dirname(resolve(wasmPath));
-  const candidates = ["seal.json", "bla-seal.json", ".bla-seal.json"];
+  const candidates = ["seal.json", "aegis-seal.json", ".aegis-seal.json"];
   for (const name of candidates) {
     const p = join(dir, name);
     if (existsSync(p) && statSync(p).isFile()) return p;
@@ -302,7 +302,7 @@ export function wasmSealXorKnownPlaintextRefuseMessage(
 ): string {
   const p = pathLabel ?? report.path;
   const ids = report.findings.map((f) => f.id).join(",");
-  return `BLA refused bankrupt/maximum protect of ${p}: WASM seal.revision XOR known-plaintext entitlement pack (${ids || "exposed"}). Pass allowWasmSealXorKnownPlaintext / --allow-wasm-seal-xor-known-plaintext / allow_wasm_seal_xor_known_plaintext to override. Prefer one-way mask KDFs and keep public digests out of masked plaintext (red/blue round-7).`;
+  return `AEGIS refused bankrupt/maximum protect of ${p}: WASM seal.revision XOR known-plaintext entitlement pack (${ids || "exposed"}). Pass allowWasmSealXorKnownPlaintext / --allow-wasm-seal-xor-known-plaintext / allow_wasm_seal_xor_known_plaintext to override. Prefer one-way mask KDFs and keep public digests out of masked plaintext (red/blue round-7).`;
 }
 
 function walkWasmFiles(root: string, out: string[], depth: number): void {
@@ -415,7 +415,7 @@ export function buildTestWasmWithSealXorKnownPlaintext(
   ]);
   if (!WebAssembly.validate(wasm)) throw new Error("test wasm invalid");
   const seal = {
-    schema: "bla-test-seal/v1",
+    schema: "aegis-test-seal/v1",
     algorithm: "sha256",
     revision: commit.toString("hex"),
     certificateSha256: createHash("sha256").update("FLAG{test}").digest("hex"),

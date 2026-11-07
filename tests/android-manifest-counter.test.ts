@@ -12,9 +12,9 @@ import {
 } from "../src/shields/formats/archive.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const BLA_ROOT = resolve(__dirname, "..");
+const AEGIS_ROOT = resolve(__dirname, "..");
 const REA_ROOT_ENV = (process.env.REA_ROOT ?? "").trim();
-const REA_ROOT = resolve(REA_ROOT_ENV || join(BLA_ROOT, "..", "rea"));
+const REA_ROOT = resolve(REA_ROOT_ENV || join(AEGIS_ROOT, "..", "rea"));
 const REA_MANIFEST_DIST = join(
   REA_ROOT,
   "dist/android/AndroidManifestComponents.js",
@@ -63,7 +63,7 @@ describe("android manifest component decoy (REA #7379 / #7818)", () => {
     }
   });
 
-  it("plants the decoy under assets/bla-shield/ without rewriting the root manifest", () => {
+  it("plants the decoy under assets/aegis-shield/ without rewriting the root manifest", () => {
     const rootManifest = Buffer.from(
       '<manifest package="com.example.app"><application/></manifest>',
       "utf8",
@@ -92,18 +92,18 @@ describe("android manifest component decoy (REA #7379 / #7818)", () => {
     // Red line: developer's root manifest bytes are untouched.
     expect(root!.data.equals(rootManifest)).toBe(true);
     expect(
-      entries.some((e) => e.name === "assets/bla-shield/AndroidManifest.xml"),
+      entries.some((e) => e.name === "assets/aegis-shield/AndroidManifest.xml"),
     ).toBe(true);
     expect(
       entries.some(
-        (e) => e.name === "assets/bla-shield/AndroidManifest-decoy.xml",
+        (e) => e.name === "assets/aegis-shield/AndroidManifest-decoy.xml",
       ),
     ).toBe(true);
     const decoy = entries
-      .find((e) => e.name === "assets/bla-shield/AndroidManifest.xml")!
+      .find((e) => e.name === "assets/aegis-shield/AndroidManifest.xml")!
       .data.toString("utf8");
     expect(decoy).toContain("TeeAttestationBridge$DetailsActivity");
-    expect(decoy).toContain("bla-shield: decoy AndroidManifest");
+    expect(decoy).toContain("aegis-shield: decoy AndroidManifest");
   });
 });
 

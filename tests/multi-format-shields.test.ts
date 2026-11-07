@@ -49,8 +49,8 @@ describe("Multi-Format Shields (WASM, Python, Native ELF/Mach-O/PE, C/Rust/Go He
     const infoAfter = inspectWasmBinary(protectedRes.buffer);
     expect(infoAfter.validMagic).toBe(true);
     expect(infoAfter.debugModuleName).toContain("tee_hardware_enclave_transport_stub_");
-    expect(infoAfter.customSectionNames).toContain("bla.canary.credentials");
-    expect(infoAfter.customSectionNames).toContain("bla.system.diagnostics");
+    expect(infoAfter.customSectionNames).toContain("aegis.canary.credentials");
+    expect(infoAfter.customSectionNames).toContain("aegis.system.diagnostics");
     expect(protectedRes.buffer.toString("utf8")).toContain("AKIAIOSFODNN7EXAMPLE");
     expect(protectedRes.buffer.toString("utf8")).toContain("DarwinProcessOwnershipInspectionError");
 
@@ -81,8 +81,8 @@ describe("Multi-Format Shields (WASM, Python, Native ELF/Mach-O/PE, C/Rust/Go He
     expect(protectedPy.decoyFunctionsInjected).toBeGreaterThanOrEqual(10);
     expect(protectedPy.crossReferenceEdges).toBeGreaterThanOrEqual(20);
     expect(protectedPy.code).toContain("runtime attestation boundary");
-    expect(protectedPy.code).not.toMatch(/_bla_/i);
-    expect(protectedPy.code).not.toContain("BLA-SHIELD");
+    expect(protectedPy.code).not.toMatch(/_aegis_/i);
+    expect(protectedPy.code).not.toContain("AEGIS-SHIELD");
     expect(protectedPy.code).toContain("def calculate_dynamic_quote");
     expect(protectedPy.canaryTokensEmbedded).toBeGreaterThanOrEqual(2);
     expect(protectedPy.diagnosticsEmbedded).toBeGreaterThanOrEqual(2);
@@ -118,7 +118,7 @@ describe("Multi-Format Shields (WASM, Python, Native ELF/Mach-O/PE, C/Rust/Go He
 
     const pycInfo = inspectPythonPyc(protectedPyc.buffer);
     expect(pycInfo.validPyc).toBe(true);
-    expect(pycInfo.blaProtected).toBe(true);
+    expect(pycInfo.aegisProtected).toBe(true);
   });
 
   it("trips REA's MAX_RUSTC_HASHES (64) and injects decoy Rust/Go metadata into Native ELF64 binaries", () => {
@@ -182,7 +182,7 @@ describe("Multi-Format Shields (WASM, Python, Native ELF/Mach-O/PE, C/Rust/Go He
     expect(afterInfo.rustcCommitHashesCount).toBeGreaterThan(
       REA_INTERNAL_LIMITS.RUST_MAX_COMMIT_HASHES,
     );
-    expect(afterInfo.blaProtected).toBe(true);
+    expect(afterInfo.aegisProtected).toBe(true);
   });
 
   it("emits compile-time C/C++, Rust, and Go shield headers with >64 rustc hashes and opaque predicates", () => {
@@ -199,17 +199,17 @@ describe("Multi-Format Shields (WASM, Python, Native ELF/Mach-O/PE, C/Rust/Go He
       seed: "header-seed",
     });
 
-    expect(cHeader.filename).toBe("bla_shield.h");
-    expect(cHeader.content).toContain("BLA_SHIELD_ANCHOR");
+    expect(cHeader.filename).toBe("aegis_shield.h");
+    expect(cHeader.content).toContain("AEGIS_SHIELD_ANCHOR");
     expect(cHeader.content).toContain("#if defined(_MSC_VER) && !defined(__clang__)");
-    expect(cHeader.content).toContain("#define BLA_NOINLINE __declspec(noinline)");
+    expect(cHeader.content).toContain("#define AEGIS_NOINLINE __declspec(noinline)");
     expect(cHeader.content).toContain("#pragma warning(disable: 4100 4127 4189 4505)");
     expect(cHeader.content).toContain('extern "C"');
     expect(cHeader.content).toContain("enclave_keep_data_table");
     expect(cHeader.content).toContain("enclave_keep_fn_table");
-    expect(rustHeader.filename).toBe("bla_shield.rs");
-    expect(rustHeader.content).toContain("BLA_RUSTC_OVERFLOW_TABLE");
-    expect(goHeader.filename).toBe("bla_shield.go");
+    expect(rustHeader.filename).toBe("aegis_shield.rs");
+    expect(rustHeader.content).toContain("AEGIS_RUSTC_OVERFLOW_TABLE");
+    expect(goHeader.filename).toBe("aegis_shield.go");
     expect(goHeader.content).toContain("func EnclaveTarpit0");
   });
 
@@ -240,10 +240,10 @@ describe("Multi-Format Shields (WASM, Python, Native ELF/Mach-O/PE, C/Rust/Go He
     const entriesAfter = readZipEntries(protectedZip.buffer);
     expect(entriesAfter.length).toBe(8); // 2 originals + manifest + canary + 4 decoys
     expect(
-      entriesAfter.some((e) => e.name === "assets/enclave/bla-attestation-manifest.json"),
+      entriesAfter.some((e) => e.name === "assets/enclave/aegis-attestation-manifest.json"),
     ).toBe(true);
     expect(
-      entriesAfter.some((e) => e.name === "assets/enclave/bla-canary-tokens.txt"),
+      entriesAfter.some((e) => e.name === "assets/enclave/aegis-canary-tokens.txt"),
     ).toBe(true);
     expect(protectedZip.canaryTokensEmbedded).toBeGreaterThan(0);
   });

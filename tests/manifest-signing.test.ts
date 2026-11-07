@@ -14,7 +14,7 @@ import { defendTarget } from "../src/engine/defender.js";
 describe("manifest ed25519 signing", () => {
   let dir: string;
   beforeEach(() => {
-    dir = fs.mkdtempSync(path.join(os.tmpdir(), "bla-manifest-signing-"));
+    dir = fs.mkdtempSync(path.join(os.tmpdir(), "aegis-manifest-signing-"));
   });
   afterEach(() => {
     fs.rmSync(dir, { recursive: true, force: true });
@@ -28,7 +28,7 @@ describe("manifest ed25519 signing", () => {
 
   it("signs and verifies a round trip, including JSON round trip", () => {
     const pair = generateManifestSigningKeyPair();
-    const payload = { schema: "https://bla.tools/schemas/defense-manifest-v1.json", blaVersion: "1.2.3", items: [1, 2, 3] };
+    const payload = { schema: "https://aegis.tools/schemas/defense-manifest-v1.json", aegisVersion: "1.2.3", items: [1, 2, 3] };
     const signed = signManifestPayload(payload, pair.privateKeyPem);
     expect(signed.signature.algorithm).toBe("ed25519");
     expect(signed.signature.publicKey).toContain("PUBLIC KEY");
@@ -93,7 +93,7 @@ describe("manifest ed25519 signing", () => {
     });
 
     expect(report.manifestSigned).toBe(true);
-    const manifestPath = `${output}.bla-manifest.json`;
+    const manifestPath = `${output}.aegis-manifest.json`;
     expect(report.manifestPath).toBe(manifestPath);
 
     const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as Record<string, unknown>;
@@ -116,7 +116,7 @@ describe("manifest ed25519 signing", () => {
 
     expect(report.manifestSigned).toBeUndefined();
     const manifest = JSON.parse(
-      fs.readFileSync(`${output}.bla-manifest.json`, "utf8"),
+      fs.readFileSync(`${output}.aegis-manifest.json`, "utf8"),
     ) as Record<string, unknown>;
     expect(manifest.attestationKind).toBe("unsigned");
     expect(manifest.signature).toBeUndefined();
@@ -150,7 +150,7 @@ describe("manifest ed25519 signing", () => {
   it("pins verification to an expected public key", () => {
     const trusted = generateManifestSigningKeyPair();
     const attacker = generateManifestSigningKeyPair();
-    const payload = { schema: "https://bla.tools/schemas/defense-manifest-v1.json", items: [1, 2] };
+    const payload = { schema: "https://aegis.tools/schemas/defense-manifest-v1.json", items: [1, 2] };
 
     const trustedManifest = signManifestPayload(payload, trusted.privateKeyPem);
     expect(verifyManifestSignature({ ...trustedManifest }, trusted.publicKeyPem)).toBe(true);
@@ -166,12 +166,12 @@ describe("manifest ed25519 signing", () => {
   it("verifies after object key reordering (sorted-key canonicalization)", () => {
     const pair = generateManifestSigningKeyPair();
     const signed = signManifestPayload(
-      { schema: "s", blaVersion: "2.1.0", nested: { z: 1, a: 2 } },
+      { schema: "s", aegisVersion: "2.1.0", nested: { z: 1, a: 2 } },
       pair.privateKeyPem,
     ) as Record<string, unknown>;
     const reordered = {
       nested: { a: 2, z: 1 },
-      blaVersion: "2.1.0",
+      aegisVersion: "2.1.0",
       schema: "s",
       signature: signed.signature,
     };

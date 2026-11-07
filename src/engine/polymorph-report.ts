@@ -4,7 +4,7 @@
  * Compares two hardened artifact directories and reports objective structural
  * differences. Does **not** claim "harder to reverse" — that stays with REA.
  * Honesty: driftScore only measures "how different"; functional equivalence
- * must be proven separately (bla_verify / REA).
+ * must be proven separately (aegis_verify / REA).
  */
 
 import { createHash } from "node:crypto";
@@ -17,14 +17,14 @@ import { extname, relative, resolve, sep } from "node:path";
 import { walkBounded } from "../core/walk.js";
 import { inspectWasmBinary } from "../shields/formats/wasm.js";
 
-export const POLYMORPH_REPORT_SCHEMA = "bla-polymorph-report/v1" as const;
+export const POLYMORPH_REPORT_SCHEMA = "aegis-polymorph-report/v1" as const;
 
 const SKIP_DIR_NAMES = new Set([
   "node_modules",
   ".git",
   ".hg",
   ".svn",
-  ".bla-hardened",
+  ".aegis-hardened",
   "coverage",
   ".next",
   ".turbo",
@@ -47,8 +47,8 @@ const COMPARE_EXTS = new Set([
 /** Files whose intentional content may include timestamps / run ids — skip byte compare. */
 const SKIP_BASENAMES = new Set([
   "package-lock.json",
-  ".blarc",
-  "bla.config.json",
+  ".aegisrc",
+  "aegis.config.json",
 ]);
 
 export type PolymorphExpectMode = "same" | "different" | "report";
@@ -380,7 +380,7 @@ export function comparePolymorphArtifacts(
     files,
     summary,
     oneLineAdvice:
-      "driftScore measures structural difference only — prove functional equivalence with bla_verify / REA; do not treat drift as a cracking-resistance claim.",
+      "driftScore measures structural difference only — prove functional equivalence with aegis_verify / REA; do not treat drift as a cracking-resistance claim.",
   };
 }
 

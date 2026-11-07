@@ -103,7 +103,7 @@ function intensityScale(intensity: ProtectionIntensity): {
  *   past `intentFilters: 32` / `intentValues: 64` deepen the partial admission.
  *
  * Red-line safe: this is a NEW decoy XML artifact (sidecar under
- * `assets/bla-shield/`). It never rewrites the developer's root
+ * `assets/aegis-shield/`). It never rewrites the developer's root
  * `AndroidManifest.xml`, never changes the real export surface, and never
  * emits binary AXML that could invalidate an APK signature check path we
  * already refuse for signed APKs.
@@ -129,16 +129,16 @@ export function generateAndroidManifestCounter(
 
   const lines: string[] = [
     `<?xml version="1.0" encoding="utf-8"?>`,
-    `<!-- bla-shield: decoy AndroidManifest — saturates REA #7379/#7818 component inventory -->`,
+    `<!-- aegis-shield: decoy AndroidManifest — saturates REA #7379/#7818 component inventory -->`,
     `<manifest xmlns:android="http://schemas.android.com/apk/res/android"`,
     `    package="${PACKAGE_NAME}"`,
     `    android:versionCode="1"`,
-    `    android:versionName="1.0-bla-enclave-shield">`,
+    `    android:versionName="1.0-aegis-enclave-shield">`,
     `  <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="34" />`,
     `  <uses-permission android:name="android.permission.INTERNET" />`,
     `  <uses-permission android:name="com.enclave.sgx.permission.TEE_ATTEST" />`,
     `  <application`,
-    `      android:label="BLA Enclave Shield Decoy"`,
+    `      android:label="AEGIS Enclave Shield Decoy"`,
     `      android:permission="com.enclave.sgx.permission.TEE_ATTEST"`,
     `      android:allowBackup="false">`,
   ];
@@ -160,7 +160,7 @@ export function generateAndroidManifestCounter(
       `        <action android:name="com.enclave.sgx.action.VERIFY_SHAMIR_${i}" />`,
       `        <category android:name="android.intent.category.DEFAULT" />`,
       `      </intent-filter>`,
-      `      <meta-data android:name="bla.canary" android:value="${escAttr(deception.textRecords[i % deception.textRecords.length] ?? "PROTECTED_CANARY")}" />`,
+      `      <meta-data android:name="aegis.canary" android:value="${escAttr(deception.textRecords[i % deception.textRecords.length] ?? "PROTECTED_CANARY")}" />`,
       `    </activity>`,
     );
     nestedDollarNames += 1;
@@ -215,8 +215,8 @@ export function generateAndroidManifestCounter(
     `    <provider`,
     `        android:name=".EnclaveAuthorityFloodProvider"`,
     `        android:authorities="${escAttr(authorityParts.join(";"))}"`,
-    `        android:exported="@bool/bla_canary_exported"`,
-    `        android:grantUriPermissions="@bool/bla_canary_grant"`,
+    `        android:exported="@bool/aegis_canary_exported"`,
+    `        android:grantUriPermissions="@bool/aegis_canary_grant"`,
     `        android:permission="com.enclave.sgx.permission.TEE_ATTEST"`,
     `        android:readPermission="com.enclave.sgx.permission.TEE_READ"`,
     `        android:writePermission="com.enclave.sgx.permission.TEE_WRITE" />`,
@@ -229,8 +229,8 @@ export function generateAndroidManifestCounter(
   lines.push(
     `    <activity`,
     `        android:name=".TeeAttestationBridge$IntentFloodActivity"`,
-    `        android:exported="@bool/bla_canary_exported"`,
-    `        android:enabled="@bool/bla_canary_enabled"`,
+    `        android:exported="@bool/aegis_canary_exported"`,
+    `        android:enabled="@bool/aegis_canary_enabled"`,
     `        android:process=":${escAttr(processPad)}">`,
   );
   for (let f = 0; f < intentFiltersPerHeavy; f++) {
@@ -257,12 +257,12 @@ export function generateAndroidManifestCounter(
   // Meta-data canary bait (counts toward detailBytes / intentValues).
   for (const rec of deception.textRecords.slice(0, 8)) {
     lines.push(
-      `      <meta-data android:name="bla.canary.${prng.hex(4)}" android:value="${escAttr(rec.slice(0, 200))}" />`,
+      `      <meta-data android:name="aegis.canary.${prng.hex(4)}" android:value="${escAttr(rec.slice(0, 200))}" />`,
     );
   }
   for (const c of chaff.slice(0, 4)) {
     lines.push(
-      `      <meta-data android:name="bla.chaff.${c.id}" android:value="${escAttr(c.rawText.slice(0, 160))}" />`,
+      `      <meta-data android:name="aegis.chaff.${c.id}" android:value="${escAttr(c.rawText.slice(0, 160))}" />`,
     );
   }
   lines.push(`    </activity>`);

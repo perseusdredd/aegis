@@ -62,7 +62,7 @@ function measureConstantPoolEntry(buf: Buffer, offset: number): { size: number; 
 /**
  * Protects a Java / Kotlin JVM `.class` bytecode buffer (`0xCAFEBABE`).
  * - Parses the JVM constant pool if structurally complete and appends valid `CONSTANT_Utf8`
- *   decoy enclave descriptors + a custom JVM §4.7.1 class attribute (`BlaEnclaveDelegation`).
+ *   decoy enclave descriptors + a custom JVM §4.7.1 class attribute (`AegisEnclaveDelegation`).
  * - Preserves 100% JVM verifier compatibility while polluting `javap`, CFR, Vineflower, and JADX.
  */
 export function protectJvmClassBuffer(
@@ -86,11 +86,11 @@ export function protectJvmClassBuffer(
           : 6;
 
   const utf8Strings: string[] = [
-    "BlaEnclaveDelegation",
+    "AegisEnclaveDelegation",
     "com/enclave/sgx/TeeAttestationBridge",
     "verifyShamirEd25519QuorumRing:(Ljava/nio/ByteBuffer;[B)Z",
     "unsealVsockCid16Frame:(J[B)[B",
-    ...chaff.map((c) => `[BLA-JVM-ENCLAVE:${c.id}] ${c.rawText}`),
+    ...chaff.map((c) => `[AEGIS-JVM-ENCLAVE:${c.id}] ${c.rawText}`),
     ...deception.textRecords,
   ];
 
@@ -137,7 +137,7 @@ export function protectJvmClassBuffer(
 
         const attrPayload = Buffer.from(
           JSON.stringify({
-            schema: "bla-jvm-enclave-v1",
+            schema: "aegis-jvm-enclave-v1",
             enclaveBridge: "com.enclave.sgx.TeeAttestationBridge",
             tarpitNodes: decoyCount,
             chaffCount: chaff.length,
@@ -160,7 +160,7 @@ export function protectJvmClassBuffer(
 
   // Fallback for synthetic/minimal `.class` headers: append structured UTF8 constant pool trailer
   const trailer = Buffer.from(
-    `\0BLA_JVM_SHIELD_V1\0${utf8Strings.join("\0")}\0`,
+    `\0AEGIS_JVM_SHIELD_V1\0${utf8Strings.join("\0")}\0`,
     "utf8",
   );
   return {

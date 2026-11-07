@@ -7,8 +7,8 @@ import vm from "node:vm";
 import { parse } from "@babel/parser";
 import { describe, expect, it } from "vitest";
 import {
-  blaEsbuildPlugin,
-  blaRollupPlugin,
+  aegisEsbuildPlugin,
+  aegisRollupPlugin,
   inferCarrierFromRollupFormat,
   inferEsbuildLoader,
 } from "../src/bundler/index.js";
@@ -38,7 +38,7 @@ import {
 } from "../src/shields/formats/python.js";
 import {
   InvalidJavaScriptCarrierError,
-  transformJavaScriptWithBlaShield,
+  transformJavaScriptWithAegisShield,
 } from "../src/shields/javascript/ast-shield.js";
 
 function buildRawAsarBuffer(
@@ -322,7 +322,7 @@ describe("P1 Format Contracts (#13 ASAR, #14 Python, #15 JS/Bundler, #16 ELF64, 
       expectedDocstring: string | null,
       expectedFutureNames: readonly string[],
     ): void {
-      const tmpDir = mkdtempSync(join(tmpdir(), "bla-py-test-"));
+      const tmpDir = mkdtempSync(join(tmpdir(), "aegis-py-test-"));
       const pyFile = join(tmpDir, "module_under_test.py");
       try {
         writeFileSync(pyFile, code, "utf8");
@@ -463,7 +463,7 @@ describe("P1 Format Contracts (#13 ASAR, #14 Python, #15 JS/Bundler, #16 ELF64, 
   describe("Issue #15: JavaScript carrier preservation and bundler loader contracts", () => {
     it("preserves classic script / IIFE carrier without injecting export declarations", () => {
       const iifeSource = "(() => {\n  const answer = 42;\n  globalThis.__iifeResult = answer;\n})();";
-      const result = transformJavaScriptWithBlaShield(iifeSource, {
+      const result = transformJavaScriptWithAegisShield(iifeSource, {
         sourceType: "script",
         filename: "bundle.iife.js",
         seed: "issue-15-iife",
@@ -493,7 +493,7 @@ describe("P1 Format Contracts (#13 ASAR, #14 Python, #15 JS/Bundler, #16 ELF64, 
         "export function publicHelper() { return banner; }",
       ].join("\n");
 
-      const result = transformJavaScriptWithBlaShield(esmSource, {
+      const result = transformJavaScriptWithAegisShield(esmSource, {
         filename: "index.mjs",
         seed: "issue-15-esm",
       });
@@ -507,7 +507,7 @@ describe("P1 Format Contracts (#13 ASAR, #14 Python, #15 JS/Bundler, #16 ELF64, 
         "module.exports = { message };",
       ].join("\n");
 
-      const cjsResult = transformJavaScriptWithBlaShield(cjsSource, {
+      const cjsResult = transformJavaScriptWithAegisShield(cjsSource, {
         filename: "index.cjs",
         seed: "issue-15-cjs",
       });
@@ -520,7 +520,7 @@ describe("P1 Format Contracts (#13 ASAR, #14 Python, #15 JS/Bundler, #16 ELF64, 
 
       // Fail closed when ESM syntax is passed to a script/commonjs carrier
       expect(() =>
-        transformJavaScriptWithBlaShield("export const x = 1;", {
+        transformJavaScriptWithAegisShield("export const x = 1;", {
           sourceType: "script",
         }),
       ).toThrow(InvalidJavaScriptCarrierError);
@@ -538,7 +538,7 @@ describe("P1 Format Contracts (#13 ASAR, #14 Python, #15 JS/Bundler, #16 ELF64, 
       expect(inferEsbuildLoader("src/util.cts")).toBe("ts");
       expect(inferEsbuildLoader("src/index.mjs")).toBe("js");
 
-      const rollupPlugin = blaRollupPlugin({ honeySourceMap: false });
+      const rollupPlugin = aegisRollupPlugin({ honeySourceMap: false });
       const iifeChunk = rollupPlugin.renderChunk(
         "(() => { const x = 1; })();",
         { fileName: "app.js" },
@@ -547,8 +547,8 @@ describe("P1 Format Contracts (#13 ASAR, #14 Python, #15 JS/Bundler, #16 ELF64, 
       expect(iifeChunk).not.toBeNull();
       expect(/\bexport\b/.test(iifeChunk!.code)).toBe(false);
 
-      // Test blaEsbuildPlugin onLoad with .tsx and .jsx files
-      const tmpDir = mkdtempSync(join(tmpdir(), "bla-esbuild-test-"));
+      // Test aegisEsbuildPlugin onLoad with .tsx and .jsx files
+      const tmpDir = mkdtempSync(join(tmpdir(), "aegis-esbuild-test-"));
       try {
         const tsxPath = join(tmpDir, "Widget.tsx");
         const jsxPath = join(tmpDir, "Button.jsx");
@@ -568,7 +568,7 @@ describe("P1 Format Contracts (#13 ASAR, #14 Python, #15 JS/Bundler, #16 ELF64, 
               path: string;
             }) => Promise<{ contents: string; loader: string } | null>)
           | undefined;
-        const esbuildPlugin = blaEsbuildPlugin();
+        const esbuildPlugin = aegisEsbuildPlugin();
         esbuildPlugin.setup({
           onLoad(_opts, cb) {
             registeredCallback = cb;

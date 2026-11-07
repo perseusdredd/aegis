@@ -20,7 +20,7 @@ function normalizePublicKeyPem(pem: string): string {
 }
 
 /**
- * Verify a `.bla-manifest.json` file.
+ * Verify a `.aegis-manifest.json` file.
  *
  * Without `publicKeyPath`, this only proves the manifest was signed by the key
  * embedded in it (an attacker can re-sign their own edits). Supply

@@ -56,7 +56,7 @@ export function buildDefenseCoverageContract(options?: {
       responsibility: "external-application-backend",
       summary: serverVerified
         ? "Verified against local synthetic multi-tenant reference fixture only; production backends must enforce per-request identity, object/tenant authorization, session revocation, and response data minimization independently."
-        : "Server-side authentication, object/tenant authorization, session invalidation, and CSRF/replay controls are outside BLA client-artifact scope and must be enforced by the backend service.",
+        : "Server-side authentication, object/tenant authorization, session invalidation, and CSRF/replay controls are outside AEGIS client-artifact scope and must be enforced by the backend service.",
     },
     threatPremises: [
       {
@@ -71,14 +71,14 @@ export function buildDefenseCoverageContract(options?: {
         coveredByClientArtifactShield: false,
         authoritativeControlLocation: "server-side-application",
         explanation:
-          "BLA runtime globals and AST shields execute inside the untrusted client context and carry no server identity or resource authorization authority.",
+          "AEGIS runtime globals and AST shields execute inside the untrusted client context and carry no server identity or resource authorization authority.",
       },
       {
         id: "authorized-user-response-observation",
         coveredByClientArtifactShield: false,
         authoritativeControlLocation: "server-side-application",
         explanation:
-          "BLA cannot prevent a user from recording network responses or data that their session is legitimately permitted to receive. Sensitive fields that the client does not strictly need must be omitted by the server before serialization (data minimization).",
+          "AEGIS cannot prevent a user from recording network responses or data that their session is legitimately permitted to receive. Sensitive fields that the client does not strictly need must be omitted by the server before serialization (data minimization).",
       },
     ],
   };

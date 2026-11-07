@@ -6,7 +6,7 @@
  * reaches decoys. Selection is structural (FunctionDef sites minus injected tarpit
  * names by identity) + seeded PRNG — not keyword/business-name rule tables.
  *
- * No greppable `_bla_` / `BLA-SHIELD` banners. No Python AST dependency: indent-stack
+ * No greppable `_aegis_` / `AEGIS-SHIELD` banners. No Python AST dependency: indent-stack
  * scan with string/comment awareness, preserving encoding and EOL.
  */
 

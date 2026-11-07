@@ -7,12 +7,12 @@ coverage/
 .env
 .env.*
 tmp/
-.bla-cache/
+.aegis-cache/
 
-# Per-project BLA config / seed (local)
-.blarc
-.blarc.json
-bla.config.json
+# Per-project AEGIS config / seed (local)
+.aegisrc
+.aegisrc.json
+aegis.config.json
 
 # CrackMe v6 — never commit secrets or materialized clean / fixture rebuilds
 challenge/v6/clean/target.materialized.cjs

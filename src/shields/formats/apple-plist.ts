@@ -40,7 +40,7 @@ export function protectAppleXmlPlist(
     readonly seed?: string | number;
   } = {},
 ): ApplePlistShieldResult {
-  const prng = new SeededPrng(options.seed ?? "bla-apple-plist-v1");
+  const prng = new SeededPrng(options.seed ?? "aegis-apple-plist-v1");
   const tag = prng.hex(4);
 
   const doctypeWithEmptyInternalSubset =
@@ -78,28 +78,28 @@ export function protectAppleXmlPlist(
 
   const canaryEntries: string[] = [];
   deception.canary.syntheticCanaryTokens.forEach((tok, i) => {
-    canaryEntries.push(`  <key>BLACanaryCredential_${i}</key>`);
+    canaryEntries.push(`  <key>AEGISCanaryCredential_${i}</key>`);
     canaryEntries.push(`  <string>${tok.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</string>`);
   });
   deception.canary.ambiguousCredentialUrls.slice(0, 4).forEach((url, i) => {
-    canaryEntries.push(`  <key>BLATransportEndpoint_${i}</key>`);
+    canaryEntries.push(`  <key>AEGISTransportEndpoint_${i}</key>`);
     canaryEntries.push(`  <string>${url.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</string>`);
   });
   deception.diagnostics.diagnosticsInjected.slice(0, 4).forEach((d, i) => {
-    canaryEntries.push(`  <key>BLASystemDiagnostic_${i}</key>`);
+    canaryEntries.push(`  <key>AEGISSystemDiagnostic_${i}</key>`);
     const msg = `[${d.errorClass}] (${d.systemCode}) ${d.diagnosticMessage}`.replace(/&/g, "&amp;").replace(/</g, "&lt;");
     canaryEntries.push(`  <string>${msg}</string>`);
   });
 
   // Deep nesting bait: claim depth REA_MAX_BINARY_PLIST_NESTING_DEPTH + 4 under a decoy key.
   const depth = REA_MAX_BINARY_PLIST_NESTING_DEPTH + 4;
-  canaryEntries.push(`  <key>BLABinaryPlistNestingDepthClaim</key>`);
+  canaryEntries.push(`  <key>AEGISBinaryPlistNestingDepthClaim</key>`);
   canaryEntries.push(`  <integer>${depth}</integer>`);
 
   const enclaveDictEntries = [
-    `  <key>BLAEnclaveAttestationAuthority</key>`,
+    `  <key>AEGISEnclaveAttestationAuthority</key>`,
     `  <string>com.apple.security.secure-enclave.ring0.${tag}</string>`,
-    `  <key>BLAEnclaveVsockDelegationCID</key>`,
+    `  <key>AEGISEnclaveVsockDelegationCID</key>`,
     `  <integer>16</integer>`,
     ...canaryEntries,
   ].join("\n");
@@ -137,13 +137,13 @@ export function protectApplePlistBuffer(
   // plus canary/diagnostic UTF-8 records. Trailer is ignored by Apple's parser (stops at trailer offset).
   if (rawBuffer.length >= 8 && rawBuffer.subarray(0, 6).toString("latin1") === "bplist") {
     const intensity = options.intensity ?? "balanced";
-    const prng = new SeededPrng(options.seed ?? "bla-apple-plist-v1");
+    const prng = new SeededPrng(options.seed ?? "aegis-apple-plist-v1");
     const deception = buildCanaryAndDiagnosticPayloads(prng, intensity);
     const depth = REA_MAX_BINARY_PLIST_NESTING_DEPTH + 4;
     const trailer = Buffer.from(
       [
         "",
-        `BLA_BPLIST_DEPTH_GUARD_${depth}:${prng.hex(6)}:com.apple.security.secure-enclave.ring0`,
+        `AEGIS_BPLIST_DEPTH_GUARD_${depth}:${prng.hex(6)}:com.apple.security.secure-enclave.ring0`,
         ...deception.textRecords,
         "",
       ].join("\0"),

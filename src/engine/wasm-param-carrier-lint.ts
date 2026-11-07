@@ -14,7 +14,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 
-export const WASM_PARAM_CARRIER_SCHEMA = "bla-wasm-param-carrier-lint/v1" as const;
+export const WASM_PARAM_CARRIER_SCHEMA = "aegis-wasm-param-carrier-lint/v1" as const;
 
 export type WasmParamCarrierFindingId =
   | "clear-wasm-param-magic"
@@ -47,14 +47,14 @@ const WASM_MAGIC = Buffer.from([0x00, 0x61, 0x73, 0x6d]);
 
 /** Tagged footgun magics observed in red-blue rounds (and close cousins). */
 const TAGGED_MAGIC =
-  /(?:R[0-9]|BLA|V[0-9]|K[0-9])?(?:PARM|CIPH|SEAL|SALT)/g;
+  /(?:R[0-9]|AEGIS|V[0-9]|K[0-9])?(?:PARM|CIPH|SEAL|SALT)/g;
 
 const SKIP_DIR_NAMES = new Set([
   "node_modules",
   ".git",
   ".hg",
   ".svn",
-  ".bla-hardened",
+  ".aegis-hardened",
   "coverage",
   ".next",
   ".turbo",

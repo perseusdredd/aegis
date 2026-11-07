@@ -12,7 +12,7 @@ import {
 
 const tempDirs: string[] = [];
 function makeHome(): string {
-  const dir = mkdtempSync(join(tmpdir(), "bla-skill-bundle-"));
+  const dir = mkdtempSync(join(tmpdir(), "aegis-skill-bundle-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -30,7 +30,7 @@ function setupCursor(home: string): string {
     mcpArgs: [resolve(process.cwd(), "dist/cli.js"), "mcp"],
     yes: true,
   });
-  return join(home, ".cursor", "skills", "blind-llm-agents");
+  return join(home, ".cursor", "skills", "aegis-counter-rea");
 }
 
 describe("skill bundle install integrity", () => {

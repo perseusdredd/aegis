@@ -78,7 +78,7 @@ export interface NativeBinaryInspection {
   readonly hasGoBuildInfo: boolean;
   readonly goBuildInfoFramed: boolean;
   readonly extractedStringsCount: number;
-  readonly blaProtected: boolean;
+  readonly aegisProtected: boolean;
 }
 
 const MAX_SAFE_BIGINT = BigInt(Number.MAX_SAFE_INTEGER);
@@ -403,9 +403,9 @@ export function inspectNativeBinary(bytes: Buffer): NativeBinaryInspection {
     textLatin1.includes(".go.buildinfo") ||
     textLatin1.includes("__go_buildinfo") ||
     textLatin1.includes("\xff Go buildinf:") ||
-    textLatin1.includes("[BLA-GO-BUILDINFO]");
+    textLatin1.includes("[AEGIS-GO-BUILDINFO]");
   const goBuildInfoFramed =
-    textLatin1.includes("[BLA-GO-BUILDINFO]") ||
+    textLatin1.includes("[AEGIS-GO-BUILDINFO]") ||
     textLatin1.includes(".gopclntab") ||
     textLatin1.includes("runtime.moduledata");
 
@@ -424,8 +424,8 @@ export function inspectNativeBinary(bytes: Buffer): NativeBinaryInspection {
   }
 
   const printableMatches = textLatin1.match(/[A-Za-z0-9_/:.-]{6,}/g) ?? [];
-  const blaProtected =
-    textLatin1.includes("BLA-NATIVE-SHIELD") ||
+  const aegisProtected =
+    textLatin1.includes("AEGIS-NATIVE-SHIELD") ||
     rustcMatches.size > REA_INTERNAL_LIMITS.RUST_MAX_COMMIT_HASHES ||
     fuseInspection.exceedsReaSentinelLimit ||
     dartSnapshotHashesCount >
@@ -445,7 +445,7 @@ export function inspectNativeBinary(bytes: Buffer): NativeBinaryInspection {
     hasGoBuildInfo,
     goBuildInfoFramed,
     extractedStringsCount: printableMatches.length,
-    blaProtected,
+    aegisProtected,
   };
 }
 
@@ -842,7 +842,7 @@ export function protectNativeBinary(
   const elfBefore = isElfMagic ? validateElf64Layout(bytes) : undefined;
 
   const intensity = options.intensity ?? "balanced";
-  const prng = new SeededPrng(options.seed ?? "bla-native-shield-v1");
+  const prng = new SeededPrng(options.seed ?? "aegis-native-shield-v1");
   const chaffPayloads = generateChaffPayloads(prng, intensity);
 
   let workingInput = Buffer.from(bytes);
@@ -919,7 +919,7 @@ export function protectNativeBinary(
   const dartOverflowPayload = flutterPool.buffer;
 
   const shieldTrailer = Buffer.concat([
-    Buffer.from("\0[BLA-NATIVE-SHIELD-V1]\0.dep-v0\0", "utf8"),
+    Buffer.from("\0[AEGIS-NATIVE-SHIELD-V1]\0.dep-v0\0", "utf8"),
     Buffer.from(rustcLines.join(""), "latin1"),
     goBuildInfo.buffer,
     decoySentinelsBuffer,

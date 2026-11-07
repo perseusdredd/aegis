@@ -4,9 +4,9 @@ import * as path from "node:path";
 import { describe, expect, it } from "vitest";
 import { runCli } from "../src/cli.js";
 
-describe("bla audit --fail-under", () => {
+describe("aegis audit --fail-under", () => {
   it("exits 2 when audit exposure exceeds the threshold and 0 when within", async () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bla-audit-fail-under-"));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "aegis-audit-fail-under-"));
     const target = path.join(dir, "app.js");
     fs.writeFileSync(target, "export const value = 42;\n", "utf8");
     try {

@@ -1,6 +1,6 @@
 /**
  * CrackMe v6 — harden-native edition.
- * The published challenge is `hardenProject()` (== `bla harden`) output over a
+ * The published challenge is `hardenProject()` (== `aegis harden`) output over a
  * public template; no plaintext key/flag lives in git. CI exercises the public
  * demo fixture end-to-end and only digests for the release bundle.
  */
@@ -126,7 +126,7 @@ describe("CrackMe v6 (harden-native)", () => {
     }
   }, 180_000);
 
-  it("fixture: stripping BLA's cognitive-armor corpus breaks the unlock (anti-strip)", async () => {
+  it("fixture: stripping AEGIS's cognitive-armor corpus breaks the unlock (anti-strip)", async () => {
     await withFixture(async (lib, _bundle, run) => {
       const path = join(run, "vault.cjs");
       const src = readFileSync(path, "utf8");

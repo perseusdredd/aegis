@@ -1,10 +1,10 @@
 # AGENTS.md — Repository Guide for Coding Agents
 
-This repository contains **BLA (`bla-agents` — Blind LLM Agents)**, an open-source adversarial Blue Defense toolkit engineered to protect software artifacts against AI reverse-engineering agents (specifically `morluto/rea`).
+This repository contains **AEGIS (`aegis-agents` — Blind LLM Agents)**, an open-source adversarial Blue Defense toolkit engineered to protect software artifacts against AI reverse-engineering agents (specifically `morluto/rea`).
 
 ## Project Layout
 
-- `src/identity.ts`: Product metadata (`bla-agents`) and exact `REA_INTERNAL_LIMITS` constants.
+- `src/identity.ts`: Product metadata (`aegis-agents`) and exact `REA_INTERNAL_LIMITS` constants.
 - `src/core/`:
   - `types.ts`: Domain interfaces (`AuditReport`, `ProtectionResult`, `VerificationReport`, `BenchmarkReport`).
   - `detector.ts`: Magic-byte and file-extension format detection across 19 artifact types (including JS/TS, `.asar`, `.wasm`, `.py`/`.pyc`, ELF/Mach-O/PE, `.sqlite`, `.safetensors`, `.gguf`, `.dex`, and `Il2Cpp` metadata).
@@ -21,9 +21,9 @@ This repository contains **BLA (`bla-agents` — Blind LLM Agents)**, an open-so
   - `runtime/runtime-shield.ts` & `runtime/memory-diff-shield.ts`: "Truman Show" Anti-CDP / Anti-Inspector / Anti-Frida dynamic runtime deception shield, plus Synchronized Shadow Heap Churn and Split-Share Rolling XOR memory masking against $M_0 \to M_1$ runtime memory diffing.
   - `javascript/ast-shield.ts`: Babel AST shield combining opaque ternaries, Electron IPC de-literalization, exhaustion suite, and deception suite.
   - `formats/`: Format-specific shields for `sourcemap.ts`, `asar.ts`, `electron-fuses.ts`, `wasm.ts`, `python.ts`, `native.ts`, `sqlite.ts`, `model.ts`, `mobile-game.ts`, `apple-plist.ts`, `dotnet-managed.ts`, `headers.ts`, and `archive.ts`.
-- `src/bundler/index.ts`: Vite, Rollup, Webpack, and esbuild bundler plugins (`bla-agents/bundler`).
+- `src/bundler/index.ts`: Vite, Rollup, Webpack, and esbuild bundler plugins (`aegis-agents/bundler`).
 - `src/engine/`: `defender.ts` (One-Click 5-Stage `defendTarget`), `auditor.ts`, `protector.ts`, `verifier.ts`, and `benchmark.ts` (8-target showcase benchmark).
-- `src/mcp/server.ts`: JSON-RPC 2.0 MCP stdio server (`bla_defend`, `bla_audit`, `bla_protect`, `bla_verify`, `bla_benchmark`, `bla_emit_headers`, `bla_doctor`).
+- `src/mcp/server.ts`: JSON-RPC 2.0 MCP stdio server (`aegis_defend`, `aegis_audit`, `aegis_protect`, `aegis_verify`, `aegis_benchmark`, `aegis_emit_headers`, `aegis_doctor`).
 - `src/setup/`: Auto-registration for Claude Code, Cursor, Codex, Windsurf, Gemini CLI, and Antigravity.
 
 ## Build & Test Commands

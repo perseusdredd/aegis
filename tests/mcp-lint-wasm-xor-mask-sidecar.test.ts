@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { handleMcpRequest, BLA_MCP_TOOLS } from "../src/mcp/server.js";
+import { handleMcpRequest, AEGIS_MCP_TOOLS } from "../src/mcp/server.js";
 import {
   buildTestWasmWithXorMaskSidecar,
   WASM_XOR_MASK_SIDECAR_SCHEMA,
@@ -22,17 +22,17 @@ async function call(name: string, args: Record<string, unknown>) {
   });
 }
 
-describe("MCP bla_lint_wasm_xor_mask_sidecar", () => {
+describe("MCP aegis_lint_wasm_xor_mask_sidecar", () => {
   it("registers once", () => {
-    expect(BLA_MCP_TOOLS.filter((t) => t.name === "bla_lint_wasm_xor_mask_sidecar")).toHaveLength(1);
+    expect(AEGIS_MCP_TOOLS.filter((t) => t.name === "aegis_lint_wasm_xor_mask_sidecar")).toHaveLength(1);
   });
 
   it("flags R6 footgun with isError", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-mcp-xor-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-mcp-xor-"));
     tempDirs.push(dir);
     const file = join(dir, "core.wasm");
     writeFileSync(file, buildTestWasmWithXorMaskSidecar({}));
-    const res = await call("bla_lint_wasm_xor_mask_sidecar", { path: file });
+    const res = await call("aegis_lint_wasm_xor_mask_sidecar", { path: file });
     expect(res?.error).toBeUndefined();
     const result = res!.result as {
       isError?: boolean;

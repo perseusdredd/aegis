@@ -9,7 +9,7 @@ import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { detectArtifactFormat } from "../core/detector.js";
 import { walkBounded } from "../core/walk.js";
 import type { ArtifactFormat, ProtectionIntensity } from "../core/types.js";
-import { BLA_IDENTITY } from "../identity.js";
+import { AEGIS_IDENTITY } from "../identity.js";
 import {
   defendTarget,
   type OneClickDefenseReport,
@@ -52,7 +52,7 @@ import {
 } from "./run-evidence.js";
 
 /** Preferred build-output directory names, searched first under a project root. */
-export const BLA_BUILD_OUTPUT_DIR_NAMES = Object.freeze([
+export const AEGIS_BUILD_OUTPUT_DIR_NAMES = Object.freeze([
   "dist",
   "build",
   "out",
@@ -71,7 +71,7 @@ const SKIP_DIR_NAMES = new Set([
   ".git",
   ".hg",
   ".svn",
-  ".bla-hardened",
+  ".aegis-hardened",
   "coverage",
   ".turbo",
   ".cache",
@@ -87,7 +87,7 @@ const SKIP_DIR_NAMES = new Set([
  */
 const SUPPLEMENTAL_SKIP_DIR_NAMES = new Set([
   ...SKIP_DIR_NAMES,
-  ...BLA_BUILD_OUTPUT_DIR_NAMES,
+  ...AEGIS_BUILD_OUTPUT_DIR_NAMES,
   "src",
   "lib",
   "test",
@@ -157,12 +157,12 @@ export interface HardenProjectOptions {
   readonly allowWasmSealXorKnownPlaintext?: boolean;
   /** Allow bankrupt despite panel offline-oracle packaging (red-blue round-4). Default false. */
   readonly allowPanelOfflineOracle?: boolean;
-  /** Optional output root; defaults to `<dir>/.bla-hardened`. */
+  /** Optional output root; defaults to `<dir>/.aegis-hardened`. */
   readonly outputDirectory?: string;
   readonly maxArtifacts?: number;
   /**
    * Preview only: discover targets and plan output paths, but write zero bytes
-   * (no `.bla-hardened/`, no summary JSON, no manifests).
+   * (no `.aegis-hardened/`, no summary JSON, no manifests).
    */
   readonly dryRun?: boolean;
   /**
@@ -191,7 +191,7 @@ export interface HardenProgressEvent {
 }
 
 export interface HardenProjectReport {
-  readonly blaVersion: string;
+  readonly aegisVersion: string;
   readonly directory: string;
   readonly intensity: ProtectionIntensity;
   readonly overallSuccess: boolean;
@@ -227,7 +227,7 @@ export interface HardenProjectReport {
   readonly runId: string;
   /** Absolute path of the unsigned summary when written; omitted on dry-run. */
   readonly summaryPath?: string;
-  /** Absolute path of bla-integrity-coverage/v1 matrix when selfSeal wrote one. */
+  /** Absolute path of aegis-integrity-coverage/v1 matrix when selfSeal wrote one. */
   readonly integrityCoveragePath?: string;
   /**
    * True when the entry checker's canonical self-digest verifies on disk (entry
@@ -273,7 +273,7 @@ function resolveSearchRoots(absRoot: string): {
   readonly includeProjectRootSupplemental: boolean;
 } {
   const preferred: string[] = [];
-  for (const name of BLA_BUILD_OUTPUT_DIR_NAMES) {
+  for (const name of AEGIS_BUILD_OUTPUT_DIR_NAMES) {
     const candidate = join(absRoot, name);
     try {
       if (statSync(candidate).isDirectory()) preferred.push(candidate);
@@ -317,7 +317,7 @@ function collectRootArtifacts(
       if (!isProtectableFormat(format)) return false;
       // Skip already-shielded outputs to avoid re-hardening loops.
       if (/\.shielded(\.|$)/i.test(name)) return false;
-      if (name.endsWith(".bla-manifest.json")) return false;
+      if (name.endsWith(".aegis-manifest.json")) return false;
       if (name.endsWith(".bunfs-snapshot")) return false;
       formats.set(full, format);
       return true;
@@ -417,7 +417,7 @@ function collectHardenableArtifacts(
 
 /** Mirror-tree destination under the output root (pure; no filesystem writes). */
 function planArtifactOutputPath(artifact: DiscoveredArtifact, outputRoot: string): string {
-  // Keep original basename; place under .bla-hardened mirror tree.
+  // Keep original basename; place under .aegis-hardened mirror tree.
   return join(outputRoot, artifact.relativePath);
 }
 
@@ -426,14 +426,14 @@ function planArtifactOutputPath(artifact: DiscoveredArtifact, outputRoot: string
  * under a project/build directory and run the full audit→defend→verify pipeline
  * with the bankrupt profile. Modelled on REA's `npx rea-agents setup` simplicity.
  *
- * Usage: `bla harden .` / MCP `bla_harden` with `{ "directory": "." }`
+ * Usage: `aegis harden .` / MCP `aegis_harden` with `{ "directory": "." }`
  */
 export function hardenProject(
   options: HardenProjectOptions = {},
 ): HardenProjectReport {
   const absDir = resolve(options.directory ?? process.cwd());
   const intensity: ProtectionIntensity = options.intensity ?? "bankrupt";
-  // Manifests are opt-in: do not ship `.bla-manifest.json` next to customer artifacts by default.
+  // Manifests are opt-in: do not ship `.aegis-manifest.json` next to customer artifacts by default.
   const emitManifest = options.emitManifest === true;
   if (options.signManifest === true && emitManifest !== true) {
     throw new Error("signManifest requires emitManifest in hardenProject");
@@ -463,8 +463,8 @@ export function hardenProject(
   const outputRoot = resolve(
     options.outputDirectory ??
       (statSync(absDir).isDirectory()
-        ? join(absDir, ".bla-hardened")
-        : join(dirname(absDir), ".bla-hardened")),
+        ? join(absDir, ".aegis-hardened")
+        : join(dirname(absDir), ".aegis-hardened")),
   );
   let plannedOutputs = discovered.map((artifact) => {
     const outputPath = planArtifactOutputPath(artifact, outputRoot);
@@ -493,7 +493,7 @@ export function hardenProject(
     : undefined;
 
   const runId = computeHardenRunId({
-    blaVersion: BLA_IDENTITY.version,
+    aegisVersion: AEGIS_IDENTITY.version,
     directory: absDir,
     intensity,
     weaveDecoys: options.weaveDecoys === true,
@@ -506,13 +506,13 @@ export function hardenProject(
   });
 
   const reportBase = {
-    blaVersion: BLA_IDENTITY.version,
+    aegisVersion: AEGIS_IDENTITY.version,
     directory: absDir,
     intensity,
     discoveredCount: discovered.length,
     outputDirectory: outputRoot,
     oneSentenceUsage:
-      'Harden my software against REA — call bla_harden with { "directory": "." } (or `bla harden .`).',
+      'Harden my software against REA — call aegis_harden with { "directory": "." } (or `aegis harden .`).',
     weaveDecoys: options.weaveDecoys === true,
     selfSeal: options.selfSeal === true,
     sidecarEntangle: options.sidecarEntangle === true,
@@ -1000,7 +1000,7 @@ export function hardenProject(
 
 export function formatHardenProjectReport(report: HardenProjectReport): string {
   const lines: string[] = [
-    `BLA harden ${report.blaVersion} — ${report.directory}${report.dryRun ? " (dry-run: nothing written)" : ""}`,
+    `AEGIS harden ${report.aegisVersion} — ${report.directory}${report.dryRun ? " (dry-run: nothing written)" : ""}`,
     `Run: ${report.runId} (unsigned)`,
     `Intensity: ${report.intensity} | discovered=${report.discoveredCount} hardened=${report.hardenedCount} failed=${report.failedCount}`,
     `Overall: ${

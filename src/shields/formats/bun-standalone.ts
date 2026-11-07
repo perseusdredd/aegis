@@ -235,7 +235,7 @@ export function generateBunStandaloneDecoyGraph(
     name: Buffer.from("/$bunfs/root/enclave-attestation-main.js"),
     contents: Buffer.from(honeySource("enclaveMain", 0)),
     sourcemap: honeyMap("enclave-attestation-main.js", 0),
-    bytecode: Buffer.concat([Buffer.from("JSC\0BLA-DECOY-BYTECODE\0"), Buffer.from(prng.hex(64), "hex")]),
+    bytecode: Buffer.concat([Buffer.from("JSC\0AEGIS-DECOY-BYTECODE\0"), Buffer.from(prng.hex(64), "hex")]),
     moduleInfo: Buffer.from(`{"imports":["./keys/unsealer.js","bun:ffi"],"canary":${JSON.stringify(rec(4))}}`),
     bytecodeOrigin: Buffer.from("/$bunfs/root/enclave-attestation-main.js"),
     encoding: 2,
@@ -267,7 +267,7 @@ export function generateBunStandaloneDecoyGraph(
   });
   modules.push({
     name: Buffer.from("/$bunfs/root/native/libenclave_unseal.node"),
-    contents: Buffer.concat([Buffer.from("\x7fELF-BLA-DECOY-NAPI\0"), Buffer.from(rec(5))]),
+    contents: Buffer.concat([Buffer.from("\x7fELF-AEGIS-DECOY-NAPI\0"), Buffer.from(rec(5))]),
     encoding: 0,
     loader: LOADER_NAPI,
     moduleFormat: 0,

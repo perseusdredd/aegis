@@ -19,9 +19,9 @@ afterEach(() => {
 
 /** Round-2 seal shape (reversible ARX + cipher package). */
 const ROUND2_SEAL = {
-  schema: "bla-redblue-r2-seal/v1",
+  schema: "aegis-redblue-r2-seal/v1",
   product: "round-2-product-chained-entitlement",
-  seed: "bla-redblue-r2-product-gate-2026-11",
+  seed: "aegis-redblue-r2-product-gate-2026-11",
   rounds: 28,
   scheduleSalt: 1374179543,
   revision: "7f325fec37206b637a224e9630b67c4a",
@@ -33,7 +33,7 @@ const ROUND2_SEAL = {
 };
 
 const ONE_WAY_SEAL = {
-  schema: "bla-entitlement-seal/v1",
+  schema: "aegis-entitlement-seal/v1",
   algorithm: "sha256",
   revision: "b38091d4a394ded9012846e8d4b647083b260beb6ee5ad1e42265fe6f107c660",
   product: "ok-product",
@@ -70,7 +70,7 @@ describe("seal-commitment lint (red-blue round-2)", () => {
   });
 
   it("discovers seal.json under a project tree", () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-seal-disc-"));
+    const root = mkdtempSync(join(tmpdir(), "aegis-seal-disc-"));
     dirs.push(root);
     mkdirSync(join(root, "dist"));
     writeFileSync(join(root, "dist", "seal.json"), JSON.stringify(ROUND2_SEAL), "utf8");
@@ -81,7 +81,7 @@ describe("seal-commitment lint (red-blue round-2)", () => {
   });
 
   it("finds sibling seal next to a protect target", () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-seal-sib-"));
+    const root = mkdtempSync(join(tmpdir(), "aegis-seal-sib-"));
     dirs.push(root);
     writeFileSync(join(root, "license.cjs"), "console.log(1)\n", "utf8");
     writeFileSync(join(root, "app.seal.json"), JSON.stringify(ROUND2_SEAL), "utf8");
@@ -103,7 +103,7 @@ describe("seal-commitment lint (red-blue round-2)", () => {
   });
 
   it("lints the round-2 hardened seal fixture when present", () => {
-    const fixture = "/workspace/bla-redblue/round-2/hardened/seal.json";
+    const fixture = "/workspace/aegis-redblue/round-2/hardened/seal.json";
     try {
       readFileSync(fixture, "utf8");
     } catch {

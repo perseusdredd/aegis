@@ -2,7 +2,7 @@ import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { DEFAULT_BLA_CONFIG, loadBlaConfig } from "../src/core/config.js";
+import { DEFAULT_AEGIS_CONFIG, loadAegisConfig } from "../src/core/config.js";
 import { parseCliArgs } from "../src/cli.js";
 import { protectWasmBinary } from "../src/shields/formats/wasm.js";
 
@@ -26,7 +26,7 @@ function nameBytes(s: string): number[] {
   return [...uleb(b.length), ...b];
 }
 
-/** Two-export module: public `add` + internal-looking `__bla_internal_x`. */
+/** Two-export module: public `add` + internal-looking `__aegis_internal_x`. */
 function minimalTwoExportWasm(): Buffer {
   const typeBody = [2, 0x60, 2, 0x7f, 0x7f, 1, 0x7f, 0x60, 0, 1, 0x7f];
   const funcBody = [2, 0, 1];
@@ -35,7 +35,7 @@ function minimalTwoExportWasm(): Buffer {
     ...nameBytes("add"),
     0,
     0,
-    ...nameBytes("__bla_internal_x"),
+    ...nameBytes("__aegis_internal_x"),
     0,
     1,
   ];
@@ -64,20 +64,20 @@ function minimalTwoExportWasm(): Buffer {
   ]);
 }
 
-describe("wasmPreserveExports .blarc / CLI / protect parity (#40.3)", () => {
-  it("DEFAULT_BLA_CONFIG leaves wasmPreserveExports undefined", () => {
-    expect(DEFAULT_BLA_CONFIG.wasmPreserveExports).toBeUndefined();
+describe("wasmPreserveExports .aegisrc / CLI / protect parity (#40.3)", () => {
+  it("DEFAULT_AEGIS_CONFIG leaves wasmPreserveExports undefined", () => {
+    expect(DEFAULT_AEGIS_CONFIG.wasmPreserveExports).toBeUndefined();
   });
 
-  it("loadBlaConfig honors wasmPreserveExports array", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-wasm-preserve-"));
+  it("loadAegisConfig honors wasmPreserveExports array", () => {
+    const dir = mkdtempSync(join(tmpdir(), "aegis-wasm-preserve-"));
     try {
       writeFileSync(
-        join(dir, ".blarc"),
+        join(dir, ".aegisrc"),
         JSON.stringify({ wasmPreserveExports: ["add", "run"] }),
         "utf8",
       );
-      const loaded = loadBlaConfig(dir);
+      const loaded = loadAegisConfig(dir);
       expect(loaded.config.wasmPreserveExports).toEqual(["add", "run"]);
     } finally {
       rmSync(dir, { recursive: true, force: true });
@@ -108,12 +108,12 @@ describe("wasmPreserveExports .blarc / CLI / protect parity (#40.3)", () => {
       preserveExports: ["add"],
     });
     const fromNames = res.exportsRenamed.map((r) => r.from);
-    expect(fromNames).toContain("__bla_internal_x");
+    expect(fromNames).toContain("__aegis_internal_x");
     expect(fromNames).not.toContain("add");
     const mod = new WebAssembly.Module(new Uint8Array(res.buffer));
     const inst = new WebAssembly.Instance(mod);
     expect(Object.keys(inst.exports)).toContain("add");
-    expect(Object.keys(inst.exports)).not.toContain("__bla_internal_x");
+    expect(Object.keys(inst.exports)).not.toContain("__aegis_internal_x");
     expect(
       (inst.exports as { add: (a: number, b: number) => number }).add(2, 3),
     ).toBe(5);
@@ -127,10 +127,10 @@ describe("wasmPreserveExports .blarc / CLI / protect parity (#40.3)", () => {
     });
     const fromNames = res.exportsRenamed.map((r) => r.from);
     expect(fromNames).toContain("add");
-    expect(fromNames).toContain("__bla_internal_x");
+    expect(fromNames).toContain("__aegis_internal_x");
     const mod = new WebAssembly.Module(new Uint8Array(res.buffer));
     const inst = new WebAssembly.Instance(mod);
     expect(Object.keys(inst.exports)).not.toContain("add");
-    expect(Object.keys(inst.exports)).not.toContain("__bla_internal_x");
+    expect(Object.keys(inst.exports)).not.toContain("__aegis_internal_x");
   });
 });

@@ -8,7 +8,7 @@ import { runCli } from "../src/cli.js";
 
 const tempDirs: string[] = [];
 function createTempDir(): string {
-  const dir = mkdtempSync(join(tmpdir(), "bla-defend-test-"));
+  const dir = mkdtempSync(join(tmpdir(), "aegis-defend-test-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -20,8 +20,8 @@ afterEach(() => {
   }
 });
 
-describe("One-Click Agent Defense Hardening (defendTarget / bla defend / bla_defend)", () => {
-  it("executes all 5 stages and emits an unsigned .bla-manifest.json when opted in", () => {
+describe("One-Click Agent Defense Hardening (defendTarget / aegis defend / aegis_defend)", () => {
+  it("executes all 5 stages and emits an unsigned .aegis-manifest.json when opted in", () => {
     const dir = createTempDir();
     const input = join(dir, "payment-engine.ts");
     writeFileSync(
@@ -54,7 +54,7 @@ describe("One-Click Agent Defense Hardening (defendTarget / bla defend / bla_def
     expect(manifest.defenseScore).toBe(report.verification.defenseScore);
   });
 
-  it("exposes bla_defend over MCP and CLI `bla defend`", async () => {
+  it("exposes aegis_defend over MCP and CLI `aegis defend`", async () => {
     const dir = createTempDir();
     const input = join(dir, "app.js");
     writeFileSync(
@@ -68,7 +68,7 @@ describe("One-Click Agent Defense Hardening (defendTarget / bla defend / bla_def
       id: 99,
       method: "tools/call",
       params: {
-        name: "bla_defend",
+        name: "aegis_defend",
         arguments: {
           input_path: input,
           intensity: "bankrupt",

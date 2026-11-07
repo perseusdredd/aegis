@@ -18,7 +18,7 @@ const SCENARIOS = {
       en: "Limited (IPC Unpaired + Shadow Logic Selected)",
       "zh-CN": "受限降级 (IPC 去字面量化 + 归因至影子逻辑)"
     },
-    blueTrace: `$ npx bla-agents defend ./notion-app.asar --manifest
+    blueTrace: `$ npx aegis-agents defend ./notion-app.asar --manifest
 • examination.status: "limited" (4 JS semantic caps reached)
 • Obligation Expansion: 22 families (68 verification cases)
 • Static Attribution: Redirected to Shadow Shamir-3-of-5 stub`,
@@ -41,7 +41,7 @@ const SCENARIOS = {
       en: "Limited (Candidate Cap Reached)",
       "zh-CN": "受限降级 (触发候选分支配额上限)"
     },
-    blueTrace: `$ npx bla-agents defend ./dxball-audio.js --manifest
+    blueTrace: `$ npx aegis-agents defend ./dxball-audio.js --manifest
 • primitive-candidates: 512 (> 256 limit -> status: "unknown")
 • Call-Graph SCC Mesh: 40 mutually-recursive state nodes
 • Runtime Check: calculateSoundPan(160, 640) === -0.5 (100% Exact)`,
@@ -64,7 +64,7 @@ const SCENARIOS = {
       en: "Limited (>64 Rustc Hashes + >32 Fuse Sentinels)",
       "zh-CN": "受限中止 (超过 64 个 Rustc 哈希与 32 个 Fuse 哨兵)"
     },
-    blueTrace: `$ npx bla-agents defend ./payment-daemon --manifest
+    blueTrace: `$ npx aegis-agents defend ./payment-daemon --manifest
 • RustBinaryProvider: exceeds MAX_RUSTC_HASHES (72 > 64)
 • ElectronFuseReader: exceeds maximumSentinelsPerSlice (33 > 32)
 • Native Exports: 100% preserved`,
@@ -86,7 +86,7 @@ const SCENARIOS = {
       en: "Limited (>32 Nesting Levels & Virtual Column Guard)",
       "zh-CN": "受限中止 (超过 32 层嵌套与只读虚拟列守卫)"
     },
-    blueTrace: `$ npx bla-agents defend ./weights.safetensors --manifest
+    blueTrace: `$ npx aegis-agents defend ./weights.safetensors --manifest
 • SafetensorsHeader: ModelFormatFailure("json-nesting" > 32)
 • GgufHeader: ModelFormatFailure("metadata-nesting" > 32)
 • SQLite: SqliteColumnEvaluationFailure on read-only connection`,
@@ -97,7 +97,7 @@ let activeScenario = "electron";
 
 function pickLocalized(field) {
   if (typeof field === "string") return field;
-  const lang = window.BLA_CURRENT_LANG || "en";
+  const lang = window.AEGIS_CURRENT_LANG || "en";
   if (lang.startsWith("zh") && field["zh-CN"]) return field["zh-CN"];
   return field[lang] || field.en;
 }
@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  window.addEventListener("bla:langchange", () => {
+  window.addEventListener("aegis:langchange", () => {
     renderScenario(activeScenario);
   });
 

@@ -128,7 +128,7 @@ export interface AuditReport {
   readonly byteSize: number;
   readonly timestamp: string;
   readonly exposureScore: number; // 0 (fully shielded) to 100 (completely exposed to REA)
-  readonly protectionStatus: "UNPROTECTED" | "PARTIALLY_SHIELDED" | "BLA_PROTECTED";
+  readonly protectionStatus: "UNPROTECTED" | "PARTIALLY_SHIELDED" | "AEGIS_PROTECTED";
   readonly reaSimulation: ReaSemanticSimulationResult;
   readonly exposedItems: readonly ExposedSymbolOrModule[];
   readonly vulnerableReaVectors: readonly ReaAttackVectorId[];
@@ -192,7 +192,7 @@ export interface ProtectionOptions {
   readonly allowWasmClearParamCarriers?: boolean;
   /**
    * When true, keep stable `__vaultPanelDerive_*` ABI (skip rewrite/refuse).
-   * Default false — maximum/bankrupt rewrite to seed-stable `_blaPd_*` (red-blue round-3).
+   * Default false — maximum/bankrupt rewrite to seed-stable `_aegisPd_*` (red-blue round-3).
    */
   readonly allowStablePanelDeriveAbi?: boolean;
   /**
@@ -354,7 +354,7 @@ export interface ShowcaseCaseResult {
 
 export interface BenchmarkReport {
   readonly timestamp: string;
-  readonly blaVersion: string;
+  readonly aegisVersion: string;
   readonly cases: readonly ShowcaseCaseResult[];
   readonly aggregateTokenMultiplier: number;
   readonly aggregateCostMultiplier: number;

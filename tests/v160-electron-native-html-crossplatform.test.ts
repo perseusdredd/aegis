@@ -26,7 +26,7 @@ import {
   inspectNativeBinary,
   protectNativeBinary,
 } from "../src/shields/formats/native.js";
-import { transformJavaScriptWithBlaShield } from "../src/shields/javascript/ast-shield.js";
+import { transformJavaScriptWithAegisShield } from "../src/shields/javascript/ast-shield.js";
 
 type TraverseFn = (typeof _traverse)["default"];
 const traverse: TraverseFn =
@@ -36,7 +36,7 @@ const traverse: TraverseFn =
 
 const tempDirs: string[] = [];
 
-function makeTempDir(prefix = "bla-v160-"): string {
+function makeTempDir(prefix = "aegis-v160-"): string {
   const dir = mkdtempSync(join(tmpdir(), prefix));
   tempDirs.push(dir);
   return dir;
@@ -153,7 +153,7 @@ describe("v1.6.0 Counter-REA Electron Custom URL Protocol (47fa6ab37) & Boundary
       module.exports = { registerHandlers };
     `;
 
-    const res = transformJavaScriptWithBlaShield(cjsElectronSource, {
+    const res = transformJavaScriptWithAegisShield(cjsElectronSource, {
       intensity: "bankrupt",
       seed: "v160-electron-protocol-cjs",
       filename: "main.cjs",
@@ -389,7 +389,7 @@ describe("v1.6.0 Counter-REA Electron Custom URL Protocol (47fa6ab37) & Boundary
         return "hi " + name;
       }
     `;
-    const res = transformJavaScriptWithBlaShield(webTsModule, {
+    const res = transformJavaScriptWithAegisShield(webTsModule, {
       intensity: "balanced",
       seed: "v160-non-electron-ts",
       filename: "preset.ts",
@@ -419,7 +419,7 @@ describe("v1.6.0 Signed & Standalone Native Binary Integrity Guard + Sidecar Dec
     expect(detectNativeEofAppendHazard(unsignedMacho)).toBe("none");
     const unsignedMachoRes = protectNativeBinary(unsignedMacho, { intensity: "balanced" });
     expect(unsignedMachoRes.nativeBinaryPreserved).toBe(false);
-    expect(inspectNativeBinary(unsignedMachoRes.buffer).blaProtected).toBe(true);
+    expect(inspectNativeBinary(unsignedMachoRes.buffer).aegisProtected).toBe(true);
 
     // 2. Authenticode-signed PE (DataDirectory[4])
     const signedPe = buildMinimalPe64({ includeAuthenticode: true });
@@ -433,7 +433,7 @@ describe("v1.6.0 Signed & Standalone Native Binary Integrity Guard + Sidecar Dec
     expect(detectNativeEofAppendHazard(unsignedPe)).toBe("none");
     const unsignedPeRes = protectNativeBinary(unsignedPe, { intensity: "balanced" });
     expect(unsignedPeRes.nativeBinaryPreserved).toBe(false);
-    expect(inspectNativeBinary(unsignedPeRes.buffer).blaProtected).toBe(true);
+    expect(inspectNativeBinary(unsignedPeRes.buffer).aegisProtected).toBe(true);
 
     // 3. PyInstaller PKG CArchive magic (`MEI\x0c\x0b\x0a\x0b\x0e`)
     const pyi = Buffer.concat([
@@ -463,7 +463,7 @@ describe("v1.6.0 Signed & Standalone Native Binary Integrity Guard + Sidecar Dec
   });
 
   it("defendTarget preserves executable mode bits (0o755), emits .bunfs-snapshot sidecar, passes verification, and passes strict macOS codesign when clang/codesign exist", () => {
-    const dir = makeTempDir("bla-native-signed-");
+    const dir = makeTempDir("aegis-native-signed-");
 
     // Always verify synthetic Authenticode PE end-to-end across all OSes
     const peIn = join(dir, "signed-app.exe");
@@ -478,7 +478,7 @@ describe("v1.6.0 Signed & Standalone Native Binary Integrity Guard + Sidecar Dec
     expect(readFileSync(peOut).equals(signedPeBytes)).toBe(true);
     expect(existsSync(`${peOut}.bunfs-snapshot`)).toBe(true);
     expect(detectBunStandaloneGraph(readFileSync(`${peOut}.bunfs-snapshot`)).kind).not.toBe("none");
-    expect(peReport.protection.afterAudit.protectionStatus).toBe("BLA_PROTECTED");
+    expect(peReport.protection.afterAudit.protectionStatus).toBe("AEGIS_PROTECTED");
     expect(peReport.verification.overallPassed).toBe(true);
 
     // On macOS with clang + codesign, verify a real compiled Mach-O binary under `codesign --strict`
@@ -521,7 +521,7 @@ describe("v1.6.0 Signed & Standalone Native Binary Integrity Guard + Sidecar Dec
 
 describe("v1.6.0 HTML Bundle Multi-Script Isolation, Importmap/JSON Preservation & External Bootstrap", () => {
   it("protects multi-script HTML bundles without global scope identifier collisions, preserves importmap/json tags, escapes </script>, and passes verification", () => {
-    const dir = makeTempDir("bla-html-bundle-");
+    const dir = makeTempDir("aegis-html-bundle-");
     const htmlIn = join(dir, "index.html");
     const htmlOut = join(dir, "index.shielded.html");
 
@@ -555,7 +555,7 @@ describe("v1.6.0 HTML Bundle Multi-Script Isolation, Importmap/JSON Preservation
       seed: "v160-html-multi",
     });
 
-    expect(report.protection.afterAudit.protectionStatus).toBe("BLA_PROTECTED");
+    expect(report.protection.afterAudit.protectionStatus).toBe("AEGIS_PROTECTED");
     expect(report.protection.afterAudit.reaSimulation.parseStatus).toBe("complete");
     expect(report.verification.overallPassed).toBe(true);
 
@@ -611,7 +611,7 @@ describe("v1.6.0 HTML Bundle Multi-Script Isolation, Importmap/JSON Preservation
   });
 
   it("injects an inert bootstrap shield into Vite-style external-only `<script src=...>` HTML bundles", () => {
-    const dir = makeTempDir("bla-html-vite-");
+    const dir = makeTempDir("aegis-html-vite-");
     const htmlIn = join(dir, "index.html");
     const htmlOut = join(dir, "index.shielded.html");
     writeFileSync(
@@ -627,7 +627,7 @@ describe("v1.6.0 HTML Bundle Multi-Script Isolation, Importmap/JSON Preservation
       seed: "v160-html-vite",
     });
 
-    expect(report.protection.afterAudit.protectionStatus).toBe("BLA_PROTECTED");
+    expect(report.protection.afterAudit.protectionStatus).toBe("AEGIS_PROTECTED");
     expect(report.verification.overallPassed).toBe(true);
     const outHtml = readFileSync(htmlOut, "utf8");
     expect(outHtml).toContain('src="/assets/index-D8f2a.js"');
@@ -689,7 +689,7 @@ describe("v1.6.0 Cross-Platform Windows SARIF & CrackMe v5.2 Anti-Virtualization
       vulnerableReaVectors: ["js-static-semantics"],
       agentEstimates: [],
       headlineWarning: "DANGER",
-      recommendedCommand: "npx bla-agents protect",
+      recommendedCommand: "npx aegis-agents protect",
     };
 
     const sarif = buildSarifReport(fakeAudit, {

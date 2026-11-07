@@ -13,9 +13,9 @@ JS AST weave in the same tree stays always-on regardless of this flag.
 
 ## Recommended path
 
-1. Read MCP resource `bla://directives/weave-decoy` (directives travel with the MCP server; no repo checkout required).
-2. Plan: `bla_weave_plan` `{ "path": "<project-or-file>" }`.
-3. Apply: `bla_harden` / `bla_defend` / `bla_protect` with `weave_decoys: true`.
+1. Read MCP resource `aegis://directives/weave-decoy` (directives travel with the MCP server; no repo checkout required).
+2. Plan: `aegis_weave_plan` `{ "path": "<project-or-file>" }`.
+3. Apply: `aegis_harden` / `aegis_defend` / `aegis_protect` with `weave_decoys: true`.
 
 ## PyInstaller honesty
 

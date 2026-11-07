@@ -1,5 +1,5 @@
-import { BLA_IDENTITY } from "../identity.js";
-import { initBlaConfig } from "../core/config.js";
+import { AEGIS_IDENTITY } from "../identity.js";
+import { initAegisConfig } from "../core/config.js";
 import { inspectReleaseExposure } from "../core/release-exposure.js";
 import type { ProtectionIntensity } from "../core/types.js";
 import { auditTarget } from "../engine/auditor.js";
@@ -88,7 +88,7 @@ import {
   WEAVE_DIRECTIVES_URI,
 } from "../shields/weave/weave-decoy.js";
 
-/** In-flight bla_harden AbortControllers keyed by JSON-RPC request id (issue #75). */
+/** In-flight aegis_harden AbortControllers keyed by JSON-RPC request id (issue #75). */
 const activeHardenAborts = new Map<string | number, AbortController>();
 
 function progressTokenOf(req: JsonRpcRequest): string | number | undefined {
@@ -176,7 +176,7 @@ export interface McpEngineHandlers {
   readonly emitCompileTimeNativeHeader: typeof emitCompileTimeNativeHeader;
   readonly runDoctor: typeof runDoctor;
   readonly inspectReleaseExposure: typeof inspectReleaseExposure;
-  readonly initBlaConfig: typeof initBlaConfig;
+  readonly initAegisConfig: typeof initAegisConfig;
 }
 
 const DEFAULT_ENGINE_HANDLERS: McpEngineHandlers = Object.freeze({
@@ -189,7 +189,7 @@ const DEFAULT_ENGINE_HANDLERS: McpEngineHandlers = Object.freeze({
   emitCompileTimeNativeHeader,
   runDoctor,
   inspectReleaseExposure,
-  initBlaConfig,
+  initAegisConfig,
 });
 
 export const SUPPORTED_MCP_PROTOCOL_VERSIONS = Object.freeze([
@@ -197,11 +197,11 @@ export const SUPPORTED_MCP_PROTOCOL_VERSIONS = Object.freeze([
   "2025-03-26",
 ] as const);
 
-export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
+export const AEGIS_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
   {
-    name: "bla_harden",
+    name: "aegis_harden",
     description:
-      "DEFAULT one-sentence Counter-REA hardening. Auto-discovers build outputs (dist/, build/, out/, release/, .asar, native binaries, .wasm, .py/.pyc, .sqlite, .safetensors/.gguf, .dex, .class, etc.), detects each artifact's format, and runs the full audit→defend→verify pipeline with the bankrupt profile. Pass just a project or build directory (default: cwd). Prefer this over bla_defend when the user says 'harden my software' without naming a specific file.",
+      "DEFAULT one-sentence Counter-REA hardening. Auto-discovers build outputs (dist/, build/, out/, release/, .asar, native binaries, .wasm, .py/.pyc, .sqlite, .safetensors/.gguf, .dex, .class, etc.), detects each artifact's format, and runs the full audit→defend→verify pipeline with the bankrupt profile. Pass just a project or build directory (default: cwd). Prefer this over aegis_defend when the user says 'harden my software' without naming a specific file.",
     inputSchema: {
       type: "object",
       properties: {
@@ -216,7 +216,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
         },
         emit_manifest: {
           type: "boolean",
-          description: "Opt-in: emit a .bla-manifest.json attestation per artifact (unsigned unless sign_manifest is true). Default false.",
+          description: "Opt-in: emit a .aegis-manifest.json attestation per artifact (unsigned unless sign_manifest is true). Default false.",
         },
         sign_manifest: {
           type: "boolean",
@@ -233,7 +233,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
         weave_decoys: {
           type: "boolean",
           description:
-            "Opt-in weave-decoy entanglement: JS AST weave (always) + Python .py customer-def weave + .pyc co_consts TYPE_CODE weave. When false, Python stays warm-init/trailer-only. See bla://directives/weave-decoy. Default false.",
+            "Opt-in weave-decoy entanglement: JS AST weave (always) + Python .py customer-def weave + .pyc co_consts TYPE_CODE weave. When false, Python stays warm-init/trailer-only. See aegis://directives/weave-decoy. Default false.",
         },
         self_seal: {
           type: "boolean",
@@ -269,7 +269,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
         allow_stable_panel_derive: {
           type: "boolean",
           description:
-            "Keep stable __vaultPanelDerive_* / deriveLocal ABI (skip rewrite). Default false — maximum/bankrupt rewrite to seed-stable _blaPd_* / _blaPdLocal_* (red-blue round-3/4).",
+            "Keep stable __vaultPanelDerive_* / deriveLocal ABI (skip rewrite). Default false — maximum/bankrupt rewrite to seed-stable _aegisPd_* / _aegisPdLocal_* (red-blue round-3/4).",
         },
         allow_js_aes_unwrap: {
           type: "boolean",
@@ -298,7 +298,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
         },
         seed: {
           type: "string",
-          description: "Optional deterministic seed; when omitted, BLA uses/persists a per-project random seed in .blarc",
+          description: "Optional deterministic seed; when omitted, AEGIS uses/persists a per-project random seed in .aegisrc",
         },
         dry_run: {
           type: "boolean",
@@ -317,16 +317,16 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
         output_directory: {
           type: "string",
           description:
-            "Optional root directory for hardened outputs (same as CLI `harden -o`). Default: <directory>/.bla-hardened.",
+            "Optional root directory for hardened outputs (same as CLI `harden -o`). Default: <directory>/.aegis-hardened.",
         },
       },
       additionalProperties: false,
     },
   },
   {
-    name: "bla_discover",
+    name: "aegis_discover",
     description:
-      "Read-only inventory of protectable artifacts under a project/build directory using the exact discovery bla_harden uses (format per file, truncated flag when the cap is hit). For 64+ trees: pass offset from a prior nextOffset to page without losing the tail. Writes nothing. Use it to scope work before bla_harden / bla_defend.",
+      "Read-only inventory of protectable artifacts under a project/build directory using the exact discovery aegis_harden uses (format per file, truncated flag when the cap is hit). For 64+ trees: pass offset from a prior nextOffset to page without losing the tail. Writes nothing. Use it to scope work before aegis_harden / aegis_defend.",
     inputSchema: {
       type: "object",
       properties: {
@@ -347,7 +347,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_defend",
+    name: "aegis_defend",
     description:
       "One-click Counter-REA full defense hardening pipeline. Runs release source-map exposure inspection, 16-vector REA vulnerability audit, Resource-Exhaustion + Model-Misjudgment shield injection (default: bankrupt preset), and mathematical invariant verification in a single call.",
     inputSchema: {
@@ -368,7 +368,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
         },
         emit_manifest: {
           type: "boolean",
-          description: "Opt-in: emit a .bla-manifest.json attestation next to the hardened artifact (unsigned unless sign_manifest is true). Default false.",
+          description: "Opt-in: emit a .aegis-manifest.json attestation next to the hardened artifact (unsigned unless sign_manifest is true). Default false.",
         },
         sign_manifest: {
           type: "boolean",
@@ -421,7 +421,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
         allow_stable_panel_derive: {
           type: "boolean",
           description:
-            "Keep stable __vaultPanelDerive_* / deriveLocal ABI (skip rewrite). Default false — maximum/bankrupt rewrite to seed-stable _blaPd_* / _blaPdLocal_* (red-blue round-3/4).",
+            "Keep stable __vaultPanelDerive_* / deriveLocal ABI (skip rewrite). Default false — maximum/bankrupt rewrite to seed-stable _aegisPd_* / _aegisPdLocal_* (red-blue round-3/4).",
         },
         allow_js_aes_unwrap: {
           type: "boolean",
@@ -450,7 +450,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
         },
         seed: {
           type: "string",
-          description: "Optional deterministic seed; when omitted, BLA uses/persists a per-project random seed in .blarc",
+          description: "Optional deterministic seed; when omitted, AEGIS uses/persists a per-project random seed in .aegisrc",
         },
         in_place: {
           type: "boolean",
@@ -468,7 +468,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_audit",
+    name: "aegis_audit",
     description:
       "Pre-flight REA exposure and vulnerability audit. Simulates REA static/semantic passes on a target file or directory (JS/TS, Electron .asar, WASM, Python .py/.pyc, Native ELF/Mach-O/PE, ZIP/APK) and estimates attacker Claude/GPT token and dollar cost.",
     inputSchema: {
@@ -484,9 +484,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_protect",
+    name: "aegis_protect",
     description:
-      "Injects BLA's multi-layer adversarial defense shield (Algorithmic Tarpit, REA Semantic Budget Breakers, Electron IPC Ambiguity, Honey Source Maps, and Architectural Chaff) into a target artifact.",
+      "Injects AEGIS's multi-layer adversarial defense shield (Algorithmic Tarpit, REA Semantic Budget Breakers, Electron IPC Ambiguity, Honey Source Maps, and Architectural Chaff) into a target artifact.",
     inputSchema: {
       type: "object",
       properties: {
@@ -542,7 +542,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
         allow_stable_panel_derive: {
           type: "boolean",
           description:
-            "Keep stable __vaultPanelDerive_* / deriveLocal ABI (skip rewrite). Default false — maximum/bankrupt rewrite to seed-stable _blaPd_* / _blaPdLocal_* (red-blue round-3/4).",
+            "Keep stable __vaultPanelDerive_* / deriveLocal ABI (skip rewrite). Default false — maximum/bankrupt rewrite to seed-stable _aegisPd_* / _aegisPdLocal_* (red-blue round-3/4).",
         },
         allow_js_aes_unwrap: {
           type: "boolean",
@@ -571,7 +571,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
         },
         seed: {
           type: "string",
-          description: "Optional deterministic seed; when omitted, BLA mints an ephemeral random seed (prefer project .blarc via CLI)",
+          description: "Optional deterministic seed; when omitted, AEGIS mints an ephemeral random seed (prefer project .aegisrc via CLI)",
         },
         llm_directives: {
           type: "boolean",
@@ -598,9 +598,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_verify",
+    name: "aegis_verify",
     description:
-      "Verifies a BLA-protected artifact against REA's static/semantic resource limits, call-graph tarpit expansion, and token bankruptcy amplification. Pass protection-side honesty metadata (self_seal_enabled / wasm_export_rename_applied) so defenseScore soft-caps reflect what actually ran — same fields defend/harden already forward from ProtectionResult. Optional run_id / summary_path correlate this verify with a prior harden summary (unsigned).",
+      "Verifies a AEGIS-protected artifact against REA's static/semantic resource limits, call-graph tarpit expansion, and token bankruptcy amplification. Pass protection-side honesty metadata (self_seal_enabled / wasm_export_rename_applied) so defenseScore soft-caps reflect what actually ran — same fields defend/harden already forward from ProtectionResult. Optional run_id / summary_path correlate this verify with a prior harden summary (unsigned).",
     inputSchema: {
       type: "object",
       properties: {
@@ -625,12 +625,12 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
         numeric_template_leak_known: {
           type: "boolean",
           description:
-            "Honesty metadata: true when known BLA-injected numeric template golden constants still leak (issue #40.6).",
+            "Honesty metadata: true when known AEGIS-injected numeric template golden constants still leak (issue #40.6).",
         },
         summary_path: {
           type: "string",
           description:
-            "Optional path to bla-harden-summary.json (or its output directory) to correlate this verify with a prior harden run (unsigned).",
+            "Optional path to aegis-harden-summary.json (or its output directory) to correlate this verify with a prior harden run (unsigned).",
         },
         run_id: {
           type: "string",
@@ -643,7 +643,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_benchmark",
+    name: "aegis_benchmark",
     description:
       "Runs the Counter-REA Showcase Benchmark suite and returns Before vs. After metrics.",
     inputSchema: {
@@ -653,9 +653,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_emit_headers",
+    name: "aegis_emit_headers",
     description:
-      "Emits compile-time native defense headers for C/C++ (bla_shield.h), Rust (bla_shield.rs), or Go (bla_shield.go) to defeat Ghidra/Hopper/IDA and REA native binary analyzers.",
+      "Emits compile-time native defense headers for C/C++ (aegis_shield.h), Rust (aegis_shield.rs), or Go (aegis_shield.go) to defeat Ghidra/Hopper/IDA and REA native binary analyzers.",
     inputSchema: {
       type: "object",
       properties: {
@@ -674,9 +674,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_doctor",
+    name: "aegis_doctor",
     description:
-      "Checks readiness of all BLA protection engines and agent MCP registrations.",
+      "Checks readiness of all AEGIS protection engines and agent MCP registrations.",
     inputSchema: {
       type: "object",
       properties: {
@@ -689,7 +689,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_inspect_release",
+    name: "aegis_inspect_release",
     description:
       "Read-only local source-map and symbol exposure scan for build directories and release artifacts.",
     inputSchema: {
@@ -713,9 +713,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_init",
+    name: "aegis_init",
     description:
-      "Creates a starter bla.config.json in a project directory for zero-argument `bla defend` workflows.",
+      "Creates a starter aegis.config.json in a project directory for zero-argument `aegis defend` workflows.",
     inputSchema: {
       type: "object",
       properties: {
@@ -725,7 +725,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
         },
         overwrite: {
           type: "boolean",
-          description: "Overwrite an existing bla.config.json if present",
+          description: "Overwrite an existing aegis.config.json if present",
         },
       },
       required: ["directory"],
@@ -733,9 +733,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_weave_plan",
+    name: "aegis_weave_plan",
     description:
-      "Read-only weave-decoy planner: analyze a project or artifact, return bla-weave-plan/v1 JSON (principles, forbidden patterns, checklist, per-file maturity, plus AST surgicalWorkorder with entryFunctions, sharedStateSlots, branchCandidates, and agentRewriteRecipe). Defensive only — no crack/RE steps. Prefer before Agent source surgery and bla_harden with weave_decoys:true.",
+      "Read-only weave-decoy planner: analyze a project or artifact, return aegis-weave-plan/v1 JSON (principles, forbidden patterns, checklist, per-file maturity, plus AST surgicalWorkorder with entryFunctions, sharedStateSlots, branchCandidates, and agentRewriteRecipe). Defensive only — no crack/RE steps. Prefer before Agent source surgery and aegis_harden with weave_decoys:true.",
     inputSchema: {
       type: "object",
       properties: {
@@ -753,9 +753,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_verify_weave",
+    name: "aegis_verify_weave",
     description:
-      "Read-only structural weave verifier (bla-weave-verify/v1): validates Agent-authored source weave edits and hardened outputs against WEAVE_ACCEPTANCE_TESTS (no forbidden banners, mixed mundane/security stems, shared-state mutation across functions, customer entry call-graph reachability, opaque-true entanglement, and filter resistance). Returns weaveScore and actionable agentActions for autonomous self-repair.",
+      "Read-only structural weave verifier (aegis-weave-verify/v1): validates Agent-authored source weave edits and hardened outputs against WEAVE_ACCEPTANCE_TESTS (no forbidden banners, mixed mundane/security stems, shared-state mutation across functions, customer entry call-graph reachability, opaque-true entanglement, and filter resistance). Returns weaveScore and actionable agentActions for autonomous self-repair.",
     inputSchema: {
       type: "object",
       properties: {
@@ -773,9 +773,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_lint",
+    name: "aegis_lint",
     description:
-      "DEFAULT packaging-footgun gate scan for a project directory (or file). Runs every R1–R7 bankrupt refuse lint plus lane-independence and panel-derive discovery in one call — same engines as the individual bla_lint_* tools / `bla lint`. Returns bla-packaging-gates/v1 with findings, blocking, and honestyNote. Writes nothing. Prefer this over calling eight separate lints when reviewing an entitlement tree before harden.",
+      "DEFAULT packaging-footgun gate scan for a project directory (or file). Runs every R1–R7 bankrupt refuse lint plus lane-independence and panel-derive discovery in one call — same engines as the individual aegis_lint_* tools / `aegis lint`. Returns aegis-packaging-gates/v1 with findings, blocking, and honestyNote. Writes nothing. Prefer this over calling eight separate lints when reviewing an entitlement tree before harden.",
     inputSchema: {
       type: "object",
       properties: {
@@ -829,9 +829,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_lint_lanes",
+    name: "aegis_lint_lanes",
     description:
-      "Read-only heuristic lane-independence footgun lint (same engine as CLI `bla lint-lanes`). Returns severity-error findings when gate/activation source looks like independent per-lane checks. Harden refuses such gates unless allow_lane_independent. Prefer whole-key chained mixing. Writes nothing.",
+      "Read-only heuristic lane-independence footgun lint (same engine as CLI `aegis lint-lanes`). Returns severity-error findings when gate/activation source looks like independent per-lane checks. Harden refuses such gates unless allow_lane_independent. Prefer whole-key chained mixing. Writes nothing.",
     inputSchema: {
       type: "object",
       properties: {
@@ -845,9 +845,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_lint_seal",
+    name: "aegis_lint_seal",
     description:
-      "Read-only seal-commitment lint (same engine as CLI `bla lint-seal`). Flags plaintext seal/entitlement JSON sidecars and reversible public commitments (scheduleSalt+rounds+revision without a one-way algorithm). Bankrupt harden refuses error findings unless allow_plaintext_seal. Writes nothing.",
+      "Read-only seal-commitment lint (same engine as CLI `aegis lint-seal`). Flags plaintext seal/entitlement JSON sidecars and reversible public commitments (scheduleSalt+rounds+revision without a one-way algorithm). Bankrupt harden refuses error findings unless allow_plaintext_seal. Writes nothing.",
     inputSchema: {
       type: "object",
       properties: {
@@ -861,9 +861,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_lint_wasm_params",
+    name: "aegis_lint_wasm_params",
     description:
-      "Read-only WASM param/cipher carrier lint (same engine as CLI `bla lint-wasm-params`). Flags clear ASCII magics such as R3PARM/R3CIPH/R2SEAL with adjacent binary blobs. Bankrupt harden refuses unless allow_wasm_clear_params. Does not encrypt WASM data sections. Writes nothing.",
+      "Read-only WASM param/cipher carrier lint (same engine as CLI `aegis lint-wasm-params`). Flags clear ASCII magics such as R3PARM/R3CIPH/R2SEAL with adjacent binary blobs. Bankrupt harden refuses unless allow_wasm_clear_params. Does not encrypt WASM data sections. Writes nothing.",
     inputSchema: {
       type: "object",
       properties: {
@@ -877,9 +877,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_lint_panel_derive",
+    name: "aegis_lint_panel_derive",
     description:
-      "Read-only panel-derive ABI lint (same engine as CLI `bla lint-panel-derive`). Flags stable __vaultPanelDerive_* / deriveLocal, classic FNV primes, and deriveLocal+panelTokenSha256 offline-oracle packaging. Maximum/bankrupt rewrites ABI unless allow_stable_panel_derive; bankrupt refuses oracle combo unless allow_panel_offline_oracle. Writes nothing.",
+      "Read-only panel-derive ABI lint (same engine as CLI `aegis lint-panel-derive`). Flags stable __vaultPanelDerive_* / deriveLocal, classic FNV primes, and deriveLocal+panelTokenSha256 offline-oracle packaging. Maximum/bankrupt rewrites ABI unless allow_stable_panel_derive; bankrupt refuses oracle combo unless allow_panel_offline_oracle. Writes nothing.",
     inputSchema: {
       type: "object",
       properties: {
@@ -893,9 +893,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_lint_js_aes_unwrap",
+    name: "aegis_lint_js_aes_unwrap",
     description:
-      "Read-only JS AES wrap-key unwrap lint (same engine as CLI `bla lint-js-aes-unwrap`). Flags hex/base64 wrap-key material + createDecipheriv/createCipheriv + fixed sealed hdr (e.g. d17ea004). Bankrupt harden refuses unless allow_js_aes_unwrap. Gate only — not white-box AES. Writes nothing.",
+      "Read-only JS AES wrap-key unwrap lint (same engine as CLI `aegis lint-js-aes-unwrap`). Flags hex/base64 wrap-key material + createDecipheriv/createCipheriv + fixed sealed hdr (e.g. d17ea004). Bankrupt harden refuses unless allow_js_aes_unwrap. Gate only — not white-box AES. Writes nothing.",
     inputSchema: {
       type: "object",
       properties: {
@@ -909,9 +909,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_lint_js_wasm_hydrate_dump",
+    name: "aegis_lint_js_wasm_hydrate_dump",
     description:
-      "Read-only JS←WASM hydrate param-dump lint (same engine as CLI `bla lint-js-wasm-hydrate-dump`). Flags memory.buffer reads + salt/rounds/cipher layout decode after hydrate/instantiate. Bankrupt harden refuses unless allow_js_wasm_hydrate_dump. Prefer keep ARX+certify inside WASM. Writes nothing.",
+      "Read-only JS←WASM hydrate param-dump lint (same engine as CLI `aegis lint-js-wasm-hydrate-dump`). Flags memory.buffer reads + salt/rounds/cipher layout decode after hydrate/instantiate. Bankrupt harden refuses unless allow_js_wasm_hydrate_dump. Prefer keep ARX+certify inside WASM. Writes nothing.",
     inputSchema: {
       type: "object",
       properties: {
@@ -925,9 +925,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_lint_wasm_xor_mask_sidecar",
+    name: "aegis_lint_wasm_xor_mask_sidecar",
     description:
-      "Read-only WASM XOR-mask sidecar lint (same engine as CLI `bla lint-wasm-xor-mask-sidecar`). Flags masked entitlement packs stored beside a plaintext 32-byte XOR mask in WASM data. Bankrupt harden refuses unless allow_wasm_xor_mask_sidecar. Prefer key-dependent unmask + one-way commitments. Writes nothing.",
+      "Read-only WASM XOR-mask sidecar lint (same engine as CLI `aegis lint-wasm-xor-mask-sidecar`). Flags masked entitlement packs stored beside a plaintext 32-byte XOR mask in WASM data. Bankrupt harden refuses unless allow_wasm_xor_mask_sidecar. Prefer key-dependent unmask + one-way commitments. Writes nothing.",
     inputSchema: {
       type: "object",
       properties: {
@@ -941,9 +941,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_lint_wasm_seal_xor_known_plaintext",
+    name: "aegis_lint_wasm_seal_xor_known_plaintext",
     description:
-      "Read-only WASM+seal.revision XOR known-plaintext lint (same engine as CLI `bla lint-wasm-seal-xor-known-plaintext`). Flags entitlement packs where public seal.revision sits under a repeating XOR mask in WASM data — recovers the mask with no key (red-blue round-7). Looks for sibling seal.json. Bankrupt harden refuses unless allow_wasm_seal_xor_known_plaintext. Prefer one-way mask KDFs and keep public digests out of masked plaintext. Writes nothing.",
+      "Read-only WASM+seal.revision XOR known-plaintext lint (same engine as CLI `aegis lint-wasm-seal-xor-known-plaintext`). Flags entitlement packs where public seal.revision sits under a repeating XOR mask in WASM data — recovers the mask with no key (red-blue round-7). Looks for sibling seal.json. Bankrupt harden refuses unless allow_wasm_seal_xor_known_plaintext. Prefer one-way mask KDFs and keep public digests out of masked plaintext. Writes nothing.",
     inputSchema: {
       type: "object",
       properties: {
@@ -961,9 +961,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_lint_integrity_coverage",
+    name: "aegis_lint_integrity_coverage",
     description:
-      "Read-only integrity coverage matrix lint (Direction-3). Evaluates bla-integrity-coverage/v1 JSON (path to file or directory discovering integrity-coverage.json). Refuses when full coverage / anti-single-point / hashes / connectivity fail. Hash-only — no guessing. Writes nothing.",
+      "Read-only integrity coverage matrix lint (Direction-3). Evaluates aegis-integrity-coverage/v1 JSON (path to file or directory discovering integrity-coverage.json). Refuses when full coverage / anti-single-point / hashes / connectivity fail. Hash-only — no guessing. Writes nothing.",
     inputSchema: {
       type: "object",
       properties: {
@@ -980,16 +980,16 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_run_lookup",
+    name: "aegis_run_lookup",
     description:
-      "Read-only correlation of a prior harden run: load bla-harden-summary.json by path or output directory, optionally asserting a run_id. Unsigned summaries only — never treats absence as success.",
+      "Read-only correlation of a prior harden run: load aegis-harden-summary.json by path or output directory, optionally asserting a run_id. Unsigned summaries only — never treats absence as success.",
     inputSchema: {
       type: "object",
       properties: {
         summary_path: {
           type: "string",
           description:
-            "Path to bla-harden-summary.json, or the harden output directory that contains it",
+            "Path to aegis-harden-summary.json, or the harden output directory that contains it",
         },
         run_id: {
           type: "string",
@@ -1001,7 +1001,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_rea_drift",
+    name: "aegis_rea_drift",
     description:
       "Run the REA constant-drift harness (scripts/verify-rea-constants.mjs). This is NOT red-team evidence. Absent sibling REA → status unverified (never a silent pass).",
     inputSchema: {
@@ -1017,9 +1017,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
   },
 
   {
-    name: "bla_polymorph_report",
+    name: "aegis_polymorph_report",
     description:
-      "Compare two hardened artifact directories and report objective structural drift (export-name Jaccard, export-order Kendall-tau, byte-diff ratio, identifier overlap, aggregate driftScore). Honesty: drift ≠ cracking resistance — prove equivalence with bla_verify / REA. expect=same refuses when driftScore is not near zero; expect=different refuses when drift is too low.",
+      "Compare two hardened artifact directories and report objective structural drift (export-name Jaccard, export-order Kendall-tau, byte-diff ratio, identifier overlap, aggregate driftScore). Honesty: drift ≠ cracking resistance — prove equivalence with aegis_verify / REA. expect=same refuses when driftScore is not near zero; expect=different refuses when drift is too low.",
     inputSchema: {
       type: "object",
       properties: {
@@ -1051,9 +1051,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_encrypt_strings",
+    name: "aegis_encrypt_strings",
     description:
-      "Encrypt sensitive string literals in panel.html / license.cjs with a seed-derived XOR keystream and inject a runtime decrypt stub. Reuses SeededPrng.derive(\"string.encrypt\") — never JS AES wrap-key (that footgun is refused by bla_lint_js_aes_unwrap). Honesty: raises static grep cost only; prove equivalence with verify / CrackMe / REA. Writes outputs (or dry_run).",
+      "Encrypt sensitive string literals in panel.html / license.cjs with a seed-derived XOR keystream and inject a runtime decrypt stub. Reuses SeededPrng.derive(\"string.encrypt\") — never JS AES wrap-key (that footgun is refused by aegis_lint_js_aes_unwrap). Honesty: raises static grep cost only; prove equivalence with verify / CrackMe / REA. Writes outputs (or dry_run).",
     inputSchema: {
       type: "object",
       properties: {
@@ -1083,7 +1083,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_lint_plaintext_secrets",
+    name: "aegis_lint_plaintext_secrets",
     description:
       "Read-only lint for cleartext sensitive literals (FLAG{…}, high-entropy tokens, PEM headers, long hex/base64, derive key-name strings) in panel.html / license.cjs. Bankrupt packaging gates refuse error findings unless allow_plaintext_string. URLs are warning-class. Writes nothing.",
     inputSchema: {
@@ -1103,9 +1103,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_bind_scope",
+    name: "aegis_bind_scope",
     description:
-      "Optional honest code-lock: write a PUBLIC bind-scope.json (domains + validity window) and inject a deterministic runtime check into license.cjs/entry. Default OFF. Never a covert backdoor — public:true is mandatory; hidden fields refuse. Host for Node comes from BLA_BIND_HOST (or location.hostname in browsers).",
+      "Optional honest code-lock: write a PUBLIC bind-scope.json (domains + validity window) and inject a deterministic runtime check into license.cjs/entry. Default OFF. Never a covert backdoor — public:true is mandatory; hidden fields refuse. Host for Node comes from AEGIS_BIND_HOST (or location.hostname in browsers).",
     inputSchema: {
       type: "object",
       properties: {
@@ -1128,7 +1128,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
         },
         entry_path: {
           type: "string",
-          description: "Optional entry JS/CJS to inject BLA_BIND_SCOPE_CHECK into",
+          description: "Optional entry JS/CJS to inject AEGIS_BIND_SCOPE_CHECK into",
         },
         out_dir: {
           type: "string",
@@ -1144,9 +1144,9 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_lint_bind_scope",
+    name: "aegis_lint_bind_scope",
     description:
-      "Read-only lint for bla-bind-scope/v1. Refuses when public≠true, constraints empty, dates/domains invalid, hidden fields present, or bind-scope.json exists without BLA_BIND_SCOPE_CHECK in the entry. Writes nothing.",
+      "Read-only lint for aegis-bind-scope/v1. Refuses when public≠true, constraints empty, dates/domains invalid, hidden fields present, or bind-scope.json exists without AEGIS_BIND_SCOPE_CHECK in the entry. Writes nothing.",
     inputSchema: {
       type: "object",
       properties: {
@@ -1164,7 +1164,7 @@ export const BLA_MCP_TOOLS: readonly McpToolDefinition[] = Object.freeze([
     },
   },
   {
-    name: "bla_redteam_report",
+    name: "aegis_redteam_report",
     description:
       "Read (or optionally re-run) the empirical REA red-team report at docs/redteam/empirical-rea-validation.json. On-disk read without execute → status available (not a live REA verdict). execute:true → pass/fail from the harness. Missing report and unready REA → status unverified. Pass execute:true only when sibling REA dist is built.",
     inputSchema: {
@@ -1197,7 +1197,7 @@ export interface McpResourceDefinition {
   readonly mimeType: string;
 }
 
-export const BLA_MCP_RESOURCES: readonly McpResourceDefinition[] = Object.freeze([
+export const AEGIS_MCP_RESOURCES: readonly McpResourceDefinition[] = Object.freeze([
   {
     uri: WEAVE_DIRECTIVES_URI,
     name: "weave-decoy-directives",
@@ -1206,18 +1206,18 @@ export const BLA_MCP_RESOURCES: readonly McpResourceDefinition[] = Object.freeze
     mimeType: "text/markdown",
   },
   {
-    uri: "bla://docs/weave-decoy-mcp",
+    uri: "aegis://docs/weave-decoy-mcp",
     name: "weave-decoy-doc",
     description: `Pointer to repository theory pack ${WEAVE_DECOY_DOC_PATH}`,
     mimeType: "text/markdown",
   },
 ]);
 
-export const BLA_MCP_PROMPTS: readonly McpPromptDefinition[] = Object.freeze([
+export const AEGIS_MCP_PROMPTS: readonly McpPromptDefinition[] = Object.freeze([
   {
-    name: "bla-harden-project",
+    name: "aegis-harden-project",
     description:
-      "One-sentence Counter-REA hardening: discover every protectable build artifact under a project directory and run bla_harden (audit→defend→verify, bankrupt profile).",
+      "One-sentence Counter-REA hardening: discover every protectable build artifact under a project directory and run aegis_harden (audit→defend→verify, bankrupt profile).",
     arguments: [
       {
         name: "directory",
@@ -1229,7 +1229,7 @@ export const BLA_MCP_PROMPTS: readonly McpPromptDefinition[] = Object.freeze([
   {
     name: "shield-against-rea",
     description:
-      "Audit a build artifact for REA exposure, apply BLA's adversarial shield, and verify the token bankruptcy factor.",
+      "Audit a build artifact for REA exposure, apply AEGIS's adversarial shield, and verify the token bankruptcy factor.",
     arguments: [
       {
         name: "target_path",
@@ -1239,9 +1239,9 @@ export const BLA_MCP_PROMPTS: readonly McpPromptDefinition[] = Object.freeze([
     ],
   },
   {
-    name: "bla-hardening-workflow",
+    name: "aegis-hardening-workflow",
     description:
-      "Step-by-step release hardening checklist using bla_inspect_release, bla_audit, bla_protect, and bla_verify.",
+      "Step-by-step release hardening checklist using aegis_inspect_release, aegis_audit, aegis_protect, and aegis_verify.",
     arguments: [
       {
         name: "target_path",
@@ -1251,7 +1251,7 @@ export const BLA_MCP_PROMPTS: readonly McpPromptDefinition[] = Object.freeze([
     ],
   },
   {
-    name: "bla-counter-rea",
+    name: "aegis-counter-rea",
     description:
       "Evaluate REA reverse-engineering exposure and plan defensive hardening for a software artifact.",
     arguments: [
@@ -1263,9 +1263,9 @@ export const BLA_MCP_PROMPTS: readonly McpPromptDefinition[] = Object.freeze([
     ],
   },
   {
-    name: "bla-weave-decoy",
+    name: "aegis-weave-decoy",
     description:
-      "Plan weave-decoy hardening: read bla://directives/weave-decoy, call bla_weave_plan, then bla_harden with weave_decoys:true. Defensive only.",
+      "Plan weave-decoy hardening: read aegis://directives/weave-decoy, call aegis_weave_plan, then aegis_harden with weave_decoys:true. Defensive only.",
     arguments: [
       {
         name: "target_path",
@@ -1337,7 +1337,7 @@ function attachArtifactRunEvidence(
     ...report,
     runId,
     runEvidence: {
-      schema: "bla-artifact-run/v1",
+      schema: "aegis-artifact-run/v1",
       signature: "unsigned",
       runId,
       outputPath,
@@ -1609,12 +1609,12 @@ export function validateMcpToolCall(
     };
   }
 
-  const tool = BLA_MCP_TOOLS.find((t) => t.name === params.name);
+  const tool = AEGIS_MCP_TOOLS.find((t) => t.name === params.name);
   if (!tool) {
     return {
       ok: false,
       code: -32602,
-      message: `Invalid params: unknown BLA MCP tool '${params.name}'`,
+      message: `Invalid params: unknown AEGIS MCP tool '${params.name}'`,
     };
   }
 
@@ -1789,8 +1789,8 @@ export async function handleMcpRequest(
               resources: {},
             },
             serverInfo: {
-              name: BLA_IDENTITY.mcpServerName,
-              version: BLA_IDENTITY.version,
+              name: AEGIS_IDENTITY.mcpServerName,
+              version: AEGIS_IDENTITY.version,
             },
           },
         };
@@ -1808,7 +1808,7 @@ export async function handleMcpRequest(
           jsonrpc: "2.0",
           id: req.id,
           result: {
-            tools: BLA_MCP_TOOLS,
+            tools: AEGIS_MCP_TOOLS,
           },
         };
 
@@ -1817,7 +1817,7 @@ export async function handleMcpRequest(
           jsonrpc: "2.0",
           id: req.id,
           result: {
-            resources: BLA_MCP_RESOURCES,
+            resources: AEGIS_MCP_RESOURCES,
           },
         };
 
@@ -1833,7 +1833,7 @@ export async function handleMcpRequest(
           };
         }
         const uri = req.params.uri;
-        const known = BLA_MCP_RESOURCES.find((r) => r.uri === uri);
+        const known = AEGIS_MCP_RESOURCES.find((r) => r.uri === uri);
         if (!known) {
           return {
             jsonrpc: "2.0",
@@ -1865,7 +1865,7 @@ export async function handleMcpRequest(
           jsonrpc: "2.0",
           id: req.id,
           result: {
-            prompts: BLA_MCP_PROMPTS,
+            prompts: AEGIS_MCP_PROMPTS,
           },
         };
 
@@ -1880,7 +1880,7 @@ export async function handleMcpRequest(
             },
           };
         }
-        const promptDef = BLA_MCP_PROMPTS.find((p) => p.name === req.params!.name);
+        const promptDef = AEGIS_MCP_PROMPTS.find((p) => p.name === req.params!.name);
         if (!promptDef) {
           return {
             jsonrpc: "2.0",
@@ -1892,7 +1892,7 @@ export async function handleMcpRequest(
           };
         }
         // Arguments may be omitted when the prompt has no required arguments
-        // (e.g. bla-harden-project); only a present-but-malformed value errors.
+        // (e.g. aegis-harden-project); only a present-but-malformed value errors.
         if (req.params.arguments !== undefined && !isPlainObject(req.params.arguments)) {
           return {
             jsonrpc: "2.0",
@@ -1922,37 +1922,37 @@ export async function handleMcpRequest(
           }
         }
         let promptText: string;
-        if (promptDef.name === "bla-harden-project") {
+        if (promptDef.name === "aegis-harden-project") {
           const directory =
             typeof promptArgs.directory === "string" && promptArgs.directory.trim().length > 0
               ? String(promptArgs.directory)
               : ".";
           promptText =
-            `Harden my software against REA in one step: call bla_harden with { "directory": ${JSON.stringify(directory)} }. ` +
+            `Harden my software against REA in one step: call aegis_harden with { "directory": ${JSON.stringify(directory)} }. ` +
             `It auto-discovers build outputs, runs audit→defend→verify with the bankrupt profile on every artifact, and returns a per-artifact summary. ` +
             `Do not ask which files to protect — discover them. ` +
             `To preview without writing, pass dry_run: true. If the tool returns confirmation_required, ask the user before retrying with confirm_overwrite: true.`;
-        } else if (promptDef.name === "bla-weave-decoy") {
+        } else if (promptDef.name === "aegis-weave-decoy") {
           const targetPath =
             typeof promptArgs.target_path === "string" && promptArgs.target_path.trim().length > 0
               ? String(promptArgs.target_path)
               : ".";
           promptText =
-            `Defensive weave-decoy only (no crack/RE): read resource ${WEAVE_DIRECTIVES_URI}, call bla_weave_plan with { "path": ${JSON.stringify(targetPath)} } to inspect surgicalWorkorder, weave domain-plausible helpers sharing state slots, verify with bla_verify_weave, then call bla_harden with { "directory": ${JSON.stringify(targetPath)}, "weave_decoys": true }. Do not add dismissible honeypot noise layers.`;
+            `Defensive weave-decoy only (no crack/RE): read resource ${WEAVE_DIRECTIVES_URI}, call aegis_weave_plan with { "path": ${JSON.stringify(targetPath)} } to inspect surgicalWorkorder, weave domain-plausible helpers sharing state slots, verify with aegis_verify_weave, then call aegis_harden with { "directory": ${JSON.stringify(targetPath)}, "weave_decoys": true }. Do not add dismissible honeypot noise layers.`;
         } else {
           const targetPath = JSON.stringify(String(promptArgs.target_path ?? "."));
           const shared =
-            `Defensive only; use existing bla_* tools, never invent new ones. ` +
+            `Defensive only; use existing aegis_* tools, never invent new ones. ` +
             `Writes that would overwrite existing outputs return confirmation_required — ask the user before retrying with confirm_overwrite: true.`;
           if (promptDef.name === "shield-against-rea") {
             promptText =
-              `Shield ${targetPath} against REA: audit it (bla_audit), apply one shield (bla_protect, or bla_defend for the full pipeline), then report bla_verify checks and defenseScore. ${shared}`;
-          } else if (promptDef.name === "bla-hardening-workflow") {
+              `Shield ${targetPath} against REA: audit it (aegis_audit), apply one shield (aegis_protect, or aegis_defend for the full pipeline), then report aegis_verify checks and defenseScore. ${shared}`;
+          } else if (promptDef.name === "aegis-hardening-workflow") {
             promptText =
-              `Release-hardening for ${targetPath}: check leaks with bla_inspect_release, audit with bla_audit, review findings with the user, then protect/defend and verify. For a whole project directory prefer bla_harden (dry_run: true to preview). ${shared}`;
+              `Release-hardening for ${targetPath}: check leaks with aegis_inspect_release, audit with aegis_audit, review findings with the user, then protect/defend and verify. For a whole project directory prefer aegis_harden (dry_run: true to preview). ${shared}`;
           } else {
             promptText =
-              `Evaluate REA exposure for ${targetPath} with bla_audit and propose a hardening plan (intensity, output location, opt-in layers) before applying anything; keep audit estimates distinct from measured redteam evidence. ${shared}`;
+              `Evaluate REA exposure for ${targetPath} with aegis_audit and propose a hardening plan (intensity, output location, opt-in layers) before applying anything; keep audit estimates distinct from measured redteam evidence. ${shared}`;
           }
         }
         return {
@@ -1992,7 +1992,7 @@ export async function handleMcpRequest(
 
         let refused = false;
         const confirmed = args.confirm_overwrite === true;
-        if (name === "bla_discover") {
+        if (name === "aegis_discover") {
           const offset = optionalCount(args.offset);
           payload = discoverHardenTargets(
             typeof args.directory === "string" && args.directory.trim().length > 0
@@ -2005,7 +2005,7 @@ export async function handleMcpRequest(
               ...(offset !== undefined ? { offset } : {}),
             },
           );
-        } else if (name === "bla_harden") {
+        } else if (name === "aegis_harden") {
           const hardenDir =
             typeof args.directory === "string" && args.directory.trim().length > 0
               ? (args.directory as string)
@@ -2133,7 +2133,7 @@ export async function handleMcpRequest(
               payload = report;
             }
           }
-        } else if (name === "bla_defend" || name === "bla_protect") {
+        } else if (name === "aegis_defend" || name === "aegis_protect") {
           const inPlace = args.in_place === true;
           const out = resolveProtectOutputPath(
             args.input_path as string,
@@ -2141,16 +2141,16 @@ export async function handleMcpRequest(
             inPlace,
           );
           const planned =
-            name === "bla_defend" &&
+            name === "aegis_defend" &&
             (args.emit_manifest === true || args.sign_manifest === true)
-              ? [out, `${out}.bla-manifest.json`]
+              ? [out, `${out}.aegis-manifest.json`]
               : [out];
           const clobbered = existingPaths(planned);
           if (clobbered.length > 0 && !confirmed) {
             refused = true;
             payload = confirmationRequiredPayload(name, clobbered);
           } else {
-            const report = (name === "bla_defend"
+            const report = (name === "aegis_defend"
               ? runDefend(handlers, args)
               : runProtect(handlers, args)) as Record<string, unknown>;
             const withRun = attachArtifactRunEvidence(
@@ -2167,9 +2167,9 @@ export async function handleMcpRequest(
               ),
             };
           }
-        } else if (name === "bla_audit") {
+        } else if (name === "aegis_audit") {
           payload = handlers.auditTarget(args.path as string);
-        } else if (name === "bla_verify") {
+        } else if (name === "aegis_verify") {
           const verification = handlers.verifyTarget(
             args.target_path as string,
             typeof args.original_path === "string" ? args.original_path : undefined,
@@ -2185,7 +2185,7 @@ export async function handleMcpRequest(
             payload = {
               ...verification,
               runCorrelation: {
-                schema: "bla-run-correlation/v1",
+                schema: "aegis-run-correlation/v1",
                 signature: "unsigned",
                 runId: lookup.runId,
                 summaryPath: lookup.summaryPath,
@@ -2194,14 +2194,14 @@ export async function handleMcpRequest(
             };
           } else if (typeof args.run_id === "string" && args.run_id.trim().length > 0) {
             throw new Error(
-              "bla_verify: run_id requires summary_path so the id can be correlated against an on-disk harden summary",
+              "aegis_verify: run_id requires summary_path so the id can be correlated against an on-disk harden summary",
             );
           } else {
             payload = verification;
           }
-        } else if (name === "bla_benchmark") {
+        } else if (name === "aegis_benchmark") {
           payload = await handlers.runShowcaseBenchmark();
-        } else if (name === "bla_emit_headers") {
+        } else if (name === "aegis_emit_headers") {
           payload = handlers.emitCompileTimeNativeHeader(
             args.language as NativeHeaderLanguage,
             {
@@ -2210,24 +2210,24 @@ export async function handleMcpRequest(
                 : {}),
             },
           );
-        } else if (name === "bla_doctor") {
+        } else if (name === "aegis_doctor") {
           payload = handlers.runDoctor(
             typeof args.home_dir === "string" ? args.home_dir : undefined,
           );
-        } else if (name === "bla_inspect_release") {
+        } else if (name === "aegis_inspect_release") {
           payload = handlers.inspectReleaseExposure(args.path as string);
-        } else if (name === "bla_init") {
-          payload = handlers.initBlaConfig(
+        } else if (name === "aegis_init") {
+          payload = handlers.initAegisConfig(
             args.directory as string,
             Boolean(args.overwrite),
           );
-        } else if (name === "bla_weave_plan") {
+        } else if (name === "aegis_weave_plan") {
           payload = buildWeavePlan(args.path as string, {
             ...(typeof args.max_targets === "number"
               ? { maxTargets: args.max_targets }
               : {}),
           });
-        } else if (name === "bla_verify_weave") {
+        } else if (name === "aegis_verify_weave") {
           const verifyReport = verifyWeaveTarget(args.path as string, {
             ...(typeof args.max_targets === "number"
               ? { maxTargets: args.max_targets }
@@ -2235,7 +2235,7 @@ export async function handleMcpRequest(
           });
           payload = verifyReport;
           refused = !verifyReport.overallPassed;
-        } else if (name === "bla_lint") {
+        } else if (name === "aegis_lint") {
           const full = runPackagingGatesLint(args);
           const { details, ...compact } = full;
           payload = {
@@ -2255,32 +2255,32 @@ export async function handleMcpRequest(
             },
           };
           refused = full.shouldRefuseBankrupt;
-        } else if (name === "bla_lint_lanes") {
+        } else if (name === "aegis_lint_lanes") {
           payload = runLintLanes(args);
-        } else if (name === "bla_lint_seal") {
+        } else if (name === "aegis_lint_seal") {
           payload = runLintSeal(args);
           refused = (payload as SealCommitmentReport).shouldRefuseBankrupt;
-        } else if (name === "bla_lint_wasm_params") {
+        } else if (name === "aegis_lint_wasm_params") {
           payload = runLintWasmParams(args);
           refused = (payload as WasmParamCarrierReport).shouldRefuseBankrupt;
-        } else if (name === "bla_lint_panel_derive") {
+        } else if (name === "aegis_lint_panel_derive") {
           payload = runLintPanelDerive(args);
           refused =
             (payload as PanelDeriveAbiReport).shouldRefuseBankrupt ||
             (payload as PanelDeriveAbiReport).shouldRewriteOrRefuse;
-        } else if (name === "bla_lint_js_aes_unwrap") {
+        } else if (name === "aegis_lint_js_aes_unwrap") {
           payload = runLintJsAesUnwrap(args);
           refused = (payload as JsAesUnwrapReport).shouldRefuseBankrupt;
-        } else if (name === "bla_lint_js_wasm_hydrate_dump") {
+        } else if (name === "aegis_lint_js_wasm_hydrate_dump") {
           payload = runLintJsWasmHydrateDump(args);
           refused = (payload as JsWasmHydrateDumpReport).shouldRefuseBankrupt;
-        } else if (name === "bla_lint_wasm_xor_mask_sidecar") {
+        } else if (name === "aegis_lint_wasm_xor_mask_sidecar") {
           payload = runLintWasmXorMaskSidecar(args);
           refused = (payload as WasmXorMaskSidecarReport).shouldRefuseBankrupt;
-        } else if (name === "bla_lint_wasm_seal_xor_known_plaintext") {
+        } else if (name === "aegis_lint_wasm_seal_xor_known_plaintext") {
           payload = runLintWasmSealXorKnownPlaintext(args);
           refused = (payload as WasmSealXorKnownPlaintextReport).shouldRefuseBankrupt;
-        } else if (name === "bla_lint_integrity_coverage") {
+        } else if (name === "aegis_lint_integrity_coverage") {
           const target = String(args.path ?? "");
           const allow = args.allow_single_point_integrity === true;
           const reports = discoverAndLintIntegrityCoverage(target);
@@ -2296,14 +2296,14 @@ export async function handleMcpRequest(
                 ? "No integrity-coverage.json found (not an error — emit via harden --self-seal)."
                 : "Integrity coverage matrix OK.",
           };
-        } else if (name === "bla_run_lookup") {
+        } else if (name === "aegis_run_lookup") {
           payload = readHardenRunSummary(
             args.summary_path as string,
             typeof args.run_id === "string" && args.run_id.trim().length > 0
               ? (args.run_id as string)
               : undefined,
           );
-        } else if (name === "bla_rea_drift") {
+        } else if (name === "aegis_rea_drift") {
           payload = runReaDriftCheck({
             ...(typeof args.rea_root === "string" && args.rea_root.trim().length > 0
               ? { reaRoot: args.rea_root as string }
@@ -2314,7 +2314,7 @@ export async function handleMcpRequest(
             refused = status === "unverified" || status === "fail";
           }
         
-        } else if (name === "bla_polymorph_report") {
+        } else if (name === "aegis_polymorph_report") {
           const expectArg = typeof args.expect === "string" ? args.expect : "report";
           const expectMode =
             expectArg === "same" || expectArg === "different" || expectArg === "report"
@@ -2335,7 +2335,7 @@ export async function handleMcpRequest(
             const status = (payload as { status: string }).status;
             refused = status === "fail" || status === "error";
           }
-        } else if (name === "bla_encrypt_strings") {
+        } else if (name === "aegis_encrypt_strings") {
           payload = encryptStrings({
             path: args.path as string,
             seed: args.seed as string,
@@ -2351,7 +2351,7 @@ export async function handleMcpRequest(
             const status = (payload as { status: string }).status;
             refused = status === "error";
           }
-        } else if (name === "bla_lint_plaintext_secrets") {
+        } else if (name === "aegis_lint_plaintext_secrets") {
           const allow = args.allow_plaintext_string === true;
           const target = args.path as string;
           const reports = discoverAndLintPlaintextSecrets(target, {
@@ -2359,18 +2359,18 @@ export async function handleMcpRequest(
           });
           const shouldRefuse = reports.some((r) => r.shouldRefuseBankrupt);
           payload = {
-            schema: "bla-plaintext-secret-lint/v1",
+            schema: "aegis-plaintext-secret-lint/v1",
             path: target,
             reports,
             shouldRefuseBankrupt: shouldRefuse,
             oneLineAdvice: shouldRefuse
-              ? "ERROR: Cleartext sensitive literals — run bla_encrypt_strings or allow_plaintext_string (lab only)."
+              ? "ERROR: Cleartext sensitive literals — run aegis_encrypt_strings or allow_plaintext_string (lab only)."
               : reports.some((r) => r.looksExposed)
                 ? "WARNING: Non-refusing sensitive literals remain."
                 : "No cleartext sensitive-literal findings (heuristic).",
           };
           refused = shouldRefuse;
-        } else if (name === "bla_bind_scope") {
+        } else if (name === "aegis_bind_scope") {
           const domains = Array.isArray(args.domains)
             ? args.domains.filter((d) => typeof d === "string")
             : undefined;
@@ -2395,7 +2395,7 @@ export async function handleMcpRequest(
             const status = (payload as { status: string }).status;
             refused = status === "error";
           }
-        } else if (name === "bla_lint_bind_scope") {
+        } else if (name === "aegis_lint_bind_scope") {
           const allow = args.allow_missing_bind_runtime === true;
           const target = args.path as string;
           const reports = discoverAndLintBindScope(target);
@@ -2412,7 +2412,7 @@ export async function handleMcpRequest(
                 : "Bind-scope contract OK.",
           };
           refused = allow ? false : anyRefuse;
-        } else if (name === "bla_redteam_report") {
+        } else if (name === "aegis_redteam_report") {
           payload = getRedteamReport({
             execute: args.execute === true,
             ...(typeof args.rea_root === "string" && args.rea_root.trim().length > 0
@@ -2529,7 +2529,7 @@ export function createStdioLineProcessor(hooks: StdioLineProcessorHooks): StdioL
 }
 
 /**
- * Starts the BLA MCP server over stdio (supporting newline-delimited JSON-RPC 2.0).
+ * Starts the AEGIS MCP server over stdio (supporting newline-delimited JSON-RPC 2.0).
  */
 export function startMcpStdioServer(): void {
   let processingQueue = Promise.resolve();

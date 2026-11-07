@@ -77,7 +77,7 @@ describe("js-wasm-hydrate-dump lint (red-blue round-5)", () => {
   });
 
   it("flags the round-5 cleartext license fixture when present", () => {
-    const path = "/workspace/bla-redblue/round-5/target/license.cjs";
+    const path = "/workspace/aegis-redblue/round-5/target/license.cjs";
     if (!existsSync(path)) return; // optional dogfood fixture — absent on CI clones
     const src = readFileSync(path, "utf8");
     const report = lintJsWasmHydrateDumpSource(src, { path });
@@ -85,7 +85,7 @@ describe("js-wasm-hydrate-dump lint (red-blue round-5)", () => {
   });
 
   it("does not refuse the round-6 unlock-in-WASM license fixture when present", () => {
-    const path = "/workspace/bla-redblue/round-6/target/license.cjs";
+    const path = "/workspace/aegis-redblue/round-6/target/license.cjs";
     if (!existsSync(path)) return;
     const src = readFileSync(path, "utf8");
     const report = lintJsWasmHydrateDumpSource(src, { path });

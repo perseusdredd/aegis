@@ -491,7 +491,7 @@ export function inspectWasmBinary(bytes: Buffer): WasmInspectionSummary {
  * Protects a WebAssembly `.wasm` binary against `rea inspect-wasm-artifact` and `compare-wasm-interfaces`
  * by stripping real debug custom sections and injecting:
  * 1. A honey `"name"` custom section (parsed by WABT and REA's `WabtWat.ts`)
- * 2. Multiple `@custom` architectural chaff sections (`"bla.enclave.manifest"`, `"producers"`, `"dylink.0"`)
+ * 2. Multiple `@custom` architectural chaff sections (`"aegis.enclave.manifest"`, `"producers"`, `"dylink.0"`)
  * while keeping the WASM module 100% valid and executable by V8 / WebAssembly runtimes.
  */
 export function protectWasmBinary(
@@ -508,7 +508,7 @@ export function protectWasmBinary(
      * When true, rename exports not listed in `preserveExports`.
      * Default: true at maximum/bankrupt (all non-preserved names).
      * Keeping a stable public ABI requires an explicit `preserveExports` list
-     * (CLI `--wasm-preserve-exports` / MCP `wasm_preserve_exports` / `.blarc`).
+     * (CLI `--wasm-preserve-exports` / MCP `wasm_preserve_exports` / `.aegisrc`).
      */
     readonly renameNonPublicExports?: boolean;
     /**
@@ -544,7 +544,7 @@ export function protectWasmBinary(
   }
 
   const intensity = options.intensity ?? "balanced";
-  const prng = new SeededPrng(options.seed ?? "bla-wasm-shield-v1");
+  const prng = new SeededPrng(options.seed ?? "aegis-wasm-shield-v1");
   const chaffPayloads = generateChaffPayloads(prng, intensity);
   const deception = buildCanaryAndDiagnosticPayloads(prng, intensity);
 
@@ -632,12 +632,12 @@ export function protectWasmBinary(
   const addedSections: Buffer[] = [buildHoneyWasmNameSection(prng)];
 
   const manifestJson = JSON.stringify({
-    schema: "bla-wasm-enclave-shield/v1",
+    schema: "aegis-wasm-enclave-shield/v1",
     enclave_delegation: true,
     manifests: chaffPayloads.map((p) => p.rawText),
   });
   addedSections.push(
-    createWasmCustomSection("bla.enclave.manifest", Buffer.from(manifestJson, "utf8")),
+    createWasmCustomSection("aegis.enclave.manifest", Buffer.from(manifestJson, "utf8")),
   );
 
   for (let i = 0; i < Math.min(3, chaffPayloads.length); i++) {
@@ -659,7 +659,7 @@ export function protectWasmBinary(
     conflictingQueryEndpoints: deception.canary.conflictingQueryUrls,
   });
   addedSections.push(
-    createWasmCustomSection("bla.canary.credentials", Buffer.from(canaryJson, "utf8")),
+    createWasmCustomSection("aegis.canary.credentials", Buffer.from(canaryJson, "utf8")),
   );
 
   // System-diagnostic rabbit holes + Cognitive-Armor triggers as a dedicated custom section.
@@ -670,7 +670,7 @@ export function protectWasmBinary(
     cognitiveArmorInterlocks: deception.cognitiveArmor.triggersInjected,
   });
   addedSections.push(
-    createWasmCustomSection("bla.system.diagnostics", Buffer.from(diagJson, "utf8")),
+    createWasmCustomSection("aegis.system.diagnostics", Buffer.from(diagJson, "utf8")),
   );
 
   // Also bake distinctive export-adjacent names + cognitive-armor anchor symbols into a
@@ -690,7 +690,7 @@ export function protectWasmBinary(
     );
   addedSections.push(
     createWasmCustomSection(
-      "bla.export.name.decoys",
+      "aegis.export.name.decoys",
       Buffer.from(exportNameHoney.join("\0"), "utf8"),
     ),
   );
@@ -699,7 +699,7 @@ export function protectWasmBinary(
   const ifacePlan = planWasmInterfaceBudgetExhaustion(prng, intensity);
   const ifacePayload = Buffer.from(
     JSON.stringify({
-      schema: "bla-wasm-interface-exhaustion/v1",
+      schema: "aegis-wasm-interface-exhaustion/v1",
       descriptors: ifacePlan.descriptors.map((d) => ({
         module: d.moduleName,
         name: d.exportName,
@@ -713,7 +713,7 @@ export function protectWasmBinary(
     "utf8",
   );
   addedSections.push(
-    createWasmCustomSection("bla.wasm.interface.exhaustion", ifacePayload),
+    createWasmCustomSection("aegis.wasm.interface.exhaustion", ifacePayload),
   );
 
   return {

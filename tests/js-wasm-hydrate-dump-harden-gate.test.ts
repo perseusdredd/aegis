@@ -13,7 +13,7 @@ afterEach(() => {
 
 describe("red-blue round-5 JS WASM hydrate-dump gates", () => {
   it("bankrupt protect refuses hydrate dump footgun unless allowed", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-hydrate-gate-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-hydrate-gate-"));
     dirs.push(dir);
     const input = join(dir, "license.cjs");
     const output = join(dir, "license.out.cjs");
@@ -39,7 +39,7 @@ describe("red-blue round-5 JS WASM hydrate-dump gates", () => {
   });
 
   it("bankrupt harden refuses project trees with hydrate dump footguns", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-hydrate-harden-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-hydrate-harden-"));
     dirs.push(dir);
     mkdirSync(join(dir, "dist"));
     writeFileSync(join(dir, "dist", "license.cjs"), buildTestJsWasmHydrateDumpFootgun({}), "utf8");

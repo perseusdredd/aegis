@@ -15,7 +15,7 @@ import { protectTarget } from "../src/engine/protector.js";
 const tempDirs: string[] = [];
 
 function makeTempDir(): string {
-  const dir = mkdtempSync(join(tmpdir(), "bla-output-safety-"));
+  const dir = mkdtempSync(join(tmpdir(), "aegis-output-safety-"));
   tempDirs.push(dir);
   return dir;
 }

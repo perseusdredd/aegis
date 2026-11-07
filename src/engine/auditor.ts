@@ -92,7 +92,7 @@ function analyzeJsSourceForAudit(
   const triggeredLimits = new Set<string>();
   const uncertainties = new Set<string>();
 
-  // Detect BLA markers & REA resource-limit patterns in source
+  // Detect AEGIS markers & REA resource-limit patterns in source
   if (source.includes("a22?.require") || /const a\d+ = _flag \? a\d+\?\.x : a\d+\?\.y/.test(source)) {
     triggeredLimits.add("alias-selections");
   }
@@ -163,7 +163,7 @@ function analyzeJsSourceForAudit(
             estimatedCostUsd: triggeredLimits.size > 0 ? 1.45 : 0.04,
             reason:
               triggeredLimits.size > 0
-                ? "Protected by BLA Algorithmic Tarpit & Opaque Call-Graph XRefs"
+                ? "Protected by AEGIS Algorithmic Tarpit & Opaque Call-Graph XRefs"
                 : "Plaintext function body and control flow directly readable by REA",
           });
         }
@@ -182,7 +182,7 @@ function analyzeJsSourceForAudit(
             estimatedCostUsd: triggeredLimits.size > 0 ? 1.15 : 0.05,
             reason:
               triggeredLimits.size > 0
-                ? "Shielded by BLA getter-expansion & tarpit cross-references"
+                ? "Shielded by AEGIS getter-expansion & tarpit cross-references"
                 : "Class methods and property shapes directly recoverable",
           });
         }
@@ -501,7 +501,7 @@ export function auditTarget(targetPath: string): AuditReport {
           kind: "export",
           location: basename(absPath),
           riskLevel: f.severity === "error" ? "high" : "medium",
-          reaToolUsed: "bla lint-panel-derive / static source scan",
+          reaToolUsed: "aegis lint-panel-derive / static source scan",
           estimatedTokensToReconstruct: 1_200,
           estimatedCostUsd: 0.05,
           reason: f.summary,
@@ -515,7 +515,7 @@ export function auditTarget(targetPath: string): AuditReport {
           kind: "export",
           location: basename(absPath),
           riskLevel: f.severity === "error" ? "high" : "medium",
-          reaToolUsed: "bla lint-js-aes-unwrap / static source scan",
+          reaToolUsed: "aegis lint-js-aes-unwrap / static source scan",
           estimatedTokensToReconstruct: 1_500,
           estimatedCostUsd: 0.06,
           reason: f.summary,
@@ -529,7 +529,7 @@ export function auditTarget(targetPath: string): AuditReport {
           kind: "export",
           location: basename(absPath),
           riskLevel: f.severity === "error" ? "high" : "medium",
-          reaToolUsed: "bla lint-js-wasm-hydrate-dump / static source scan",
+          reaToolUsed: "aegis lint-js-wasm-hydrate-dump / static source scan",
           estimatedTokensToReconstruct: 1_600,
           estimatedCostUsd: 0.06,
           reason: f.summary,
@@ -550,7 +550,7 @@ export function auditTarget(targetPath: string): AuditReport {
           reaToolUsed: "inspect_web_bundle / static script inventory",
           estimatedTokensToReconstruct: 850,
           estimatedCostUsd: 0.04,
-          reason: "HTML entry bundle without inline BLA semantic shield",
+          reason: "HTML entry bundle without inline AEGIS semantic shield",
         });
       } else {
         const limits = new Set<string>();
@@ -677,7 +677,7 @@ export function auditTarget(targetPath: string): AuditReport {
       vulnerableVectors.add("wasm-wat-interface");
       const info = inspectWasmBinary(rawBytes);
       const isProtected =
-        info.customSectionNames.includes("bla.enclave.manifest") ||
+        info.customSectionNames.includes("aegis.enclave.manifest") ||
         (info.debugModuleName?.startsWith("tee_hardware_enclave_") ?? false);
       for (const exp of info.exportNames) {
         exposedItems.push({
@@ -690,7 +690,7 @@ export function auditTarget(targetPath: string): AuditReport {
           estimatedTokensToReconstruct: isProtected ? 22_000 : 750,
           estimatedCostUsd: isProtected ? 1.8 : 0.04,
           reason: isProtected
-            ? "Shielded by BLA WASM custom name & enclave attestation sections"
+            ? "Shielded by AEGIS WASM custom name & enclave attestation sections"
             : "Unshielded WASM export directly decompilable to WAT by REA",
         });
       }
@@ -702,7 +702,7 @@ export function auditTarget(targetPath: string): AuditReport {
           kind: "metadata-section",
           location: `${basename(absPath)} (data @${f.offset})`,
           riskLevel: "high",
-          reaToolUsed: "bla lint-wasm-params / static data-section scan",
+          reaToolUsed: "aegis lint-wasm-params / static data-section scan",
           estimatedTokensToReconstruct: 4_500,
           estimatedCostUsd: 0.25,
           reason: f.summary,
@@ -716,7 +716,7 @@ export function auditTarget(targetPath: string): AuditReport {
           kind: "metadata-section",
           location: `${basename(absPath)} (data @${f.offset})`,
           riskLevel: "high",
-          reaToolUsed: "bla lint-wasm-xor-mask-sidecar / static data-section scan",
+          reaToolUsed: "aegis lint-wasm-xor-mask-sidecar / static data-section scan",
           estimatedTokensToReconstruct: 6_000,
           estimatedCostUsd: 0.3,
           reason: f.summary,
@@ -737,7 +737,7 @@ export function auditTarget(targetPath: string): AuditReport {
         const text = rawBytes.toString("utf8");
         const isProtected =
           text.includes("runtime attestation boundary") ||
-          text.includes("BLA-SHIELD") ||
+          text.includes("AEGIS-SHIELD") ||
           text.includes("CANARY_TOKENS") ||
           /def\s+\w+_([a-f0-9]{4})\s*\(/i.test(text);
         const fnMatches = [...text.matchAll(/def\s+([A-Za-z0-9_]+)\s*\(/g)];
@@ -770,7 +770,7 @@ export function auditTarget(targetPath: string): AuditReport {
               estimatedTokensToReconstruct: isProtected ? 19_500 : 680,
               estimatedCostUsd: isProtected ? 1.55 : 0.03,
               reason: isProtected
-                ? "Protected by BLA Python Algorithmic Tarpit & Opaque Predicates"
+                ? "Protected by AEGIS Python Algorithmic Tarpit & Opaque Predicates"
                 : "Python function logic and docstrings directly exposed",
             });
           }
@@ -791,22 +791,22 @@ export function auditTarget(targetPath: string): AuditReport {
           name: basename(absPath),
           kind: "pyc-code-object",
           location: `${basename(absPath)} (magic=0x${pycInfo.magicNumber.toString(16)})`,
-          riskLevel: pycInfo.blaProtected ? "low" : "critical",
+          riskLevel: pycInfo.aegisProtected ? "low" : "critical",
           reaToolUsed: "inspect_python_pyc",
-          estimatedTokensToReconstruct: pycInfo.blaProtected ? 24_000 : 920,
-          estimatedCostUsd: pycInfo.blaProtected ? 1.95 : 0.05,
-          reason: pycInfo.blaProtected
-            ? "Shielded by BLA marshal constant pool chaff"
+          estimatedTokensToReconstruct: pycInfo.aegisProtected ? 24_000 : 920,
+          estimatedCostUsd: pycInfo.aegisProtected ? 1.95 : 0.05,
+          reason: pycInfo.aegisProtected
+            ? "Shielded by AEGIS marshal constant pool chaff"
             : "CPython marshal code tree and constants directly readable by REA",
         });
         sim = {
           ...sim,
-          examinationStatus: pycInfo.blaProtected ? "limited" : "complete",
-          triggeredResourceLimits: pycInfo.blaProtected ? ["pyc-marshal-chaff-saturation"] : [],
+          examinationStatus: pycInfo.aegisProtected ? "limited" : "complete",
+          triggeredResourceLimits: pycInfo.aegisProtected ? ["pyc-marshal-chaff-saturation"] : [],
           totalFunctions: 4,
-          decoyFunctionsDetectedAsReal: pycInfo.blaProtected ? 14 : 0,
-          obligationLedgerNodes: pycInfo.blaProtected ? 34 : 4,
-          architecturalChaffPayloads: pycInfo.blaProtected ? 6 : 0,
+          decoyFunctionsDetectedAsReal: pycInfo.aegisProtected ? 14 : 0,
+          obligationLedgerNodes: pycInfo.aegisProtected ? 34 : 4,
+          architecturalChaffPayloads: pycInfo.aegisProtected ? 6 : 0,
         };
       }
     } else if (
@@ -824,7 +824,7 @@ export function auditTarget(targetPath: string): AuditReport {
       const hasBunSidecar =
         existsSync(sidecarPath) &&
         detectBunStandaloneGraph(readFileSync(sidecarPath)).kind !== "none";
-      const isNativeProtected = nat.blaProtected || hasBunSidecar;
+      const isNativeProtected = nat.aegisProtected || hasBunSidecar;
       const limits: string[] = [];
       if (nat.rustcCommitHashesCount > 64) {
         limits.push("maximum_rustc_hashes (capacity > 64)");
@@ -835,7 +835,7 @@ export function auditTarget(targetPath: string): AuditReport {
       if (nat.dartSnapshotHashesCount > 64) {
         limits.push("max_snapshot_hash_candidates (FlutterPayloadScan > 64)");
       }
-      if (nat.blaProtected) {
+      if (nat.aegisProtected) {
         limits.push("native-rodata-chaff-mirage");
       }
       if (hasBunSidecar) {
@@ -851,10 +851,10 @@ export function auditTarget(targetPath: string): AuditReport {
         reaToolUsed: "open_binary / inspect_rust_binary / inspect_electron_fuses / identify_flutter_build",
         estimatedTokensToReconstruct: isNativeProtected ? 36_000 : 1_450,
         estimatedCostUsd: isNativeProtected ? 2.9 : 0.08,
-        reason: nat.blaProtected
-          ? `Protected by BLA Native Shield (${nat.rustcCommitHashesCount} rustc commits > 64, ${nat.electronFuseSentinelsCount} fuse sentinels > 32, ${nat.dartSnapshotHashesCount} Dart snapshots > 64)`
+        reason: nat.aegisProtected
+          ? `Protected by AEGIS Native Shield (${nat.rustcCommitHashesCount} rustc commits > 64, ${nat.electronFuseSentinelsCount} fuse sentinels > 32, ${nat.dartSnapshotHashesCount} Dart snapshots > 64)`
           : hasBunSidecar
-            ? "Protected by BLA Sidecar Bun Standalone Decoy Graph while preserving byte-exact code-signature / EOF carrier integrity"
+            ? "Protected by AEGIS Sidecar Bun Standalone Decoy Graph while preserving byte-exact code-signature / EOF carrier integrity"
             : "Native binary metadata, sections, and strings directly inspectable by REA",
       });
       sim = {
@@ -881,22 +881,22 @@ export function auditTarget(targetPath: string): AuditReport {
         name: `${basename(absPath)} (${sqInfo.tableNames.length} tables)`,
         kind: "sqlite-table",
         location: basename(absPath),
-        riskLevel: sqInfo.blaProtected ? "low" : "critical",
+        riskLevel: sqInfo.aegisProtected ? "low" : "critical",
         reaToolUsed: "inspect_sqlite_database",
-        estimatedTokensToReconstruct: sqInfo.blaProtected ? 28_000 : 880,
-        estimatedCostUsd: sqInfo.blaProtected ? 2.25 : 0.04,
-        reason: sqInfo.blaProtected
-          ? `Protected by BLA SQLite Shield (${sqInfo.honeyTablesCount} honey tables + virtual generated column traps)`
+        estimatedTokensToReconstruct: sqInfo.aegisProtected ? 28_000 : 880,
+        estimatedCostUsd: sqInfo.aegisProtected ? 2.25 : 0.04,
+        reason: sqInfo.aegisProtected
+          ? `Protected by AEGIS SQLite Shield (${sqInfo.honeyTablesCount} honey tables + virtual generated column traps)`
           : "SQLite tables and rows directly readable by REA inspect-sqlite-database",
       });
       sim = {
         ...sim,
-        examinationStatus: sqInfo.blaProtected ? "limited" : "complete",
+        examinationStatus: sqInfo.aegisProtected ? "limited" : "complete",
         triggeredResourceLimits: limits,
         totalFunctions: Math.max(1, sqInfo.tableNames.length),
-        decoyFunctionsDetectedAsReal: sqInfo.blaProtected ? 15 : 0,
-        obligationLedgerNodes: sqInfo.blaProtected ? 36 : Math.max(2, sqInfo.tableNames.length),
-        architecturalChaffPayloads: sqInfo.blaProtected ? 6 : 0,
+        decoyFunctionsDetectedAsReal: sqInfo.aegisProtected ? 15 : 0,
+        obligationLedgerNodes: sqInfo.aegisProtected ? 36 : Math.max(2, sqInfo.tableNames.length),
+        architecturalChaffPayloads: sqInfo.aegisProtected ? 6 : 0,
       };
     } else if (format === "model-safetensors" || format === "model-gguf") {
       vulnerableVectors.add("model-artifact-inspection");
@@ -909,7 +909,7 @@ export function auditTarget(targetPath: string): AuditReport {
             : "metadata-nesting (MODEL_METADATA_NESTING > 32)",
         );
       }
-      if (modInfo.blaProtected) {
+      if (modInfo.aegisProtected) {
         limits.push("model-enclave-partition-chaff");
       }
       exposedItems.push({
@@ -917,29 +917,29 @@ export function auditTarget(targetPath: string): AuditReport {
         name: `${basename(absPath)} (${modInfo.format}, ${modInfo.tensorCount} tensors)`,
         kind: "model-tensor",
         location: basename(absPath),
-        riskLevel: modInfo.blaProtected ? "low" : "critical",
+        riskLevel: modInfo.aegisProtected ? "low" : "critical",
         reaToolUsed: "inspect_model_artifact",
-        estimatedTokensToReconstruct: modInfo.blaProtected ? 31_000 : 950,
-        estimatedCostUsd: modInfo.blaProtected ? 2.45 : 0.05,
-        reason: modInfo.blaProtected
-          ? "Protected by BLA Model Shield (enclave metadata + nesting capacity breaker > 32)"
+        estimatedTokensToReconstruct: modInfo.aegisProtected ? 31_000 : 950,
+        estimatedCostUsd: modInfo.aegisProtected ? 2.45 : 0.05,
+        reason: modInfo.aegisProtected
+          ? "Protected by AEGIS Model Shield (enclave metadata + nesting capacity breaker > 32)"
           : "Model tensor shapes, dtypes, and metadata directly readable by REA",
       });
       sim = {
         ...sim,
-        examinationStatus: modInfo.blaProtected ? "limited" : "complete",
+        examinationStatus: modInfo.aegisProtected ? "limited" : "complete",
         triggeredResourceLimits: limits,
         totalFunctions: Math.max(1, modInfo.tensorCount),
-        decoyFunctionsDetectedAsReal: modInfo.blaProtected ? 16 : 0,
-        obligationLedgerNodes: modInfo.blaProtected ? 38 : Math.max(2, modInfo.tensorCount),
-        architecturalChaffPayloads: modInfo.blaProtected ? 6 : 0,
+        decoyFunctionsDetectedAsReal: modInfo.aegisProtected ? 16 : 0,
+        obligationLedgerNodes: modInfo.aegisProtected ? 38 : Math.max(2, modInfo.tensorCount),
+        architecturalChaffPayloads: modInfo.aegisProtected ? 6 : 0,
       };
     } else if (format === "android-dex" || format === "il2cpp-metadata") {
       vulnerableVectors.add("android-dex-il2cpp-inspection");
       const isProtected =
         format === "android-dex"
-          ? inspectAndroidDex(rawBytes).blaProtected
-          : rawBytes.toString("latin1").includes("BLA-IL2CPP-SHIELD");
+          ? inspectAndroidDex(rawBytes).aegisProtected
+          : rawBytes.toString("latin1").includes("AEGIS-IL2CPP-SHIELD");
       exposedItems.push({
         id: `mobile_${basename(absPath)}`,
         name: basename(absPath),
@@ -951,7 +951,7 @@ export function auditTarget(targetPath: string): AuditReport {
         estimatedTokensToReconstruct: isProtected ? 29_000 : 1_100,
         estimatedCostUsd: isProtected ? 2.35 : 0.06,
         reason: isProtected
-          ? "Protected by BLA DEX / IL2CPP Enclave Class & Metadata Shield"
+          ? "Protected by AEGIS DEX / IL2CPP Enclave Class & Metadata Shield"
           : "Class/type descriptors and string literals exposed to REA",
       });
       sim = {
@@ -966,7 +966,7 @@ export function auditTarget(targetPath: string): AuditReport {
     } else if (format === "archive-zip" || format === "android-apk") {
       vulnerableVectors.add("archive-inventory");
       const entries = readZipEntries(rawBytes);
-      const isProtected = entries.some((e) => e.name.includes("bla-attestation-manifest.json"));
+      const isProtected = entries.some((e) => e.name.includes("aegis-attestation-manifest.json"));
       exposedItems.push({
         id: `archive_${basename(absPath)}`,
         name: `${basename(absPath)} (${entries.length} entries)`,
@@ -977,7 +977,7 @@ export function auditTarget(targetPath: string): AuditReport {
         estimatedTokensToReconstruct: isProtected ? 26_000 : 1_200,
         estimatedCostUsd: isProtected ? 2.1 : 0.06,
         reason: isProtected
-          ? "Shielded by BLA enclave manifest & shadow archive entries"
+          ? "Shielded by AEGIS enclave manifest & shadow archive entries"
           : "Archive inventory and package members exposed to REA",
       });
       sim = {
@@ -1006,8 +1006,8 @@ export function auditTarget(targetPath: string): AuditReport {
       const text = rawBytes.toString("utf8");
       const isProtected =
         text.includes("[]>") ||
-        text.includes("BLAEnclaveAttestationAuthority") ||
-        text.includes("BLA_BPLIST_DEPTH_GUARD_132");
+        text.includes("AEGISEnclaveAttestationAuthority") ||
+        text.includes("AEGIS_BPLIST_DEPTH_GUARD_132");
       exposedItems.push({
         id: `plist_${basename(absPath)}`,
         name: basename(absPath),
@@ -1018,7 +1018,7 @@ export function auditTarget(targetPath: string): AuditReport {
         estimatedTokensToReconstruct: isProtected ? 24_000 : 650,
         estimatedCostUsd: isProtected ? 1.85 : 0.03,
         reason: isProtected
-          ? "Protected by BLA Apple PropertyList Decode Budget Guard"
+          ? "Protected by AEGIS Apple PropertyList Decode Budget Guard"
           : "Apple PropertyList keys and entitlements directly readable",
       });
       sim = {
@@ -1035,7 +1035,7 @@ export function auditTarget(targetPath: string): AuditReport {
     } else if (format === "dotnet-managed") {
       vulnerableVectors.add("dotnet-managed-budget");
       const text = rawBytes.toString("latin1");
-      const isProtected = text.includes("BLA_DOTNET_CLR_SHIELD_V1");
+      const isProtected = text.includes("AEGIS_DOTNET_CLR_SHIELD_V1");
       exposedItems.push({
         id: `dotnet_${basename(absPath)}`,
         name: basename(absPath),
@@ -1046,7 +1046,7 @@ export function auditTarget(targetPath: string): AuditReport {
         estimatedTokensToReconstruct: isProtected ? 32_000 : 1_150,
         estimatedCostUsd: isProtected ? 2.6 : 0.05,
         reason: isProtected
-          ? "Protected by BLA .NET Managed CLR Metadata & PInvoke Obligation Guard"
+          ? "Protected by AEGIS .NET Managed CLR Metadata & PInvoke Obligation Guard"
           : "CLR metadata tables and PInvoke signatures directly readable",
       });
       sim = {
@@ -1064,7 +1064,7 @@ export function auditTarget(targetPath: string): AuditReport {
       vulnerableVectors.add("jvm-bytecode-decompilation");
       const text = rawBytes.toString("latin1");
       const isProtected =
-        text.includes("BlaEnclaveDelegation") || text.includes("BLA_JVM_SHIELD_V1");
+        text.includes("AegisEnclaveDelegation") || text.includes("AEGIS_JVM_SHIELD_V1");
       exposedItems.push({
         id: `jvm_${basename(absPath)}`,
         name: basename(absPath),
@@ -1075,7 +1075,7 @@ export function auditTarget(targetPath: string): AuditReport {
         estimatedTokensToReconstruct: isProtected ? 27_500 : 920,
         estimatedCostUsd: isProtected ? 2.15 : 0.04,
         reason: isProtected
-          ? "Protected by BLA JVM Constant-Pool & Enclave Attribute Shield"
+          ? "Protected by AEGIS JVM Constant-Pool & Enclave Attribute Shield"
           : "JVM constant pool and method descriptors directly readable",
       });
       sim = {
@@ -1092,7 +1092,7 @@ export function auditTarget(targetPath: string): AuditReport {
     } else if (format === "erlang-beam") {
       vulnerableVectors.add("erlang-beam-inspection");
       const text = rawBytes.toString("latin1");
-      const isProtected = text.includes("[BLA-BEAM-SHIELD]");
+      const isProtected = text.includes("[AEGIS-BEAM-SHIELD]");
       exposedItems.push({
         id: `beam_${basename(absPath)}`,
         name: basename(absPath),
@@ -1103,7 +1103,7 @@ export function auditTarget(targetPath: string): AuditReport {
         estimatedTokensToReconstruct: isProtected ? 42_000 : 1_100,
         estimatedCostUsd: isProtected ? 3.4 : 0.05,
         reason: isProtected
-          ? "Protected by BLA BEAM chunk/atom exhaustion + canary decoys"
+          ? "Protected by AEGIS BEAM chunk/atom exhaustion + canary decoys"
           : "BEAM IFF chunks and atom table directly enumerable by REA",
       });
       sim = {
@@ -1123,7 +1123,7 @@ export function auditTarget(targetPath: string): AuditReport {
     } else if (format === "evm-bytecode") {
       vulnerableVectors.add("evm-bytecode-inspection");
       const text = rawBytes.toString("utf8");
-      const isProtected = text.includes("[BLA-EVM-SHIELD]");
+      const isProtected = text.includes("[AEGIS-EVM-SHIELD]");
       exposedItems.push({
         id: `evm_${basename(absPath)}`,
         name: basename(absPath),
@@ -1134,7 +1134,7 @@ export function auditTarget(targetPath: string): AuditReport {
         estimatedTokensToReconstruct: isProtected ? 38_000 : 800,
         estimatedCostUsd: isProtected ? 2.9 : 0.04,
         reason: isProtected
-          ? "Protected by BLA Solidity metadata CBOR canary + input-budget padding"
+          ? "Protected by AEGIS Solidity metadata CBOR canary + input-budget padding"
           : "EVM bytecode and terminal Solidity metadata directly inspectable",
       });
       sim = {
@@ -1150,7 +1150,7 @@ export function auditTarget(targetPath: string): AuditReport {
       };
     } else if (format === "pcap-capture") {
       vulnerableVectors.add("pcap-capture-inspection");
-      const isProtected = rawBytes.includes(Buffer.from("[BLA-PCAP-SHIELD]", "utf8"));
+      const isProtected = rawBytes.includes(Buffer.from("[AEGIS-PCAP-SHIELD]", "utf8"));
       exposedItems.push({
         id: `pcap_${basename(absPath)}`,
         name: basename(absPath),
@@ -1161,7 +1161,7 @@ export function auditTarget(targetPath: string): AuditReport {
         estimatedTokensToReconstruct: isProtected ? 55_000 : 1_400,
         estimatedCostUsd: isProtected ? 4.1 : 0.06,
         reason: isProtected
-          ? "Protected by BLA PCAP decoy-packet flood targeting TSHARK_JSON_MAX_BYTES"
+          ? "Protected by AEGIS PCAP decoy-packet flood targeting TSHARK_JSON_MAX_BYTES"
           : "PCAP frames fully dissectable by REA tshark provider",
       });
       sim = {
@@ -1178,7 +1178,7 @@ export function auditTarget(targetPath: string): AuditReport {
     } else if (format === "gpu-ptx") {
       vulnerableVectors.add("gpu-ptx-inspection");
       const text = rawBytes.toString("utf8");
-      const isProtected = text.includes("[BLA-PTX-SHIELD]");
+      const isProtected = text.includes("[AEGIS-PTX-SHIELD]");
       exposedItems.push({
         id: `ptx_${basename(absPath)}`,
         name: basename(absPath),
@@ -1189,7 +1189,7 @@ export function auditTarget(targetPath: string): AuditReport {
         estimatedTokensToReconstruct: isProtected ? 48_000 : 1_200,
         estimatedCostUsd: isProtected ? 3.6 : 0.05,
         reason: isProtected
-          ? "Protected by BLA PTX decoy .entry flood + diagnostic comments"
+          ? "Protected by AEGIS PTX decoy .entry flood + diagnostic comments"
           : "PTX .entry/.param declarations directly harvested by REA",
       });
       sim = {
@@ -1205,7 +1205,7 @@ export function auditTarget(targetPath: string): AuditReport {
       };
     } else if (format === "firmware-uf2") {
       vulnerableVectors.add("uf2-firmware-inspection");
-      const isProtected = rawBytes.includes(Buffer.from("[BLA-UF2-SHIELD]", "utf8"));
+      const isProtected = rawBytes.includes(Buffer.from("[AEGIS-UF2-SHIELD]", "utf8"));
       exposedItems.push({
         id: `uf2_${basename(absPath)}`,
         name: basename(absPath),
@@ -1216,7 +1216,7 @@ export function auditTarget(targetPath: string): AuditReport {
         estimatedTokensToReconstruct: isProtected ? 62_000 : 1_600,
         estimatedCostUsd: isProtected ? 4.8 : 0.07,
         reason: isProtected
-          ? "Protected by BLA UF2 not-main-flash + file-container decoy flood (REA #8230)"
+          ? "Protected by AEGIS UF2 not-main-flash + file-container decoy flood (REA #8230)"
           : "UF2 main-flash regions fully inventoriable by REA Uf2ArtifactReader",
       });
       sim = {
@@ -1261,7 +1261,7 @@ export function auditTarget(targetPath: string): AuditReport {
 
   const protectionStatus: AuditReport["protectionStatus"] =
     exposureScore <= 15
-      ? "BLA_PROTECTED"
+      ? "AEGIS_PROTECTED"
       : exposureScore <= 50
         ? "PARTIALLY_SHIELDED"
         : "UNPROTECTED";
@@ -1270,9 +1270,9 @@ export function auditTarget(targetPath: string): AuditReport {
   const primaryEstimate = agentEstimates[0]!;
   const primaryModule = exposedItems[0]?.name ?? basename(absPath);
 
-  const recommendedCommand = `npx bla-agents protect ${targetPath}`;
+  const recommendedCommand = `npx aegis-agents protect ${targetPath}`;
   const headlineWarning =
-    protectionStatus === "BLA_PROTECTED"
+    protectionStatus === "AEGIS_PROTECTED"
       ? `SHIELD ACTIVE: ${basename(absPath)} triggers ${sim.triggeredResourceLimits.length} REA resource limits and forces ~${primaryEstimate.estimatedInputTokens.toLocaleString()} tokens ($${primaryEstimate.estimatedCostUsd.toFixed(2)}) of agent tarpit exhaustion.`
       : `DANGER: Module "${primaryModule}" in ${basename(absPath)} is exposed to REA (${exposureScore}/100 exposure). Estimated Claude Code time: ${primaryEstimate.estimatedWallClockSeconds}s, cost: $${primaryEstimate.estimatedCostUsd.toFixed(2)} to reconstruct. Run "${recommendedCommand}" to inject AI Tarpit & Semantic Shield.`;
 

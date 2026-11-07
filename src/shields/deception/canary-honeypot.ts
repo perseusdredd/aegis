@@ -19,7 +19,7 @@ const COMPLIANCE_BOUNDARY_NOTICES: readonly string[] = [
 ];
 
 /**
- * Generates BLA's Canary Credential & Transport Redaction Honeypot Shield
+ * Generates AEGIS's Canary Credential & Transport Redaction Honeypot Shield
  * (`canary-honeypot.ts`).
  *
  * Dual-target deception mechanism:
@@ -33,7 +33,7 @@ const COMPLIANCE_BOUNDARY_NOTICES: readonly string[] = [
  *      `singleQueryValues()` (`recordedTransportUrl.ts:141`) to return `undefined` (`unknown`).
  * 2. **Targets Closed-Source LLM Credential Redaction & Anti-Exfiltration Filters**:
  *    - Embeds clearly synthetic, RFC/documentation-designated canary token shapes
- *      (`AKIAIOSFODNN7EXAMPLE`, `bla_canary_synthetic_...`) and explicit
+ *      (`AKIAIOSFODNN7EXAMPLE`, `aegis_canary_synthetic_...`) and explicit
  *      credential-protection watermarks alongside shadow state tables so closed-source models
  *      automatically redact (`[REDACTED]`) or decline to reconstruct the surrounding key material,
  *      without using any harmful/prohibited content that would trigger EDR or App Store rejection.
@@ -85,8 +85,8 @@ export function generateCanaryHoneypot(
       i % 3 === 0
         ? `AKIAIOSFODNN7EXAMPLE_${tag.toUpperCase()}_${i}`
         : i % 3 === 1
-          ? `bla_canary_synthetic_kms_${tag}_${tokHex}`
-          : `bla_canary_synthetic_scm_${tag}_${tokHex}`,
+          ? `aegis_canary_synthetic_kms_${tag}_${tokHex}`
+          : `aegis_canary_synthetic_scm_${tag}_${tokHex}`,
     );
   }
 

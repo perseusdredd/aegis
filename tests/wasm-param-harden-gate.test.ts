@@ -14,7 +14,7 @@ afterEach(() => {
 
 describe("red-blue round-3 residual gates", () => {
   it("bankrupt protect refuses clear WASM param carriers unless allowed", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-wasm-gate-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-wasm-gate-"));
     dirs.push(dir);
     const input = join(dir, "core.wasm");
     const output = join(dir, "core.out.wasm");
@@ -38,7 +38,7 @@ describe("red-blue round-3 residual gates", () => {
   });
 
   it("bankrupt harden refuses project trees with clear WASM carriers", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-wasm-harden-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-wasm-harden-"));
     dirs.push(dir);
     mkdirSync(join(dir, "dist"));
     writeFileSync(join(dir, "dist", "core.wasm"), buildTestWasmWithParamCarrier({}));
@@ -54,7 +54,7 @@ describe("red-blue round-3 residual gates", () => {
   });
 
   it("bankrupt protect rewrites stable panel derive ABI across JS seed roots", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-panel-rw-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-panel-rw-"));
     dirs.push(dir);
     const input = join(dir, "panel.js");
     const output = join(dir, "panel.out.js");
@@ -80,7 +80,7 @@ describe("red-blue round-3 residual gates", () => {
   });
 
   it("harden recommends self_seal for multi-artifact trees without enabling it", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-selfseal-rec-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-selfseal-rec-"));
     dirs.push(dir);
     mkdirSync(join(dir, "dist"));
     // Clean minimal wasm (no param magic) + two JS files
@@ -102,7 +102,7 @@ describe("red-blue round-3 residual gates", () => {
   });
 
   it("single-file harden does not recommend self_seal", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-selfseal-single-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-selfseal-single-"));
     dirs.push(dir);
     mkdirSync(join(dir, "dist"));
     writeFileSync(join(dir, "dist", "only.js"), "export const a = 1;\n", "utf8");

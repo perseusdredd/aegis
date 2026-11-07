@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'self'; form-action 'self'" />
-    <title>BLA (bla-agents) — Blind LLM Agents · Blue Defense Shield</title>
+    <title>AEGIS (aegis-agents) — Blind LLM Agents · Blue Defense Shield</title>
     <meta
       name="description"
-      content="BLA (Blind LLM Agents) is the open-source Blue Defense MCP and CLI built to protect software artifacts against automated AI reverse-engineering workflows."
+      content="AEGIS (Blind LLM Agents) is the open-source Blue Defense MCP and CLI built to protect software artifacts against automated AI reverse-engineering workflows."
     />
-    <meta property="og:title" content="BLA: Blind LLM Agents — Blue Defense Shield" />
+    <meta property="og:title" content="AEGIS: Blind LLM Agents — Blue Defense Shield" />
     <meta property="og:image" content="assets/logo.png" />
     <link rel="icon" type="image/png" href="assets/favicon.png" />
     <link rel="stylesheet" href="assets/styles.css" />
@@ -18,8 +18,8 @@
     <header class="site-header">
       <div class="container nav-bar">
         <a href="./" class="brand">
-          <img src="assets/logo.png" alt="BLA Shield Logo" class="brand-logo" width="38" height="38" />
-          <span>BLA</span>
+          <img src="assets/logo.png" alt="AEGIS Shield Logo" class="brand-logo" width="38" height="38" />
+          <span>AEGIS</span>
           <span class="brand-badge" data-i18n="nav.badge">BLUE SHIELD v1.5</span>
         </a>
         <nav class="nav-links">
@@ -31,7 +31,7 @@
           <a href="faq/" class="nav-link" data-i18n="nav.faq">FAQ</a>
         </nav>
         <div class="nav-actions">
-          <select id="bla-lang-select" class="lang-select" aria-label="Select Language">
+          <select id="aegis-lang-select" class="lang-select" aria-label="Select Language">
             <option value="en">🌐 English</option>
             <option value="zh-CN">🌐 简体中文</option>
             <option value="zh-TW">🌐 繁體中文</option>
@@ -54,7 +54,7 @@
       <!-- Hero Section -->
       <section class="hero">
         <div class="container">
-          <img src="assets/logo.png" alt="BLA Blue Shield Logo" class="hero-logo" width="84" height="84" />
+          <img src="assets/logo.png" alt="AEGIS Blue Shield Logo" class="hero-logo" width="84" height="84" />
           <div class="hero-pill">
             <span class="dot-red" data-i18n="hero.pill.red">RE = Reverse Engineering</span>
             <span>·</span>
@@ -69,10 +69,10 @@
           </p>
 
           <div class="command-box">
-            <code class="command-code">npx bla-agents@latest setup &amp;&amp; npx bla-agents@latest harden .</code>
+            <code class="command-code">npx aegis-agents@latest setup &amp;&amp; npx aegis-agents@latest harden .</code>
             <button
               class="copy-btn"
-              data-copy="npx bla-agents@latest setup && npx bla-agents@latest harden ."
+              data-copy="npx aegis-agents@latest setup && npx aegis-agents@latest harden ."
               data-i18n="hero.copy"
             >
               Copy
@@ -91,7 +91,7 @@
 
           <p class="star-welcome">
             <a href="https://github.com/qybaihe/bla" target="_blank" rel="noopener" data-i18n="hero.starWelcome">
-              ⭐ Open-source under the MIT License — if BLA is helpful to your project, welcome to give us a Star on GitHub!
+              ⭐ Open-source under the MIT License — if AEGIS is helpful to your project, welcome to give us a Star on GitHub!
             </a>
           </p>
         </div>
@@ -102,9 +102,9 @@
         <div class="container">
           <div class="section-header">
             <div class="eyebrow" data-i18n="sim.eyebrow">Static &amp; Semantic Analysis Comparison</div>
-            <h2 class="section-title" data-i18n="sim.title">Unprotected Baseline vs. Protected with BLA (`bla-agents`)</h2>
+            <h2 class="section-title" data-i18n="sim.title">Unprotected Baseline vs. Protected with AEGIS (`aegis-agents`)</h2>
             <p class="section-lead" data-i18n-html="sim.lead">
-              Select a target format below to see how <code>npx bla-agents harden</code> changes static analyzer output, resource budget consumption, and reconstruction status.
+              Select a target format below to see how <code>npx aegis-agents harden</code> changes static analyzer output, resource budget consumption, and reconstruction status.
             </p>
           </div>
 
@@ -141,7 +141,7 @@
             </div>
 
             <div class="duel-panel blue">
-              <div class="duel-badge blue" data-i18n="sim.blue.badge">🔵 PROTECTED WITH BLA (`bla-agents`)</div>
+              <div class="duel-badge blue" data-i18n="sim.blue.badge">🔵 PROTECTED WITH AEGIS (`aegis-agents`)</div>
               <div class="metric-row">
                 <span class="metric-label" data-i18n="sim.blue.timeLabel">Analysis Duration</span>
                 <span class="metric-val blue" id="sim-blue-time">17+ min (Budget Limited)</span>
@@ -171,10 +171,10 @@
       <section class="section">
         <div class="container">
           <div class="section-header">
-            <div class="eyebrow" data-i18n="pillars.eyebrow">How BLA Works</div>
+            <div class="eyebrow" data-i18n="pillars.eyebrow">How AEGIS Works</div>
             <h2 class="section-title" data-i18n="pillars.title">Three Defense Layers Aligned with Analyzer Internals</h2>
             <p class="section-lead" data-i18n-html="pillars.lead">
-              Rather than relying solely on identifier renaming, BLA targets the static resource limits, call-graph traversal budgets, and evidence rules used by automated reverse-engineering tools.
+              Rather than relying solely on identifier renaming, AEGIS targets the static resource limits, call-graph traversal budgets, and evidence rules used by automated reverse-engineering tools.
             </p>
           </div>
 
@@ -199,7 +199,7 @@
               <span class="card-tag" data-i18n="pillars.c3.tag">03 · One-Command Workflow</span>
               <h3 data-i18n="pillars.c3.title">MCP Server, CLI &amp; Bundler Plugins</h3>
               <p data-i18n-html="pillars.c3.desc">
-                Run <code>npx bla-agents setup</code> to register with Claude Code, Cursor, Codex, Windsurf, or Gemini CLI, then run the 5-stage protection pipeline with <code>bla_harden</code> or <code>npx bla-agents harden</code>.
+                Run <code>npx aegis-agents setup</code> to register with Claude Code, Cursor, Codex, Windsurf, or Gemini CLI, then run the 5-stage protection pipeline with <code>aegis_harden</code> or <code>npx aegis-agents harden</code>.
               </p>
             </div>
           </div>
@@ -256,11 +256,11 @@
     <footer class="site-footer">
       <div class="container footer-inner">
         <div data-i18n-html="footer.tagline">
-          <strong>BLA (`bla-agents`)</strong> · Blind LLM Agents · Software Protection MCP &amp; CLI · MIT License
+          <strong>AEGIS (`aegis-agents`)</strong> · Blind LLM Agents · Software Protection MCP &amp; CLI · MIT License
         </div>
         <div>
           <a href="https://github.com/qybaihe/bla">GitHub ★</a> ·
-          <a href="https://www.npmjs.com/package/bla-agents">npm (`bla-agents`)</a> ·
+          <a href="https://www.npmjs.com/package/aegis-agents">npm (`aegis-agents`)</a> ·
           <a href="get-started/" data-i18n="nav.getStarted">Get Started</a>
         </div>
       </div>

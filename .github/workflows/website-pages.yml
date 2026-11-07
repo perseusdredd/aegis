@@ -36,7 +36,7 @@ jobs:
             website/assets/favicon.svg \
             website/assets/social-card.svg \
             website/schemas/defense-manifest-v1.json \
-            website/schemas/bla.config.v1.json; do
+            website/schemas/aegis.config.v1.json; do
             test -f "$f" || (echo "Missing required website file: $f" && exit 1)
           done
           echo "All website pages and assets verified."

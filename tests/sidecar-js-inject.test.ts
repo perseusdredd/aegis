@@ -77,7 +77,7 @@ describe("sidecar JS inject strip⇒fail (vertical slice)", () => {
   });
 
   it("runtime: intact sidecars pass; stripped sidecar fails closed", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-sidecar-inject-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-sidecar-inject-"));
     try {
       const entryPath = "main.js";
       const sibName = "sib.js";
@@ -117,7 +117,7 @@ describe("sidecar JS inject strip⇒fail (vertical slice)", () => {
   });
 
   it("runtime: altered sidecar fails closed", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-sidecar-alter-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-sidecar-alter-"));
     try {
       const entryPath = "main.js";
       const sibName = "sib.js";
@@ -152,7 +152,7 @@ describe("sidecar JS inject strip⇒fail (vertical slice)", () => {
   });
 
   it("softFold flips digest u32 instead of throwing when sidecar missing", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-sidecar-soft-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-sidecar-soft-"));
     try {
       const entryPath = "main.js";
       const sibName = "sib.js";
@@ -167,12 +167,12 @@ describe("sidecar JS inject strip⇒fail (vertical slice)", () => {
         seedTag: "soft-v1",
         expectedHex: digest.hex,
         softFold: true,
-        bindingName: "__blaSidecarDigest",
+        bindingName: "__aegisSidecarDigest",
       });
-      const preambleAssign = `var __blaSidecarDigest = ${inject.preamble}\n`;
+      const preambleAssign = `var __aegisSidecarDigest = ${inject.preamble}\n`;
       writeFileSync(
         join(dir, entryPath),
-        `${preambleAssign}module.exports = { d: __blaSidecarDigest };\n`,
+        `${preambleAssign}module.exports = { d: __aegisSidecarDigest };\n`,
         "utf8",
       );
       const req = createRequire(join(dir, "pkg.json"));

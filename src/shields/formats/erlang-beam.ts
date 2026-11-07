@@ -50,7 +50,7 @@ export interface ErlangBeamInspection {
   readonly chunkCount: number;
   readonly chunkNames: readonly string[];
   readonly atomCount: number;
-  readonly blaProtected: boolean;
+  readonly aegisProtected: boolean;
 }
 
 function parseBeamChunks(bytes: Buffer): {
@@ -209,9 +209,9 @@ export function inspectErlangBeam(bytes: Buffer): ErlangBeamInspection {
     chunkCount: parsed.chunks.length,
     chunkNames: parsed.chunks.map((c) => c.name),
     atomCount,
-    blaProtected:
-      text.includes("[BLA-BEAM-SHIELD]") ||
-      parsed.chunks.some((c) => c.name.startsWith("Bla")),
+    aegisProtected:
+      text.includes("[AEGIS-BEAM-SHIELD]") ||
+      parsed.chunks.some((c) => c.name.startsWith("Aegis")),
   };
 }
 
@@ -246,7 +246,7 @@ export function protectErlangBeamBuffer(
   readonly exceedsDefaultAtomBudget: boolean;
 } {
   const intensity = options.intensity ?? "balanced";
-  const prng = new SeededPrng(options.seed ?? "bla-beam-shield");
+  const prng = new SeededPrng(options.seed ?? "aegis-beam-shield");
   const deception = buildCanaryAndDiagnosticPayloads(prng, intensity);
 
   const parsed = parseBeamChunks(input);
@@ -257,7 +257,7 @@ export function protectErlangBeamBuffer(
           name: "AtU8",
           payload: (() => {
             // Minimal valid module atoms so ExpT can reference indices.
-            const names = ["bla_beam_module", "module_info", "start"];
+            const names = ["aegis_beam_module", "module_info", "start"];
             const parts: Buffer[] = [u32be(names.length)];
             for (const name of names) {
               const enc = Buffer.from(name, "utf8");
@@ -301,15 +301,15 @@ export function protectErlangBeamBuffer(
     }
     const existing = table.names;
     const extras: string[] = [
-      "bla_beam_canary",
-      `[BLA-BEAM-SHIELD]`,
+      "aegis_beam_canary",
+      `[AEGIS-BEAM-SHIELD]`,
       ...deception.textRecords
         .map((r) => r.replace(/[^\w.:/=+-]/g, "_").slice(0, 200))
         .filter((r) => r.length > 0)
         .slice(0, 16),
     ];
     while (existing.length + extras.length < atomExtraTarget) {
-      extras.push(`bla_tarpit_atom_${extras.length}_${prng.hex(4)}`);
+      extras.push(`aegis_tarpit_atom_${extras.length}_${prng.hex(4)}`);
     }
     const merged = [...existing, ...extras];
     atomsInjected = extras.length;
@@ -332,9 +332,9 @@ export function protectErlangBeamBuffer(
 
   const decoyPayload = Buffer.from(
     [
-      "[BLA-BEAM-SHIELD]",
+      "[AEGIS-BEAM-SHIELD]",
       ...deception.textRecords.slice(0, 8),
-      `BLA_BEAM_CANARY=${prng.hex(16)}`,
+      `AEGIS_BEAM_CANARY=${prng.hex(16)}`,
     ].join("\0") + "\0",
     "utf8",
   );
@@ -342,10 +342,10 @@ export function protectErlangBeamBuffer(
   let chunksInjected = 0;
   while (baseChunks.length < targetChunks) {
     const idx = chunksInjected;
-    // 4-char IFF names; "Bla0".."Bla9" then "Bl10"+ via hex
+    // 4-char IFF names; "Aegis0".."Aegis9" then "Bl10"+ via hex
     const name =
       idx < 10
-        ? `Bla${idx}`
+        ? `Aegis${idx}`
         : idx < 36
           ? `Bl${idx.toString(36).padStart(2, "0")}`.slice(0, 4)
           : `B${idx.toString(36).padStart(3, "0")}`.slice(0, 4);

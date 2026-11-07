@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { BLA_IDENTITY } from "./identity.js";
+import { AEGIS_IDENTITY } from "./identity.js";
 import {
-  initBlaConfig,
-  loadBlaConfig,
+  initAegisConfig,
+  loadAegisConfig,
   resolveProjectSeed,
-  type BlaProjectConfig,
+  type AegisProjectConfig,
 } from "./core/config.js";
 import { inspectReleaseExposure } from "./core/release-exposure.js";
 import { buildSarifReport } from "./core/sarif.js";
@@ -54,17 +54,17 @@ function printHelp(): void {
   console.log(`${formatBanner()}
 
 Usage:
-  npx bla-agents <command> [options]
-  npx bla-shield <command> [options]
-  bla <command> [options]
+  npx aegis-agents <command> [options]
+  npx aegis-shield <command> [options]
+  aegis <command> [options]
 
 Quick start:
-  npx bla-agents setup -y          # register bla_harden with your agent
-  bla harden .                     # one-sentence Counter-REA hardening
+  npx aegis-agents setup -y          # register aegis_harden with your agent
+  aegis harden .                     # one-sentence Counter-REA hardening
   # or tell your agent: "Harden my software against REA"
 
 Commands:
-  setup                       Configure agent MCP integrations & install the BLA skill
+  setup                       Configure agent MCP integrations & install the AEGIS skill
   harden [dir]                DEFAULT: auto-discover build outputs under a project/build dir and bankrupt-harden all of them
   defend <target>             One-click full Counter-REA pipeline (inspect -> audit -> bankrupt protect -> verify)
   inspect-release <target>    Read-only local source-map & symbol exposure check
@@ -80,23 +80,23 @@ Commands:
   lint-seal <file>            Heuristic lint for plaintext/reversible seal sidecars (red-blue round-2); exit 2 on error
   protect <target>            Inject multi-layer Counter-REA adversarial shield
   verify <target> [original]  Verify Counter-REA defense invariants & token amplification
-  weave-plan <target>         Emit AST-level surgical weave workorder (bla-weave-plan/v1)
+  weave-plan <target>         Emit AST-level surgical weave workorder (aegis-weave-plan/v1)
   verify-weave <target>       Verify Agent-authored source weave & return agentActions (exit 2 on fail)
   benchmark                   Run the 14-target Counter-REA Showcase Benchmark suite
   emit-headers                Generate compile-time C/C++, Rust, or Go defense headers
-  verify-manifest <file>      Verify a signed .bla-manifest.json (exit 2 when invalid)
-  doctor                      Check readiness of BLA engines & agent registrations
-  update                      Update global bla-shield installation & print setup refresh instructions
-  uninstall                   Remove BLA MCP configuration & skill files
-  mcp                         Start the BLA Model Context Protocol (MCP) server over stdio
+  verify-manifest <file>      Verify a signed .aegis-manifest.json (exit 2 when invalid)
+  doctor                      Check readiness of AEGIS engines & agent registrations
+  update                      Update global aegis-shield installation & print setup refresh instructions
+  uninstall                   Remove AEGIS MCP configuration & skill files
+  mcp                         Start the AEGIS Model Context Protocol (MCP) server over stdio
 
 Options:
   -o, --output <path>         Output file or directory path (for protect / emit-headers)
   --in-place                  Overwrite input target in-place (for protect)
   --intensity <preset>        stealth | balanced | maximum | bankrupt
                             (harden/defend default: bankrupt; protect default: balanced)
-  --seed <seed>               Deterministic PRNG seed (default: per-project random in .blarc)
-  --manifest                  Emit .bla-manifest.json next to protected artifacts (opt-in; unsigned by default)
+  --seed <seed>               Deterministic PRNG seed (default: per-project random in .aegisrc)
+  --manifest                  Emit .aegis-manifest.json next to protected artifacts (opt-in; unsigned by default)
   --sign-manifest             Ed25519-sign the emitted manifest (implies --manifest; requires --manifest-key)
   --manifest-key <path>       Ed25519 private key PEM file used by --sign-manifest
   --public-key <path>         Trusted ed25519 public key PEM for verify-manifest
@@ -117,7 +117,7 @@ Options:
   --dry-run                   Preview planned setup/harden changes without writing files
   -y, --yes                   Approve setup actions without interactive confirmation
   --json                      Emit structured JSON output
-  -v, --version               Print BLA version
+  -v, --version               Print AEGIS version
   -h, --help                  Print this help guide
 `);
 }
@@ -358,10 +358,10 @@ export function parseCliArgs(argv: readonly string[]): ParsedCliArgs {
   };
 }
 
-/** Merge CLI and .blarc WASM export preservation lists without duplicates. */
+/** Merge CLI and .aegisrc WASM export preservation lists without duplicates. */
 function mergeWasmPreserveExports(
   parsed: ParsedCliArgs,
-  config: BlaProjectConfig,
+  config: AegisProjectConfig,
 ): { wasmPreserveExports?: readonly string[] } {
   const merged = [
     ...new Set([...(config.wasmPreserveExports ?? []), ...parsed.wasmPreserveExports]),
@@ -373,7 +373,7 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
   const parsed = parseCliArgs(argv);
 
   if (parsed.version) {
-    console.log(BLA_IDENTITY.version);
+    console.log(AEGIS_IDENTITY.version);
     return 0;
   }
 
@@ -415,16 +415,16 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
 
       case "update": {
         const updateInfo = {
-          currentVersion: BLA_IDENTITY.version,
-          package: BLA_IDENTITY.packageName,
-          packageAlias: BLA_IDENTITY.packageAlias,
-          refreshSetupCommand: "npx bla-agents@latest setup",
-          globalUpdateCommand: "npm install --global bla-agents@latest",
+          currentVersion: AEGIS_IDENTITY.version,
+          package: AEGIS_IDENTITY.packageName,
+          packageAlias: AEGIS_IDENTITY.packageAlias,
+          refreshSetupCommand: "npx aegis-agents@latest setup",
+          globalUpdateCommand: "npm install --global aegis-agents@latest",
         };
         if (parsed.json) {
           console.log(JSON.stringify(updateInfo, null, 2));
         } else {
-          console.log(`${formatBanner()}\n\nBLA v${BLA_IDENTITY.version} update workflow:\n  • Global CLI update:   npm install --global bla-agents@latest\n  • Agent MCP refresh:   npx bla-agents@latest setup\n`);
+          console.log(`${formatBanner()}\n\nAEGIS v${AEGIS_IDENTITY.version} update workflow:\n  • Global CLI update:   npm install --global aegis-agents@latest\n  • Agent MCP refresh:   npx aegis-agents@latest setup\n`);
         }
         return 0;
       }
@@ -432,13 +432,13 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       case "uninstall": {
         const res = runUninstall();
         if (parsed.json) console.log(JSON.stringify(res, null, 2));
-        else console.log(`Removed BLA configuration from ${res.removedClients.length} client(s).`);
+        else console.log(`Removed AEGIS configuration from ${res.removedClients.length} client(s).`);
         return 0;
       }
 
       case "init": {
         const dir = parsed.positionals[0] ?? process.cwd();
-        const res = initBlaConfig(dir, parsed.inPlace);
+        const res = initAegisConfig(dir, parsed.inPlace);
         if (parsed.json) {
           console.log(JSON.stringify(res, null, 2));
         } else {
@@ -454,7 +454,7 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       case "inspect-release": {
         const target = parsed.positionals[0];
         if (!target) {
-          console.error("Error: Missing <target> path for `bla inspect-release <target>`.");
+          console.error("Error: Missing <target> path for `aegis inspect-release <target>`.");
           return 1;
         }
         const report = inspectReleaseExposure(target);
@@ -463,12 +463,12 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       }
 
       case "harden": {
-        const loaded = loadBlaConfig(process.cwd(), parsed.configPath);
+        const loaded = loadAegisConfig(process.cwd(), parsed.configPath);
         const directory = parsed.positionals[0] ?? loaded.config.input ?? process.cwd();
         const explicitIntensity = argv.includes("--intensity")
           ? parsed.intensity
           : (loaded.config.intensity ?? "bankrupt");
-        // Dry-run must write zero bytes: skip seed persistence into .blarc.
+        // Dry-run must write zero bytes: skip seed persistence into .aegisrc.
         const seed = parsed.dryRun
           ? parsed.seed
           : resolveProjectSeed(
@@ -529,10 +529,10 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       }
 
       case "defend": {
-        const loaded = loadBlaConfig(process.cwd(), parsed.configPath);
+        const loaded = loadAegisConfig(process.cwd(), parsed.configPath);
         const target = parsed.positionals[0] ?? loaded.config.input;
         if (!target) {
-          console.error("Error: Missing <target> path for `bla defend <target>`.");
+          console.error("Error: Missing <target> path for `aegis defend <target>`.");
           return 1;
         }
         const explicitIntensity = argv.includes("--intensity")
@@ -638,7 +638,7 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       case "lint-lanes": {
         const target = parsed.positionals[0];
         if (!target) {
-          console.error("Error: Missing <file> path for `bla lint-lanes <file>`.");
+          console.error("Error: Missing <file> path for `aegis lint-lanes <file>`.");
           return 1;
         }
         const source = readFileSync(resolve(target), "utf8");
@@ -646,7 +646,7 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
         if (parsed.json) {
           console.log(JSON.stringify(report, null, 2));
         } else {
-          console.log(`BLA lane-independence lint — ${resolve(target)}`);
+          console.log(`AEGIS lane-independence lint — ${resolve(target)}`);
           console.log(report.oneLineAdvice);
           for (const f of report.findings) {
             console.log(`  [${f.severity}] ${f.id}: ${f.summary}`);
@@ -661,14 +661,14 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       case "lint-seal": {
         const target = parsed.positionals[0];
         if (!target) {
-          console.error("Error: Missing <file> path for `bla lint-seal <file>`.");
+          console.error("Error: Missing <file> path for `aegis lint-seal <file>`.");
           return 1;
         }
         const report = lintSealCommitmentFile(resolve(target));
         if (parsed.json) {
           console.log(JSON.stringify(report, null, 2));
         } else {
-          console.log(`BLA seal-commitment lint — ${report.path}`);
+          console.log(`AEGIS seal-commitment lint — ${report.path}`);
           console.log(report.oneLineAdvice);
           for (const f of report.findings) {
             console.log(`  [${f.severity}] ${f.id}: ${f.summary}`);
@@ -685,14 +685,14 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       case "lint-wasm-params": {
         const target = parsed.positionals[0];
         if (!target) {
-          console.error("Error: Missing <file> path for `bla lint-wasm-params <file>`.");
+          console.error("Error: Missing <file> path for `aegis lint-wasm-params <file>`.");
           return 1;
         }
         const report = lintWasmParamCarrierFile(resolve(target));
         if (parsed.json) {
           console.log(JSON.stringify(report, null, 2));
         } else {
-          console.log(`BLA wasm-param-carrier lint — ${report.path}`);
+          console.log(`AEGIS wasm-param-carrier lint — ${report.path}`);
           console.log(report.oneLineAdvice);
           for (const f of report.findings) {
             console.log(`  [${f.severity}] ${f.id}: ${f.summary} @${f.offset}`);
@@ -709,14 +709,14 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       case "lint-panel-derive": {
         const target = parsed.positionals[0];
         if (!target) {
-          console.error("Error: Missing <file> path for `bla lint-panel-derive <file>`.");
+          console.error("Error: Missing <file> path for `aegis lint-panel-derive <file>`.");
           return 1;
         }
         const report = lintPanelDeriveAbiFile(resolve(target));
         if (parsed.json) {
           console.log(JSON.stringify(report, null, 2));
         } else {
-          console.log(`BLA panel-derive ABI lint — ${report.path}`);
+          console.log(`AEGIS panel-derive ABI lint — ${report.path}`);
           console.log(report.oneLineAdvice);
           for (const f of report.findings) {
             console.log(`  [${f.severity}] ${f.id}: ${f.summary}`);
@@ -735,14 +735,14 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       case "lint-js-aes-unwrap": {
         const target = parsed.positionals[0];
         if (!target) {
-          console.error("Error: Missing <file> path for `bla lint-js-aes-unwrap <file>`.");
+          console.error("Error: Missing <file> path for `aegis lint-js-aes-unwrap <file>`.");
           return 1;
         }
         const report = lintJsAesUnwrapFile(resolve(target));
         if (parsed.json) {
           console.log(JSON.stringify(report, null, 2));
         } else {
-          console.log(`BLA js-aes-unwrap lint — ${report.path}`);
+          console.log(`AEGIS js-aes-unwrap lint — ${report.path}`);
           console.log(report.oneLineAdvice);
           for (const f of report.findings) {
             console.log(`  [${f.severity}] ${f.id}: ${f.summary}`);
@@ -760,14 +760,14 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       case "lint-js-wasm-hydrate-dump": {
         const target = parsed.positionals[0];
         if (!target) {
-          console.error("Error: Missing <file> path for `bla lint-js-wasm-hydrate-dump <file>`.");
+          console.error("Error: Missing <file> path for `aegis lint-js-wasm-hydrate-dump <file>`.");
           return 1;
         }
         const report = lintJsWasmHydrateDumpFile(resolve(target));
         if (parsed.json) {
           console.log(JSON.stringify(report, null, 2));
         } else {
-          console.log(`BLA js-wasm-hydrate-dump lint — ${report.path}`);
+          console.log(`AEGIS js-wasm-hydrate-dump lint — ${report.path}`);
           console.log(report.oneLineAdvice);
           for (const f of report.findings) {
             console.log(`  [${f.severity}] ${f.id}: ${f.summary}`);
@@ -784,14 +784,14 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       case "lint-wasm-xor-mask-sidecar": {
         const target = parsed.positionals[0];
         if (!target) {
-          console.error("Error: Missing <file> path for `bla lint-wasm-xor-mask-sidecar <file>`.");
+          console.error("Error: Missing <file> path for `aegis lint-wasm-xor-mask-sidecar <file>`.");
           return 1;
         }
         const report = lintWasmXorMaskSidecarFile(resolve(target));
         if (parsed.json) {
           console.log(JSON.stringify(report, null, 2));
         } else {
-          console.log(`BLA wasm-xor-mask-sidecar lint — ${report.path}`);
+          console.log(`AEGIS wasm-xor-mask-sidecar lint — ${report.path}`);
           console.log(report.oneLineAdvice);
           for (const f of report.findings) {
             console.log(`  [${f.severity}] ${f.id}: ${f.summary}`);
@@ -810,7 +810,7 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       case "lint-wasm-seal-xor-known-plaintext": {
         const target = parsed.positionals[0];
         if (!target) {
-          console.error("Error: Missing <wasm> path for `bla lint-wasm-seal-xor-known-plaintext <wasm>`.");
+          console.error("Error: Missing <wasm> path for `aegis lint-wasm-seal-xor-known-plaintext <wasm>`.");
           return 1;
         }
         const sealArg = parsed.positionals[1];
@@ -818,7 +818,7 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
         if (parsed.json) {
           console.log(JSON.stringify(report, null, 2));
         } else {
-          console.log(`BLA wasm-seal-xor-known-plaintext lint — ${report.path}`);
+          console.log(`AEGIS wasm-seal-xor-known-plaintext lint — ${report.path}`);
           console.log(report.oneLineAdvice);
           for (const f of report.findings) {
             console.log(`  [${f.severity}] ${f.id}: ${f.summary}`);
@@ -834,10 +834,10 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       }
 
       case "audit": {
-        const loaded = loadBlaConfig(process.cwd(), parsed.configPath);
+        const loaded = loadAegisConfig(process.cwd(), parsed.configPath);
         const target = parsed.positionals[0] ?? loaded.config.input;
         if (!target) {
-          console.error("Error: Missing <target> path for `bla audit <target>`.");
+          console.error("Error: Missing <target> path for `aegis audit <target>`.");
           return 1;
         }
         const report = auditTarget(target);
@@ -857,10 +857,10 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       }
 
       case "protect": {
-        const loaded = loadBlaConfig(process.cwd(), parsed.configPath);
+        const loaded = loadAegisConfig(process.cwd(), parsed.configPath);
         const target = parsed.positionals[0] ?? loaded.config.input;
         if (!target) {
-          console.error("Error: Missing <target> path for `bla protect <target>`.");
+          console.error("Error: Missing <target> path for `aegis protect <target>`.");
           return 1;
         }
         const resolved = resolveProjectSeed(process.cwd(), parsed.seed, parsed.configPath);
@@ -916,7 +916,7 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       case "verify": {
         const target = parsed.positionals[0];
         if (!target) {
-          console.error("Error: Missing <target> path for `bla verify <target> [original]`.");
+          console.error("Error: Missing <target> path for `aegis verify <target> [original]`.");
           return 1;
         }
         const report = verifyTarget(target, parsed.positionals[1]);
@@ -959,7 +959,7 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       case "verify-manifest": {
         const target = parsed.positionals[0];
         if (!target) {
-          console.error("Error: Missing <manifest> path for `bla verify-manifest <manifest> [--public-key <pem>]`.");
+          console.error("Error: Missing <manifest> path for `aegis verify-manifest <manifest> [--public-key <pem>]`.");
           return 1;
         }
         const result = verifyManifestFile(target, parsed.publicKey);
@@ -993,7 +993,7 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
       }
 
       default:
-        console.error(`Unknown command: ${parsed.command}. Run "bla --help" for available commands.`);
+        console.error(`Unknown command: ${parsed.command}. Run "aegis --help" for available commands.`);
         return 1;
     }
   } catch (err) {
@@ -1007,9 +1007,12 @@ const isDirectExecution =
   process.argv[1] !== undefined &&
   (process.argv[1].endsWith("cli.js") ||
     process.argv[1].endsWith("cli.ts") ||
-    process.argv[1].endsWith("bla") ||
-    process.argv[1].endsWith("bla-agents") ||
-    process.argv[1].endsWith("bla-shield"));
+    process.argv[1].endsWith("aegis") ||
+    process.argv[1].endsWith("aegis-agents") ||
+    process.argv[1].endsWith("aegis-shield") ||
+    process.argv[1].endsWith("aegis") ||
+    process.argv[1].endsWith("aegis-agents") ||
+    process.argv[1].endsWith("aegis-shield"));
 
 if (isDirectExecution) {
   runCli().then((code) => {

@@ -20,7 +20,7 @@ export const ELECTRON_FUSE_STATE = {
   DISABLED: 0x30, // '0'
   ENABLED: 0x31, // '1'
   REMOVED: 0x72, // 'r'
-  DECOY: 0x39, // '9' (BLA decoy sentinel wire marker)
+  DECOY: 0x39, // '9' (AEGIS decoy sentinel wire marker)
 } as const;
 
 export const ELECTRON_FUSE_NAMES = [
@@ -229,7 +229,7 @@ export function inspectElectronFusesBuffer(
       }
     }
 
-    // BLA decoy sentinels contain 0x39 ('9') wire markers
+    // AEGIS decoy sentinels contain 0x39 ('9') wire markers
     if (wire.includes(ELECTRON_FUSE_STATE.DECOY)) {
       continue;
     }
@@ -298,7 +298,7 @@ export const inspectElectronFusesInBuffer = inspectElectronFusesBuffer;
 
 /**
  * Builds 34 decoy sentinel records (`> maximumSentinelsPerSlice = 32`) tagged with
- * BLA's `0x39` (`'9'`) decoy marker so `inspectElectronFusesBuffer` distinguishes
+ * AEGIS's `0x39` (`'9'`) decoy marker so `inspectElectronFusesBuffer` distinguishes
  * them from real V1 fuse blocks while tripping REA's sentinel slice limit.
  */
 export function buildDecoyElectronFuseSentinels(
@@ -501,7 +501,7 @@ export function hardenElectronFusesWithContext(
   let outBuffer = working;
   let decoySentinelsInjected = 0;
   if (context.injectDecoySentinelOverflow) {
-    const prng = new SeededPrng(context.seed ?? "bla-electron-fuses-v1");
+    const prng = new SeededPrng(context.seed ?? "aegis-electron-fuses-v1");
     decoySentinelsInjected = 34;
     const decoyBuf = buildDecoyElectronFuseSentinels(
       prng,

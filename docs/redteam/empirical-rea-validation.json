@@ -1,9 +1,9 @@
 {
   "generatedAt": "2026-11-07, 20:03:28",
-  "blaRoot": "C:\\Users\\numan\\aresearch\\aegis",
+  "aegisRoot": "C:\\Users\\numan\\aresearch\\aegis",
   "reaRoot": "C:\\Users\\numan\\aresearch\\rea",
   "intensity": "bankrupt",
-  "seed": "bla-redteam-empirical-v1",
+  "seed": "aegis-redteam-empirical-v1",
   "nodeVersion": "v24.19.0",
   "tshark": {
     "available": true,
@@ -46,7 +46,7 @@
         "mappedFlutter": true,
         "goTripsMax": true
       },
-      "blaLimits": {
+      "aegisLimits": {
         "SEMANTIC_PRIMITIVE_CANDIDATE_LIMIT": 256,
         "SEMANTIC_EXPRESSION_DEPTH_LIMIT": 256,
         "SEMANTIC_GETTER_EXPANSION_LIMIT": 512,
@@ -185,7 +185,7 @@
         "mappedFlutter": true,
         "goTripsMax": true
       },
-      "blaLimits": {
+      "aegisLimits": {
         "SEMANTIC_PRIMITIVE_CANDIDATE_LIMIT": 256,
         "SEMANTIC_EXPRESSION_DEPTH_LIMIT": 256,
         "SEMANTIC_GETTER_EXPANSION_LIMIT": 512,
@@ -315,7 +315,7 @@
         "chunksInjected": 257,
         "exceedsDefaultChunkBudget": true
       },
-      "blaLimits": {
+      "aegisLimits": {
         "SEMANTIC_PRIMITIVE_CANDIDATE_LIMIT": 256,
         "SEMANTIC_EXPRESSION_DEPTH_LIMIT": 256,
         "SEMANTIC_GETTER_EXPANSION_LIMIT": 512,
@@ -471,17 +471,17 @@
               {
                 "key": {
                   "kind": "text",
-                  "value": "bla"
+                  "value": "aegis"
                 },
                 "value": {
                   "kind": "text",
-                  "value": "[BLA-EVM-SHIELD]"
+                  "value": "[AEGIS-EVM-SHIELD]"
                 }
               },
               {
                 "key": {
                   "kind": "text",
-                  "value": "bla_evm_canary"
+                  "value": "aegis_evm_canary"
                 },
                 "value": {
                   "kind": "text",
@@ -491,7 +491,7 @@
               {
                 "key": {
                   "kind": "text",
-                  "value": "bla_3"
+                  "value": "aegis_3"
                 },
                 "value": {
                   "kind": "text",
@@ -501,27 +501,27 @@
               {
                 "key": {
                   "kind": "text",
-                  "value": "bla_4"
+                  "value": "aegis_4"
                 },
                 "value": {
                   "kind": "text",
-                  "value": "PROTECTED_CANARY_CREDENTIAL=bla_canary_synthetic_kms_1c72_bfd73d9a"
+                  "value": "PROTECTED_CANARY_CREDENTIAL=aegis_canary_synthetic_kms_1c72_bfd73d9a"
                 }
               },
               {
                 "key": {
                   "kind": "text",
-                  "value": "bla_5"
+                  "value": "aegis_5"
                 },
                 "value": {
                   "kind": "text",
-                  "value": "PROTECTED_CANARY_CREDENTIAL=bla_canary_synthetic_scm_1c72_e72b5016"
+                  "value": "PROTECTED_CANARY_CREDENTIAL=aegis_canary_synthetic_scm_1c72_e72b5016"
                 }
               },
               {
                 "key": {
                   "kind": "text",
-                  "value": "bla_6"
+                  "value": "aegis_6"
                 },
                 "value": {
                   "kind": "text",
@@ -531,27 +531,27 @@
               {
                 "key": {
                   "kind": "text",
-                  "value": "bla_7"
+                  "value": "aegis_7"
                 },
                 "value": {
                   "kind": "text",
-                  "value": "PROTECTED_CANARY_CREDENTIAL=bla_canary_synthetic_kms_1c72_24b248fa"
+                  "value": "PROTECTED_CANARY_CREDENTIAL=aegis_canary_synthetic_kms_1c72_24b248fa"
                 }
               },
               {
                 "key": {
                   "kind": "text",
-                  "value": "bla_8"
+                  "value": "aegis_8"
                 },
                 "value": {
                   "kind": "text",
-                  "value": "PROTECTED_CANARY_CREDENTIAL=bla_canary_synthetic_scm_1c72_ee234dff"
+                  "value": "PROTECTED_CANARY_CREDENTIAL=aegis_canary_synthetic_scm_1c72_ee234dff"
                 }
               },
               {
                 "key": {
                   "kind": "text",
-                  "value": "bla_9"
+                  "value": "aegis_9"
                 },
                 "value": {
                   "kind": "text",
@@ -561,17 +561,17 @@
               {
                 "key": {
                   "kind": "text",
-                  "value": "bla_10"
+                  "value": "aegis_10"
                 },
                 "value": {
                   "kind": "text",
-                  "value": "PROTECTED_CANARY_CREDENTIAL=bla_canary_synthetic_kms_1c72_547dca4c"
+                  "value": "PROTECTED_CANARY_CREDENTIAL=aegis_canary_synthetic_kms_1c72_547dca4c"
                 }
               },
               {
                 "key": {
                   "kind": "text",
-                  "value": "bla_11"
+                  "value": "aegis_11"
                 },
                 "value": {
                   "kind": "text",
@@ -581,7 +581,7 @@
               {
                 "key": {
                   "kind": "text",
-                  "value": "bla_12"
+                  "value": "aegis_12"
                 },
                 "value": {
                   "kind": "text",
@@ -591,7 +591,7 @@
               {
                 "key": {
                   "kind": "text",
-                  "value": "bla_13"
+                  "value": "aegis_13"
                 },
                 "value": {
                   "kind": "text",
@@ -601,7 +601,7 @@
               {
                 "key": {
                   "kind": "text",
-                  "value": "bla_14"
+                  "value": "aegis_14"
                 },
                 "value": {
                   "kind": "text",
@@ -621,7 +621,7 @@
         "approachesInputBudget": true,
         "afterBytes": 4190208
       },
-      "blaLimits": {
+      "aegisLimits": {
         "SEMANTIC_PRIMITIVE_CANDIDATE_LIMIT": 256,
         "SEMANTIC_EXPRESSION_DEPTH_LIMIT": 256,
         "SEMANTIC_GETTER_EXPANSION_LIMIT": 512,
@@ -758,7 +758,7 @@
         "exceedsTsharkJsonBudget": true,
         "packetsInjected": 160
       },
-      "blaLimits": {
+      "aegisLimits": {
         "SEMANTIC_PRIMITIVE_CANDIDATE_LIMIT": 256,
         "SEMANTIC_EXPRESSION_DEPTH_LIMIT": 256,
         "SEMANTIC_GETTER_EXPANSION_LIMIT": 512,
@@ -884,7 +884,7 @@
         "triggeredJsonNestingBreaker": true,
         "canaryTokensEmbedded": 8
       },
-      "blaLimits": {
+      "aegisLimits": {
         "SEMANTIC_PRIMITIVE_CANDIDATE_LIMIT": 256,
         "SEMANTIC_EXPRESSION_DEPTH_LIMIT": 256,
         "SEMANTIC_GETTER_EXPANSION_LIMIT": 512,
@@ -1010,7 +1010,7 @@
       "sampleMeta": {
         "triggeredMetadataNestingBreaker": true
       },
-      "blaLimits": {
+      "aegisLimits": {
         "SEMANTIC_PRIMITIVE_CANDIDATE_LIMIT": 256,
         "SEMANTIC_EXPRESSION_DEPTH_LIMIT": 256,
         "SEMANTIC_GETTER_EXPANSION_LIMIT": 512,
@@ -1139,7 +1139,7 @@
       "sampleMeta": {
         "entriesInjected": 92000
       },
-      "blaLimits": {
+      "aegisLimits": {
         "SEMANTIC_PRIMITIVE_CANDIDATE_LIMIT": 256,
         "SEMANTIC_EXPRESSION_DEPTH_LIMIT": 256,
         "SEMANTIC_GETTER_EXPANSION_LIMIT": 512,
@@ -1268,7 +1268,7 @@
         "estimatedHeaderBytes": 17173844,
         "exceedsDefaultAdmission": true
       },
-      "blaLimits": {
+      "aegisLimits": {
         "SEMANTIC_PRIMITIVE_CANDIDATE_LIMIT": 256,
         "SEMANTIC_EXPRESSION_DEPTH_LIMIT": 256,
         "SEMANTIC_GETTER_EXPANSION_LIMIT": 512,
@@ -1405,14 +1405,14 @@
           "sectionCount": 13,
           "customSectionNames": [
             "name",
-            "bla.enclave.manifest",
+            "aegis.enclave.manifest",
             "enclave.attestation.0",
             "enclave.attestation.1",
             "enclave.attestation.2",
-            "bla.canary.credentials",
-            "bla.system.diagnostics",
-            "bla.export.name.decoys",
-            "bla.wasm.interface.exhaustion"
+            "aegis.canary.credentials",
+            "aegis.system.diagnostics",
+            "aegis.export.name.decoys",
+            "aegis.wasm.interface.exhaustion"
           ],
           "exportNames": [
             "enclave_export_8c68_135_eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
@@ -1686,7 +1686,7 @@
         "exceedsRepresentationBudget": true,
         "exportDecoysInjected": 250
       },
-      "blaLimits": {
+      "aegisLimits": {
         "SEMANTIC_PRIMITIVE_CANDIDATE_LIMIT": 256,
         "SEMANTIC_EXPRESSION_DEPTH_LIMIT": 256,
         "SEMANTIC_GETTER_EXPANSION_LIMIT": 512,
@@ -1791,9 +1791,9 @@
         "budgetName": null,
         "redactionOrAmbiguity": null,
         "metrics": {
-          "blaHoneyTables": 0,
-          "blaTableCount": 1,
-          "blaProtected": false,
+          "aegisHoneyTables": 0,
+          "aegisTableCount": 1,
+          "aegisProtected": false,
           "hasGeneratedTrapColumns": false,
           "nodeSqliteLimits": true,
           "nodeVersion": "v24.19.0",
@@ -1818,11 +1818,11 @@
         "errorMessage": "SQLite cannot evaluate selected column(s) of table \"enclave_key_hierarchy\" on REA's read-only connection: \"unsealed_preview\": unknown function: enclave_unseal_payload()",
         "budgetHit": true,
         "budgetName": "SqliteColumnEvaluationFailure",
-        "redactionOrAmbiguity": "REA cannot evaluate BLA generated trap columns (unknown function enclave_unseal_payload); honey schema still disclosed",
+        "redactionOrAmbiguity": "REA cannot evaluate AEGIS generated trap columns (unknown function enclave_unseal_payload); honey schema still disclosed",
         "metrics": {
-          "blaHoneyTables": 5,
-          "blaTableCount": 6,
-          "blaProtected": true,
+          "aegisHoneyTables": 5,
+          "aegisTableCount": 6,
+          "aegisProtected": true,
           "hasGeneratedTrapColumns": true,
           "nodeSqliteLimits": true,
           "nodeVersion": "v24.19.0",
@@ -1848,7 +1848,7 @@
         "honeyTablesInjected": 5,
         "canaryTokensEmbedded": 8
       },
-      "blaLimits": {
+      "aegisLimits": {
         "SEMANTIC_PRIMITIVE_CANDIDATE_LIMIT": 256,
         "SEMANTIC_EXPRESSION_DEPTH_LIMIT": 256,
         "SEMANTIC_GETTER_EXPANSION_LIMIT": 512,
@@ -1971,7 +1971,7 @@
       "sampleMeta": {
         "electronFuseSentinelsInjected": 34
       },
-      "blaLimits": {
+      "aegisLimits": {
         "SEMANTIC_PRIMITIVE_CANDIDATE_LIMIT": 256,
         "SEMANTIC_EXPRESSION_DEPTH_LIMIT": 256,
         "SEMANTIC_GETTER_EXPANSION_LIMIT": 512,
@@ -2109,7 +2109,7 @@
         "aliasSelectionStatesCreated": 4194304,
         "primitiveCandidateBranchesCreated": 1024
       },
-      "blaLimits": {
+      "aegisLimits": {
         "SEMANTIC_PRIMITIVE_CANDIDATE_LIMIT": 256,
         "SEMANTIC_EXPRESSION_DEPTH_LIMIT": 256,
         "SEMANTIC_GETTER_EXPANSION_LIMIT": 512,
@@ -2237,11 +2237,11 @@
     },
     {
       "analyzer": "SPIR-V / CUDA fatbinary / AMD GPU object",
-      "reason": "BLA skips these formats (GPU_OBJECT_HARDENING_SKIP_REASON); no shield to validate"
+      "reason": "AEGIS skips these formats (GPU_OBJECT_HARDENING_SKIP_REASON); no shield to validate"
     },
     {
       "analyzer": "Firmware analysis",
-      "reason": "BLA skips firmware (FIRMWARE_HARDENING_SKIP_REASON); needs vendor parsers"
+      "reason": "AEGIS skips firmware (FIRMWARE_HARDENING_SKIP_REASON); needs vendor parsers"
     }
   ]
 }

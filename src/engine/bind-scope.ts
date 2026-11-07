@@ -2,10 +2,10 @@
  * Honest code-lock / bind-scope (competitor absorption Direction-4).
  *
  * Public domain/date binding written as an auditable contract — never a
- * covert backdoor. Default OFF: only runs when bla_bind_scope is invoked.
+ * covert backdoor. Default OFF: only runs when aegis_bind_scope is invoked.
  *
- * Schema: bla-bind-scope/v1
- * MCP: bla_bind_scope, bla_lint_bind_scope
+ * Schema: aegis-bind-scope/v1
+ * MCP: aegis_bind_scope, aegis_lint_bind_scope
  */
 
 import {
@@ -18,10 +18,10 @@ import {
 } from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 
-export const BIND_SCOPE_SCHEMA = "bla-bind-scope/v1" as const;
+export const BIND_SCOPE_SCHEMA = "aegis-bind-scope/v1" as const;
 export const BIND_SCOPE_FILE_NAME = "bind-scope.json" as const;
 /** Greppable runtime marker — lint looks for this exact token. */
-export const BIND_SCOPE_RUNTIME_MARKER = "BLA_BIND_SCOPE_CHECK" as const;
+export const BIND_SCOPE_RUNTIME_MARKER = "AEGIS_BIND_SCOPE_CHECK" as const;
 
 export interface BindScopeContract {
   readonly schema: typeof BIND_SCOPE_SCHEMA;
@@ -86,7 +86,7 @@ export interface BindScopeApplyReport {
 const HONESTY =
   "Bind-scope is a PUBLIC license/environment contract (domains + validity window). " +
   "It is NOT a covert DRM/backdoor. Conditions must be auditable in bind-scope.json; " +
-  "runtime refusal is deterministic. Default OFF — only applied when bla_bind_scope runs. " +
+  "runtime refusal is deterministic. Default OFF — only applied when aegis_bind_scope runs. " +
   "Prove in-scope behaviour with verify / fixture unlock; out-of-scope must hard-fail.";
 
 const ALLOWED_KEYS = new Set([
@@ -194,7 +194,7 @@ export function buildBindScopeContract(input: {
 }
 
 /**
- * Validate a parsed JSON value as bla-bind-scope/v1.
+ * Validate a parsed JSON value as aegis-bind-scope/v1.
  * Does not check runtime injection — use lintBindScopeTree for that.
  */
 export function validateBindScopeContract(
@@ -301,18 +301,18 @@ export function buildBindScopeRuntimeSnippet(
     `  var S = ${json};\n` +
     `  var now = Date.now();\n` +
     `  if (S.validFrom && now < Date.parse(S.validFrom)) {\n` +
-    `    throw new Error("BLA bind-scope: before validFrom (" + S.validFrom + ")");\n` +
+    `    throw new Error("AEGIS bind-scope: before validFrom (" + S.validFrom + ")");\n` +
     `  }\n` +
     `  if (S.validUntil && now > Date.parse(S.validUntil)) {\n` +
-    `    throw new Error("BLA bind-scope: after validUntil (" + S.validUntil + ")");\n` +
+    `    throw new Error("AEGIS bind-scope: after validUntil (" + S.validUntil + ")");\n` +
     `  }\n` +
     `  var domains = S.domains || [];\n` +
     `  if (domains.length) {\n` +
     `    var host = "";\n` +
     `    if (typeof location !== "undefined" && location && location.hostname) {\n` +
     `      host = String(location.hostname);\n` +
-    `    } else if (typeof process !== "undefined" && process.env && process.env.BLA_BIND_HOST) {\n` +
-    `      host = String(process.env.BLA_BIND_HOST);\n` +
+    `    } else if (typeof process !== "undefined" && process.env && process.env.AEGIS_BIND_HOST) {\n` +
+    `      host = String(process.env.AEGIS_BIND_HOST);\n` +
     `    }\n` +
     `    host = host.trim().toLowerCase().replace(/\\.$/, "");\n` +
     `    var ok = false;\n` +
@@ -325,7 +325,7 @@ export function buildBindScopeRuntimeSnippet(
     `      } else if (host === p) { ok = true; break; }\n` +
     `    }\n` +
     `    if (!ok) {\n` +
-    `      throw new Error("BLA bind-scope: host not in public domains (host=" + host + ")");\n` +
+    `      throw new Error("AEGIS bind-scope: host not in public domains (host=" + host + ")");\n` +
     `    }\n` +
     `  }\n` +
     `})();\n`
@@ -409,7 +409,7 @@ function adviceFor(reasons: readonly BindScopeRefuseReason[]): string {
     return "ERROR: bind-scope has non-public/unknown fields — strip covert keys.";
   }
   if (reasons.includes("missing-runtime-check")) {
-    return "ERROR: bind-scope.json present but entry lacks BLA_BIND_SCOPE_CHECK — run bla_bind_scope.";
+    return "ERROR: bind-scope.json present but entry lacks AEGIS_BIND_SCOPE_CHECK — run aegis_bind_scope.";
   }
   if (reasons.includes("empty-constraints")) {
     return "ERROR: bind-scope needs domains and/or validFrom/validUntil.";
@@ -475,7 +475,7 @@ function walkFiles(dir: string, out: string[], depth = 0): void {
     return;
   }
   for (const e of entries) {
-    if (e.name === "node_modules" || e.name === ".git" || e.name === ".bla-hardened") {
+    if (e.name === "node_modules" || e.name === ".git" || e.name === ".aegis-hardened") {
       continue;
     }
     const full = join(dir, e.name);
@@ -578,7 +578,7 @@ export function applyBindScope(
       contract: validated.contract,
       runtimeCheckPresent: false,
       oneLineAdvice:
-        "ERROR: no license.cjs/entry found to inject BLA_BIND_SCOPE_CHECK — pass entry_path.",
+        "ERROR: no license.cjs/entry found to inject AEGIS_BIND_SCOPE_CHECK — pass entry_path.",
       honestyNote: HONESTY,
     };
     return {

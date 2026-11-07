@@ -14,7 +14,7 @@ import { runCli } from "../src/cli.js";
 
 const dirs: string[] = [];
 const temp = () => {
-  const dir = mkdtempSync(join(tmpdir(), "bla-release-"));
+  const dir = mkdtempSync(join(tmpdir(), "aegis-release-"));
   dirs.push(dir);
   return dir;
 };

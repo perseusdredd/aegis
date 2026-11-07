@@ -1,4 +1,4 @@
-# BLA nightly development log
+# AEGIS nightly development log
 
 ## 2026-11-01 ~02:10 (Asia/Singapore)
 
@@ -19,7 +19,7 @@
 - Fixed `verify:rea` obligation-family catalog (26 incl. `url-scheme`).
 - Gates: build OK, tests **247/247** (+1 skipped), benchmark 14/14 runtime-
   equivalent, verify:rea **74/74**.
-- Release **bla-agents@1.6.2**.
+- Release **aegis-agents@1.6.2**.
 - Queued (not done): ESP flash image (#8228) trailing/partition deception;
   DfuSe (CRC-sensitive); iNES (#2816, niche).
 
@@ -42,7 +42,7 @@
 - Fixed `html-bundle` multi-`<script>` global collision, `importmap`/`application/json` preservation, Vite external-script bootstrap, and `auditor.ts` `<script>` extraction + full chaff manifest header matching.
 - Added cross-platform POSIX/SARIF Windows fixes (`C:\...` drive colons, 8.3 short paths, `cmd.exe /c npm`, `System32\tar.exe`, `.gitattributes`) and `windows-latest` to `.github/workflows/ci.yml`.
 - Upgraded public challenge target to **CrackMe v5.2** (anchor `0x3aa14b2c`, Windows CRLF normalization + V8 `Function.prototype.toString` anti-`fs.readFileSync`-virtualization check).
-- Prepared feature PR for next release (`bla-agents@1.6.0`).
+- Prepared feature PR for next release (`aegis-agents@1.6.0`).
 
 ## 2026-10-31 (Asia/Shanghai)
 
@@ -62,11 +62,11 @@
 ### Done tonight
 - `src/shields/formats/android-dex-xref.ts` + unsigned-APK wiring in `archive.ts`.
 - `src/identity.ts` + `verify:rea` (.java walk) + tests.
-- Release **bla-agents@1.5.2**.
+- Release **aegis-agents@1.5.2**.
 
 ### Next step (2026-11-01)
 1. Empirical red-team: point sibling REA JADX external-references tool at a
-   BLA-hardened unsigned APK fixture; capture before/after in `docs/redteam/`.
+   AEGIS-hardened unsigned APK fixture; capture before/after in `docs/redteam/`.
 2. Optionally densify decoy callers further / add overload prototype bait for
    the method_inventory stage of #8154.
 3. Continue roadmap: ESP32 / Godot PCK / process-echo evidence deception, or
@@ -84,7 +84,7 @@
     (`ANDROID_JNI_REPORT_BYTES`=16MiB, `ANDROID_JNI_LIBRARY_LIMITS`).
   - **#7379** selected AndroidManifest component declarations (queued for next night).
 - Remainder of delta: evidence/contract refactors, browser/cli fixes — no new
-  BLA-relevant budget constants beyond the Android set above.
+  AEGIS-relevant budget constants beyond the Android set above.
 
 ### Done tonight
 - `src/identity.ts`: registered Android mapping + JNI + `MAX_NATIVE_EXPORT_ROWS` limits.
@@ -92,11 +92,11 @@
   malformed bait) + ELF64 AArch64 ET_DYN decoy with real `Java_*` dynsym exports.
 - Wired into unsigned APK path + DEX trailer JNI names.
 - `verify:rea` catalog extended (Object.freeze-aware).
-- Release **bla-agents@1.4.6**.
+- Release **aegis-agents@1.4.6**.
 
 ### Next step (2026-10-29)
 1. Empirical red-team: point sibling REA Android mapping + JNI tools at a
-   BLA-hardened unsigned APK fixture; capture before/after in `docs/redteam/`.
+   AEGIS-hardened unsigned APK fixture; capture before/after in `docs/redteam/`.
 2. Counter REA #7379 with binary/XML AndroidManifest component decoys (unsigned only).
 3. Optionally densify decoy JNI `.so` past `ANDROID_JNI_REPORT_BYTES` projection
    when intensity ≥ maximum (keep red-line: never rewrite developer libs).

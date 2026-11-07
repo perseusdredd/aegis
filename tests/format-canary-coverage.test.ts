@@ -44,7 +44,7 @@ describe("Canary + system-diagnostic coverage on remaining formats", () => {
     expect(res.canaryTokensEmbedded).toBeGreaterThan(0);
     expect(res.diagnosticsEmbedded).toBeGreaterThan(0);
     expect(res.buffer.subarray(0, 6).toString("latin1")).toBe("bplist");
-    expect(res.buffer.toString("latin1")).toContain(`BLA_BPLIST_DEPTH_GUARD_${REA_MAX_BINARY_PLIST_NESTING_DEPTH + 4}`);
+    expect(res.buffer.toString("latin1")).toContain(`AEGIS_BPLIST_DEPTH_GUARD_${REA_MAX_BINARY_PLIST_NESTING_DEPTH + 4}`);
   });
 
   it(`embeds canary/diagnostic into .NET managed assemblies under ${REA_MAX_MANAGED_METADATA_REPRESENTATION_BYTES} cap`, () => {
@@ -109,8 +109,8 @@ describe("Canary + system-diagnostic coverage on remaining formats", () => {
     const entries = readZipEntries(res.buffer);
     expect(entries.find((e) => e.name === "readme.txt")?.data.toString()).toBe("hello archive");
     const outDex = entries.find((e) => e.name === "lib/classes.dex")!.data;
-    expect(outDex.toString("latin1")).toContain("BLA-DEX-SHIELD");
+    expect(outDex.toString("latin1")).toContain("AEGIS-DEX-SHIELD");
     expect(outDex.toString("latin1")).toContain("PROTECTED_CANARY_CREDENTIAL=");
-    expect(entries.some((e) => e.name.includes("bla-canary-tokens"))).toBe(true);
+    expect(entries.some((e) => e.name.includes("aegis-canary-tokens"))).toBe(true);
   });
 });

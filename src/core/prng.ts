@@ -24,7 +24,7 @@ export function deriveSeedLabel(
 }
 
 /**
- * Deterministic seeded PRNG (SplitMix32 / Mulberry32) so BLA builds can be
+ * Deterministic seeded PRNG (SplitMix32 / Mulberry32) so AEGIS builds can be
  * 100% reproducible given a seed while producing high-entropy decoy identifiers,
  * bogus constants, and opaque predicate coefficients.
  */
@@ -32,7 +32,7 @@ export class SeededPrng {
   #state: number;
   readonly seedString: string;
 
-  constructor(seed: string | number = "bla-default-seed-v1") {
+  constructor(seed: string | number = "aegis-default-seed-v1") {
     this.seedString = String(seed);
     const digest = createHash("sha256").update(this.seedString).digest();
     this.#state = digest.readUInt32LE(0) ^ digest.readUInt32LE(4) ^ 0x9e3779b9;
@@ -94,7 +94,7 @@ export class SeededPrng {
   /**
    * Emit a realistic identifier. The legacy `prefix` argument is IGNORED for
    * emitted output — every call draws from the realistic vocabulary so that
-   * hardened artifacts contain no greppable `_bla` / `$00_AAA` markers.
+   * hardened artifacts contain no greppable `_aegis` / `$00_AAA` markers.
    *
    * Pass `style` / `hint` via the second argument (or as RealisticIdentifierOptions)
    * when a specific casing convention is needed.
@@ -105,7 +105,7 @@ export class SeededPrng {
   ): string {
     let options: RealisticIdentifierOptions;
     if (typeof prefixOrOptions === "string") {
-      // Legacy callers passed a prefix like "_bla". Map common prefixes to styles;
+      // Legacy callers passed a prefix like "_aegis". Map common prefixes to styles;
       // never emit the prefix literally.
       const style: IdentifierStyle =
         prefixOrOptions.startsWith("__")

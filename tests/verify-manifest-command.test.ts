@@ -8,7 +8,7 @@ import { runCli } from "../src/cli.js";
 
 const tempDirs: string[] = [];
 function createTempDir(): string {
-  const dir = mkdtempSync(join(tmpdir(), "bla-verify-manifest-"));
+  const dir = mkdtempSync(join(tmpdir(), "aegis-verify-manifest-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -19,13 +19,13 @@ afterEach(() => {
   }
 });
 
-describe("bla verify-manifest", () => {
+describe("aegis verify-manifest", () => {
   it("verifies a signed manifest with a pinned public key", () => {
     const dir = createTempDir();
     const pair = generateManifestSigningKeyPair();
     const manifestPath = join(dir, "manifest.json");
     const publicKeyPath = join(dir, "public.pem");
-    const signed = signManifestPayload({ schema: "s", blaVersion: "2.1.0" }, pair.privateKeyPem);
+    const signed = signManifestPayload({ schema: "s", aegisVersion: "2.1.0" }, pair.privateKeyPem);
     writeFileSync(manifestPath, JSON.stringify(signed, null, 2), "utf8");
     writeFileSync(publicKeyPath, pair.publicKeyPem, "utf8");
 

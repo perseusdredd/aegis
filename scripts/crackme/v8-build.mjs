@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * CrackMe v8 (Aegis) build — published challenge IS `bla harden` output
+ * CrackMe v8 (Aegis) build — published challenge IS `aegis harden` output
  * (bankrupt + --self-seal, no --allow-*).
  *
  *   CRACKME_V8_KEY=… CRACKME_V8_FLAG=FLAG{…} npm run crackme:v8:build
@@ -32,9 +32,9 @@ const seal = {
   schema: SCHEMA,
   mode: secrets.mode,
   product: PRODUCT,
-  blaVersion: result.blaVersion,
+  aegisVersion: result.aegisVersion,
   recipe:
-    "npm run crackme:v8:build (hardenProject == `bla harden <dir> --intensity bankrupt --seed <private> --self-seal`); harden/schedule seed is private (derived from release secrets) and NOT published",
+    "npm run crackme:v8:build (hardenProject == `aegis harden <dir> --intensity bankrupt --seed <private> --self-seal`); harden/schedule seed is private (derived from release secrets) and NOT published",
   label: SEED_LABEL,
   intensity: INTENSITY,
   selfSeal: true,

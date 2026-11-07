@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import * as vm from "node:vm";
-import { transformJavaScriptWithBlaShield } from "../src/shields/javascript/ast-shield.js";
+import { transformJavaScriptWithAegisShield } from "../src/shields/javascript/ast-shield.js";
 import { generateHoneySourceMap } from "../src/shields/formats/sourcemap.js";
 import { packAsarBuffer, unpackAsarBuffer } from "../src/shields/formats/asar.js";
 import { SeededPrng } from "../src/core/prng.js";
@@ -17,7 +17,7 @@ describe("JavaScript, TypeScript & Electron AST Shield", () => {
     const dxBallPath = path.resolve(process.cwd(), "examples/dx-ball-sound-pan/sound-pan.js");
     const originalCode = fs.readFileSync(dxBallPath, "utf8");
 
-    const result = transformJavaScriptWithBlaShield(originalCode, {
+    const result = transformJavaScriptWithAegisShield(originalCode, {
       intensity: "bankrupt",
       seed: "dx-ball-test",
     });
@@ -69,7 +69,7 @@ describe("JavaScript, TypeScript & Electron AST Shield", () => {
     const bridgePath = path.resolve(process.cwd(), "examples/notion-electron-bridge/electron-bridge.js");
     const originalCode = fs.readFileSync(bridgePath, "utf8");
 
-    const protectedRes = transformJavaScriptWithBlaShield(originalCode, {
+    const protectedRes = transformJavaScriptWithAegisShield(originalCode, {
       intensity: "bankrupt",
       seed: "electron-bridge-test",
     });
@@ -138,7 +138,7 @@ describe("JavaScript, TypeScript & Electron AST Shield", () => {
   });
 
   it("packs, unpacks, and protects Electron .asar archives with valid SHA-256 block integrity", () => {
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "bla-asar-test-"));
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "aegis-asar-test-"));
     try {
       const rawAsar = packAsarBuffer([
         {
@@ -158,7 +158,7 @@ describe("JavaScript, TypeScript & Electron AST Shield", () => {
       expect(unpackedBefore.length).toBe(2);
 
       const asarFile = path.join(tmpDir, "app.asar");
-      const outAsarFile = path.join(tmpDir, "app.bla.asar");
+      const outAsarFile = path.join(tmpDir, "app.aegis.asar");
       fs.writeFileSync(asarFile, rawAsar);
 
       const auditBefore = auditTarget(asarFile);
@@ -185,7 +185,7 @@ describe("JavaScript, TypeScript & Electron AST Shield", () => {
   it("generates valid VLQ v3 Honey Source Maps that misdirect REA source reconstruction", () => {
     const prng = new SeededPrng("sourcemap-seed");
     const chaff = generateChaffPayloads(prng, "balanced");
-    const generated = generateHoneySourceMap("bundle.bla.js", 60, prng, chaff);
+    const generated = generateHoneySourceMap("bundle.aegis.js", 60, prng, chaff);
 
     expect(generated.mapObject.version).toBe(3);
     expect(generated.mapObject.sourceRoot).toBe("enclave://tee-runtime/");

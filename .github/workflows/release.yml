@@ -1,10 +1,10 @@
-name: Release bla-agents
+name: Release aegis-agents
 
 # Tag-only releases. Do not publish on plain main pushes.
 on:
   push:
     tags:
-      - "bla-agents-*"
+      - "aegis-agents-*"
       - "v*"
   workflow_dispatch:
     inputs:
@@ -19,12 +19,12 @@ permissions:
   id-token: write
 
 concurrency:
-  group: release-bla-agents
+  group: release-aegis-agents
   cancel-in-progress: false
 
 jobs:
   release:
-    name: Build, Verify & Publish bla-agents (OIDC / Trusted Publishing)
+    name: Build, Verify & Publish aegis-agents (OIDC / Trusted Publishing)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -52,11 +52,11 @@ jobs:
           set -euo pipefail
           LOCAL_VERSION=$(node -p "require('./package.json').version")
           HEAD_SHA=$(git rev-parse HEAD)
-          TAG="bla-agents-${LOCAL_VERSION}"
+          TAG="aegis-agents-${LOCAL_VERSION}"
 
           if [ -n "${DISPATCH_VERSION}" ]; then
             NORM_DISPATCH="${DISPATCH_VERSION#v}"
-            NORM_DISPATCH="${NORM_DISPATCH#bla-agents-}"
+            NORM_DISPATCH="${NORM_DISPATCH#aegis-agents-}"
             if [ "${NORM_DISPATCH}" != "${LOCAL_VERSION}" ]; then
               echo "::error::workflow_dispatch version '${DISPATCH_VERSION}' does not match package.json version '${LOCAL_VERSION}'"
               exit 1
@@ -65,8 +65,8 @@ jobs:
 
           if [[ "${TRIGGER_REF}" == refs/tags/* ]]; then
             RAW_TAG="${TRIGGER_REF#refs/tags/}"
-            if [[ "${RAW_TAG}" == bla-agents-* ]]; then
-              TAG_VER="${RAW_TAG#bla-agents-}"
+            if [[ "${RAW_TAG}" == aegis-agents-* ]]; then
+              TAG_VER="${RAW_TAG#aegis-agents-}"
             elif [[ "${RAW_TAG}" == v* ]]; then
               TAG_VER="${RAW_TAG#v}"
             else
@@ -78,13 +78,13 @@ jobs:
               exit 1
             fi
           elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "::notice::workflow_dispatch release for bla-agents@${LOCAL_VERSION} (tag ${TAG})"
+            echo "::notice::workflow_dispatch release for aegis-agents@${LOCAL_VERSION} (tag ${TAG})"
           else
             echo "::error::Release workflow only runs on version tags or workflow_dispatch"
             exit 1
           fi
 
-          PRIMARY_NPM_VERSION=$(npm view "bla-agents@${LOCAL_VERSION}" version 2>/dev/null || echo "none")
+          PRIMARY_NPM_VERSION=$(npm view "aegis-agents@${LOCAL_VERSION}" version 2>/dev/null || echo "none")
           echo "local_version=${LOCAL_VERSION}" >> "$GITHUB_OUTPUT"
           echo "head_sha=${HEAD_SHA}" >> "$GITHUB_OUTPUT"
           echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
@@ -93,7 +93,7 @@ jobs:
             SHOULD_PUBLISH="true"
           else
             SHOULD_PUBLISH="true"
-            echo "Release requested for bla-agents@${LOCAL_VERSION}; will attempt idempotent publish/GitHub Release."
+            echo "Release requested for aegis-agents@${LOCAL_VERSION}; will attempt idempotent publish/GitHub Release."
           fi
 
           EXISTING_TAG_SHA=""
@@ -130,13 +130,13 @@ jobs:
         run: |
           node --input-type=module -e '
             import { readFileSync } from "node:fs";
-            import { BLA_IDENTITY } from "./dist/identity.js";
+            import { AEGIS_IDENTITY } from "./dist/identity.js";
             import { packDualReleaseTarballs, verifyReleaseConsistency } from "./dist/core/release-plan.js";
             const pkg = JSON.parse(readFileSync("./package.json", "utf8"));
             const packed = packDualReleaseTarballs(process.cwd(), "./release-assets");
             const plan = verifyReleaseConsistency({
               packageVersion: pkg.version,
-              identityVersion: BLA_IDENTITY.version,
+              identityVersion: AEGIS_IDENTITY.version,
               dispatchVersion: process.env.DISPATCH_VERSION || null,
               triggerRef: process.env.TRIGGER_REF || null,
               headSha: process.env.HEAD_SHA,
@@ -150,24 +150,24 @@ jobs:
 
       # Prefer npm Trusted Publishing (OIDC). Optional NPM_TOKEN remains as a fallback
       # when OIDC is not yet configured on the npm package. Never publish without provenance.
-      - name: Publish bla-agents tarball to npm (provenance required)
+      - name: Publish aegis-agents tarball to npm (provenance required)
         if: steps.check_npm.outputs.should_publish == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           VERSION: ${{ steps.check_npm.outputs.local_version }}
         run: |
           set -euo pipefail
-          PRIMARY_TGZ="./release-assets/bla-agents-${VERSION}.tgz"
+          PRIMARY_TGZ="./release-assets/aegis-agents-${VERSION}.tgz"
 
-          if npm view "bla-agents@${VERSION}" version >/dev/null 2>&1; then
-            echo "bla-agents@${VERSION} is already published on npm; skipping primary publish."
+          if npm view "aegis-agents@${VERSION}" version >/dev/null 2>&1; then
+            echo "aegis-agents@${VERSION} is already published on npm; skipping primary publish."
             exit 0
           fi
 
           # Trusted Publishing (OIDC) needs no token. If NPM_TOKEN is set, it is used
           # with provenance. There is intentionally no --access-only / no-provenance fallback.
           if npm publish "${PRIMARY_TGZ}" --provenance --access public; then
-            echo "Published bla-agents@${VERSION} with provenance."
+            echo "Published aegis-agents@${VERSION} with provenance."
           else
             echo "::error::npm publish --provenance failed. Configure npm Trusted Publishing (OIDC) for qybaihe/bla or set a valid NPM_TOKEN secret. Refusing to publish without provenance."
             exit 1
@@ -199,6 +199,6 @@ jobs:
           else
             gh release create "$TAG" release-assets/* \
               --verify-tag \
-              --title "bla-agents: v${VERSION}" \
+              --title "aegis-agents: v${VERSION}" \
               --generate-notes
           fi

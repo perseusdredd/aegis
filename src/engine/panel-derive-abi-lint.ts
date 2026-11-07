@@ -7,7 +7,7 @@
  * `panelTokenSha256` (seal digest or in-source compare target).
  *
  * At maximum/bankrupt, protect rewrites `__vaultPanelDerive*` and `deriveLocal`
- * to seed-stable `_blaPd_*` / `_blaPdLocal_*` names (same root seed → same
+ * to seed-stable `_aegisPd_*` / `_aegisPdLocal_*` names (same root seed → same
  * rename across JS + HTML). Round-4 oracle combo (deriveLocal + panelTokenSha256,
  * including sibling seal.json) is severity **error** and bankrupt refuses
  * unless `allowPanelOfflineOracle`.
@@ -25,7 +25,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { findSiblingSealSidecars } from "./seal-commitment-lint.js";
 
-export const PANEL_DERIVE_ABI_SCHEMA = "bla-panel-derive-abi-lint/v1" as const;
+export const PANEL_DERIVE_ABI_SCHEMA = "aegis-panel-derive-abi-lint/v1" as const;
 
 export type PanelDeriveFindingId =
   | "stable-panel-derive-global"
@@ -101,7 +101,7 @@ export function panelDeriveReplacementName(seedRoot: string, original: string): 
     .update(original, "utf8")
     .digest("hex")
     .slice(0, 10);
-  return `_blaPd_${hex}`;
+  return `_aegisPd_${hex}`;
 }
 
 export function panelLocalDeriveReplacementName(seedRoot: string, original: string): string {
@@ -111,7 +111,7 @@ export function panelLocalDeriveReplacementName(seedRoot: string, original: stri
     .update(original, "utf8")
     .digest("hex")
     .slice(0, 10);
-  return `_blaPdLocal_${hex}`;
+  return `_aegisPdLocal_${hex}`;
 }
 
 function siblingSealHasPanelTokenSha(filePath: string | undefined): boolean {
@@ -149,7 +149,7 @@ export function lintPanelDeriveAbiSource(
       finding(
         "stable-panel-derive-global",
         "error",
-        "Stable panel derive global/ABI survived — rename or let bankrupt protect rewrite to _blaPd_*.",
+        "Stable panel derive global/ABI survived — rename or let bankrupt protect rewrite to _aegisPd_*.",
         list.join(","),
       ),
     );
@@ -162,7 +162,7 @@ export function lintPanelDeriveAbiSource(
       finding(
         "stable-local-derive",
         "error",
-        "Stable local deriveLocal panel entrypoint — rename or let maximum/bankrupt protect rewrite to _blaPdLocal_*.",
+        "Stable local deriveLocal panel entrypoint — rename or let maximum/bankrupt protect rewrite to _aegisPdLocal_*.",
         "deriveLocal",
       ),
     );
@@ -232,7 +232,7 @@ export function lintPanelDeriveAbiSource(
         : shouldRefuseBankrupt
           ? "ERROR: Panel offline oracle (deriveLocal + panelTokenSha256). Bankrupt refuses unless allowPanelOfflineOracle / --allow-panel-offline-oracle. Rename alone is not a crypto fix — scrub digests / avoid derive UI. Defensive guidance only."
           : shouldRewriteOrRefuse
-            ? "ERROR: Stable __vaultPanelDerive_* / deriveLocal ABI. Maximum/bankrupt protect rewrites to _blaPd_* / _blaPdLocal_*; pass allowStablePanelDeriveAbi / --allow-stable-panel-derive to keep. Defensive guidance only."
+            ? "ERROR: Stable __vaultPanelDerive_* / deriveLocal ABI. Maximum/bankrupt protect rewrites to _aegisPd_* / _aegisPdLocal_*; pass allowStablePanelDeriveAbi / --allow-stable-panel-derive to keep. Defensive guidance only."
             : "WARNING: Classic FNV primes and/or panelTokenSha256 remain as readable literals — scrub or split when feasible.",
   };
 }
@@ -253,7 +253,7 @@ export interface PanelDeriveRewriteResult {
 
 /**
  * Rewrite stable `__vaultPanelDerive*` and `deriveLocal` tokens to seed-stable
- * `_blaPd_<hex>` / `_blaPdLocal_<hex>`. Same seedRoot + original → same
+ * `_aegisPd_<hex>` / `_aegisPdLocal_<hex>`. Same seedRoot + original → same
  * replacement (cross JS/HTML under one protect seed).
  */
 export function rewriteStablePanelDeriveSymbols(
@@ -328,7 +328,7 @@ const PANEL_SKIP_DIRS = new Set([
   ".git",
   ".hg",
   ".svn",
-  ".bla-hardened",
+  ".aegis-hardened",
   "coverage",
   ".turbo",
   ".cache",
@@ -364,7 +364,7 @@ function walkPanelCandidates(dir: string, depth: number, out: string[]): void {
 
 /**
  * Discover JS/TS/HTML under a directory and lint each for panel-derive footguns.
- * Used by unified `bla lint` / packaging-gates.
+ * Used by unified `aegis lint` / packaging-gates.
  */
 export function discoverAndLintPanelDerive(
   directory: string,

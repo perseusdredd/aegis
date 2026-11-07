@@ -19,7 +19,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 
-export const JS_WASM_HYDRATE_DUMP_SCHEMA = "bla-js-wasm-hydrate-dump-lint/v1" as const;
+export const JS_WASM_HYDRATE_DUMP_SCHEMA = "aegis-js-wasm-hydrate-dump-lint/v1" as const;
 
 export type JsWasmHydrateDumpFindingId =
   | "js-wasm-memory-buffer-read"
@@ -55,7 +55,7 @@ const SKIP_DIR_NAMES = new Set([
   ".git",
   ".hg",
   ".svn",
-  ".bla-hardened",
+  ".aegis-hardened",
   "coverage",
   ".next",
   ".turbo",

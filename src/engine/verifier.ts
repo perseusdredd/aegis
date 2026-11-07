@@ -17,7 +17,7 @@ export interface VerifyTargetOptions {
 }
 
 /**
- * Verifies a protected artifact against REA's analysis invariants (`bla verify`).
+ * Verifies a protected artifact against REA's analysis invariants (`aegis verify`).
  * `defenseScore` is soft-capped when known product gaps still apply (issue #40.6).
  */
 export function verifyTarget(
@@ -83,7 +83,7 @@ export function verifyTarget(
       id: "binary-container-shield",
       name: "Binary Container & Custom Section Shield",
       targetReaComponent: `inspect_${afterAudit.detectedFormat.replace("-", "_")}`,
-      passed: afterAudit.protectionStatus === "BLA_PROTECTED",
+      passed: afterAudit.protectionStatus === "AEGIS_PROTECTED",
       details: `Container status: ${afterAudit.protectionStatus} (Exposure score: ${afterAudit.exposureScore}/100)`,
     });
   }
@@ -131,7 +131,7 @@ export function verifyTarget(
         reason: `Verification check '${check.id}' failed (${check.details}).`,
         instruction:
           `Re-run hardening at 'bankrupt' intensity with weave_decoys:true on ${absTarget}, then re-verify.`,
-        recommendedMcpTool: "bla_defend",
+        recommendedMcpTool: "aegis_defend",
         recommendedArgs: {
           input_path: originalPath ? resolve(originalPath) : absTarget,
           intensity: "bankrupt",
@@ -149,8 +149,8 @@ export function verifyTarget(
         priority: "medium",
         reason: gap.summary,
         instruction:
-          "Enable self_seal: true (and sidecar_entangle: true for multi-file trees) during bla_harden / bla_defend, and pass self_seal_enabled: true when calling bla_verify directly.",
-        recommendedMcpTool: "bla_defend",
+          "Enable self_seal: true (and sidecar_entangle: true for multi-file trees) during aegis_harden / aegis_defend, and pass self_seal_enabled: true when calling aegis_verify directly.",
+        recommendedMcpTool: "aegis_defend",
         recommendedArgs: {
           input_path: originalPath ? resolve(originalPath) : absTarget,
           intensity: "bankrupt",
@@ -165,8 +165,8 @@ export function verifyTarget(
         priority: "medium",
         reason: gap.summary,
         instruction:
-          "Protect the WASM artifact at maximum/bankrupt intensity (specifying only public ABI exports in wasm_preserve_exports) and pass wasm_export_rename_applied: true to bla_verify.",
-        recommendedMcpTool: "bla_defend",
+          "Protect the WASM artifact at maximum/bankrupt intensity (specifying only public ABI exports in wasm_preserve_exports) and pass wasm_export_rename_applied: true to aegis_verify.",
+        recommendedMcpTool: "aegis_defend",
         recommendedArgs: {
           input_path: originalPath ? resolve(originalPath) : absTarget,
           intensity: "bankrupt",

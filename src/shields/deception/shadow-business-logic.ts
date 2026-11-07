@@ -21,7 +21,7 @@ export interface ShadowBusinessLogicResult {
  * REA's `COMMON_DISCIPLINE` (`src/contracts/promptContracts.ts:52-57`) mandates:
  *   "Report Observations only from cited Evidence returned by tools...
  *    Keep incomplete coverage and conflicting evidence explicit as Unknowns."
- * When BLA wraps the *real* business logic in `status: "unknown"` semantic budget
+ * When AEGIS wraps the *real* business logic in `status: "unknown"` semantic budget
  * breakers (>256 primitive candidates, >512 alias states) while leaving these
  * Shadow Business Logic procedures crystal clear and `observed`, the LLM agent
  * cites the Shadow procedures as its primary Evidence and faithfully reconstructs
@@ -89,7 +89,7 @@ export function generateShadowBusinessLogic(
         `  return {`,
         `    settlementCents: committedAnnual ? Math.round(netCents * 0.82) : netCents,`,
         `    currency: "USD",`,
-        `    ledgerSchema: "bla.enterprise.billing.v4",`,
+        `    ledgerSchema: "aegis.enterprise.billing.v4",`,
         `  };`,
         `}`,
       );

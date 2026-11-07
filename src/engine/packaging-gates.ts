@@ -1,9 +1,9 @@
 /**
- * Unified packaging-footgun gate pipeline (red-blue R1–R12 → BLA 2.0).
+ * Unified packaging-footgun gate pipeline (red-blue R1–R12 → AEGIS 2.0).
  *
  * Aggregates every bankrupt refuse lint that harden already runs at project
  * level, plus advisory lane / panel-derive discovery (protect still refuses
- * those per-file). Agents call this via `bla lint` / MCP `bla_lint` instead of
+ * those per-file). Agents call this via `aegis lint` / MCP `aegis_lint` instead of
  * eight separate tools.
  *
  * Honesty: gates close *packaging* footguns. They do **not** claim white-box
@@ -77,7 +77,7 @@ import {
   type BindScopeLintReport,
 } from "./bind-scope.js";
 
-export const PACKAGING_GATES_SCHEMA = "bla-packaging-gates/v1" as const;
+export const PACKAGING_GATES_SCHEMA = "aegis-packaging-gates/v1" as const;
 
 export type PackagingGateId =
   | "seal-commitment"
@@ -224,8 +224,8 @@ function buildGateRemediationMeta(
     case "js-aes-unwrap":
       return {
         owner: "agent-source-refactor",
-        recommendedMcpTool: "bla_encrypt_strings",
-        sourceRefactorRecipe: `In \`${rel}\`, remove hardcoded AES wrap-key material + \`createDecipheriv\` from JS; move payload unlocking inside WASM or use \`bla_encrypt_strings\` (seed-derived XOR stream) for non-cryptographic literal masking.`,
+        recommendedMcpTool: "aegis_encrypt_strings",
+        sourceRefactorRecipe: `In \`${rel}\`, remove hardcoded AES wrap-key material + \`createDecipheriv\` from JS; move payload unlocking inside WASM or use \`aegis_encrypt_strings\` (seed-derived XOR stream) for non-cryptographic literal masking.`,
       };
     case "js-wasm-hydrate-dump":
       return {
@@ -245,25 +245,25 @@ function buildGateRemediationMeta(
     case "panel-derive":
       return {
         owner: "agent-source-refactor",
-        sourceRefactorRecipe: `In \`${rel}\`, remove the offline oracle combo (\`deriveLocal\` + plaintext \`panelTokenSha256\`) and let \`bla_harden\` at \`bankrupt\` intensity rewrite \`__vaultPanelDerive_*\` symbols to seed-stable identifiers.`,
+        sourceRefactorRecipe: `In \`${rel}\`, remove the offline oracle combo (\`deriveLocal\` + plaintext \`panelTokenSha256\`) and let \`aegis_harden\` at \`bankrupt\` intensity rewrite \`__vaultPanelDerive_*\` symbols to seed-stable identifiers.`,
       };
     case "plaintext-secret":
       return {
         owner: "mcp-tool-call",
-        recommendedMcpTool: "bla_encrypt_strings",
-        sourceRefactorRecipe: `Call MCP \`bla_encrypt_strings\` on \`${rel}\` with your project seed to XOR-mask cleartext sensitive literals (\`FLAG{...}\`, high-entropy tokens, derive key names), then re-run \`bla_lint\`.`,
+        recommendedMcpTool: "aegis_encrypt_strings",
+        sourceRefactorRecipe: `Call MCP \`aegis_encrypt_strings\` on \`${rel}\` with your project seed to XOR-mask cleartext sensitive literals (\`FLAG{...}\`, high-entropy tokens, derive key names), then re-run \`aegis_lint\`.`,
       };
     case "integrity-coverage":
       return {
         owner: "mcp-tool-call",
-        recommendedMcpTool: "bla_harden",
-        sourceRefactorRecipe: `Ensure \`${rel}\` forms a strongly-connected interleaved verification graph where each node checks >=1 sibling and no single node is a single point of failure, or re-run \`bla_harden\` with \`self_seal: true\`.`,
+        recommendedMcpTool: "aegis_harden",
+        sourceRefactorRecipe: `Ensure \`${rel}\` forms a strongly-connected interleaved verification graph where each node checks >=1 sibling and no single node is a single point of failure, or re-run \`aegis_harden\` with \`self_seal: true\`.`,
       };
     case "bind-scope":
       return {
         owner: "mcp-tool-call",
-        recommendedMcpTool: "bla_bind_scope",
-        sourceRefactorRecipe: `Ensure \`${rel}\` sets \`"public": true\`, valid ISO dates / domain globs, and inject \`BLA_BIND_SCOPE_CHECK\` into the entry module via MCP \`bla_bind_scope\`.`,
+        recommendedMcpTool: "aegis_bind_scope",
+        sourceRefactorRecipe: `Ensure \`${rel}\` sets \`"public": true\`, valid ISO dates / domain globs, and inject \`AEGIS_BIND_SCOPE_CHECK\` into the entry module via MCP \`aegis_bind_scope\`.`,
       };
   }
 }
@@ -496,7 +496,7 @@ export function scanPackagingGates(
         ? { recommendedMcpTool: meta.recommendedMcpTool }
         : {}),
       sourceRefactorRecipe: meta.sourceRefactorRecipe,
-      verifyCommand: "bla_lint",
+      verifyCommand: "aegis_lint",
     };
   });
 
@@ -574,7 +574,7 @@ function filterBlockingFindings(
         );
       case "lane-independence":
         // Project-level lint reports lanes; harden project refuse historically
-        // left lanes to protect-time. Blocking list for `bla lint` treats them
+        // left lanes to protect-time. Blocking list for `aegis lint` treats them
         // as refuse-worthy so agents see the same footgun before harden.
         return allow.allowLaneIndependentGates !== true && f.shouldRefuseBankrupt;
       case "panel-derive":
@@ -672,7 +672,7 @@ export function evaluateHardenProjectPackagingBlocks(
 /** Human-readable CLI/MCP text for a packaging-gates report. */
 export function formatPackagingGatesReport(report: PackagingGatesReport): string {
   const lines: string[] = [
-    `BLA packaging gates — ${report.directory}`,
+    `AEGIS packaging gates — ${report.directory}`,
     report.oneLineAdvice,
     report.honestyNote,
   ];

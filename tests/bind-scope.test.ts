@@ -66,7 +66,7 @@ describe("bind-scope (Direction-4 honest code lock)", () => {
   });
 
   it("writes public contract + injects runtime check; in-scope loads, out-of-scope throws", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-bind-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-bind-"));
     writeFileSync(join(dir, "license.cjs"), ENTRY);
     const report = applyBindScope({
       directory: dir,
@@ -87,30 +87,30 @@ describe("bind-scope (Direction-4 honest code lock)", () => {
     const src = readFileSync(join(dir, "license.cjs"), "utf8");
     expect(src).toContain(BIND_SCOPE_RUNTIME_MARKER);
 
-    const prev = process.env.BLA_BIND_HOST;
+    const prev = process.env.AEGIS_BIND_HOST;
     try {
-      process.env.BLA_BIND_HOST = "allowed.example";
+      process.env.AEGIS_BIND_HOST = "allowed.example";
       const mod = require(join(dir, "license.cjs"));
       expect(mod.unlock("ok")).toBe("FLAG{in_scope}");
     } finally {
-      if (prev === undefined) delete process.env.BLA_BIND_HOST;
-      else process.env.BLA_BIND_HOST = prev;
+      if (prev === undefined) delete process.env.AEGIS_BIND_HOST;
+      else process.env.AEGIS_BIND_HOST = prev;
     }
 
     // Fresh copy for out-of-scope (module cache)
-    const dir2 = mkdtempSync(join(tmpdir(), "bla-bind-oos-"));
+    const dir2 = mkdtempSync(join(tmpdir(), "aegis-bind-oos-"));
     writeFileSync(join(dir2, "license.cjs"), ENTRY);
     applyBindScope({
       directory: dir2,
       domains: ["allowed.example"],
     });
-    process.env.BLA_BIND_HOST = "evil.example";
+    process.env.AEGIS_BIND_HOST = "evil.example";
     expect(() => require(join(dir2, "license.cjs"))).toThrow(/bind-scope: host not in public domains/);
-    delete process.env.BLA_BIND_HOST;
+    delete process.env.AEGIS_BIND_HOST;
   });
 
   it("lint refuses contract without runtime marker; packaging gates pick it up", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-bind-lint-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-bind-lint-"));
     writeFileSync(join(dir, "license.cjs"), ENTRY);
     writeFileSync(
       join(dir, "bind-scope.json"),
@@ -126,15 +126,15 @@ describe("bind-scope (Direction-4 honest code lock)", () => {
     expect(gates.shouldRefuseBankrupt).toBe(true);
   });
 
-  it("MCP bla_bind_scope dry_run writes nothing; apply then lint passes", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-bind-mcp-"));
+  it("MCP aegis_bind_scope dry_run writes nothing; apply then lint passes", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "aegis-bind-mcp-"));
     writeFileSync(join(dir, "license.cjs"), ENTRY);
     const dry = await handleMcpRequest({
       jsonrpc: "2.0",
       id: 1,
       method: "tools/call",
       params: {
-        name: "bla_bind_scope",
+        name: "aegis_bind_scope",
         arguments: {
           directory: dir,
           domains: ["mcp.example"],
@@ -150,7 +150,7 @@ describe("bind-scope (Direction-4 honest code lock)", () => {
       id: 2,
       method: "tools/call",
       params: {
-        name: "bla_bind_scope",
+        name: "aegis_bind_scope",
         arguments: {
           directory: dir,
           domains: ["mcp.example"],
@@ -167,7 +167,7 @@ describe("bind-scope (Direction-4 honest code lock)", () => {
       id: 3,
       method: "tools/call",
       params: {
-        name: "bla_lint_bind_scope",
+        name: "aegis_lint_bind_scope",
         arguments: { path: dir },
       },
     });

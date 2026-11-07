@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { handleMcpRequest, BLA_MCP_TOOLS } from "../src/mcp/server.js";
+import { handleMcpRequest, AEGIS_MCP_TOOLS } from "../src/mcp/server.js";
 import {
   buildTestWasmWithSealXorKnownPlaintext,
   WASM_SEAL_XOR_KNOWN_PLAINTEXT_SCHEMA,
@@ -22,19 +22,19 @@ async function call(name: string, args: Record<string, unknown>) {
   });
 }
 
-describe("MCP bla_lint_wasm_seal_xor_known_plaintext", () => {
+describe("MCP aegis_lint_wasm_seal_xor_known_plaintext", () => {
   it("registers once", () => {
-    expect(BLA_MCP_TOOLS.filter((t) => t.name === "bla_lint_wasm_seal_xor_known_plaintext")).toHaveLength(1);
+    expect(AEGIS_MCP_TOOLS.filter((t) => t.name === "aegis_lint_wasm_seal_xor_known_plaintext")).toHaveLength(1);
   });
 
   it("flags R7 footgun with isError", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-mcp-sealxor-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-mcp-sealxor-"));
     tempDirs.push(dir);
     const { wasm, seal } = buildTestWasmWithSealXorKnownPlaintext({});
     const file = join(dir, "core.wasm");
     writeFileSync(file, wasm);
     writeFileSync(join(dir, "seal.json"), JSON.stringify(seal));
-    const res = await call("bla_lint_wasm_seal_xor_known_plaintext", { path: file });
+    const res = await call("aegis_lint_wasm_seal_xor_known_plaintext", { path: file });
     expect(res?.error).toBeUndefined();
     const result = res!.result as {
       isError?: boolean;

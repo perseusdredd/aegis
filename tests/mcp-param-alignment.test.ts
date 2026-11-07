@@ -47,14 +47,14 @@ async function call(name: string, args: Record<string, unknown>) {
 }
 
 describe("MCP param alignment: in_place / honey_source_maps / output_directory", () => {
-  it("bla_protect in_place refuses without confirm_overwrite and succeeds with it", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-inplace-"));
+  it("aegis_protect in_place refuses without confirm_overwrite and succeeds with it", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "aegis-inplace-"));
     tempDirs.push(dir);
     const input = join(dir, "app.js");
     writeFileSync(input, JS, "utf8");
     const before = readFileSync(input, "utf8");
 
-    const refused = await call("bla_protect", {
+    const refused = await call("aegis_protect", {
       input_path: input,
       in_place: true,
       seed: "inplace-1",
@@ -64,7 +64,7 @@ describe("MCP param alignment: in_place / honey_source_maps / output_directory",
     expect(refused.structuredContent.wouldOverwrite).toEqual([input]);
     expect(readFileSync(input, "utf8")).toBe(before);
 
-    const ok = await call("bla_protect", {
+    const ok = await call("aegis_protect", {
       input_path: input,
       in_place: true,
       confirm_overwrite: true,
@@ -81,12 +81,12 @@ describe("MCP param alignment: in_place / honey_source_maps / output_directory",
     expect(existsSync(join(dir, "app.shielded.js"))).toBe(false);
   });
 
-  it("bla_defend in_place also requires confirm_overwrite before clobbering the input", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-defend-inplace-"));
+  it("aegis_defend in_place also requires confirm_overwrite before clobbering the input", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "aegis-defend-inplace-"));
     tempDirs.push(dir);
     const input = join(dir, "svc.js");
     writeFileSync(input, JS, "utf8");
-    const refused = await call("bla_defend", {
+    const refused = await call("aegis_defend", {
       input_path: input,
       in_place: true,
       seed: "d-inplace",
@@ -96,13 +96,13 @@ describe("MCP param alignment: in_place / honey_source_maps / output_directory",
     expect(readFileSync(input, "utf8")).toBe(JS);
   });
 
-  it("bla_protect honey_source_maps:false skips honey map emission", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-honey-"));
+  it("aegis_protect honey_source_maps:false skips honey map emission", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "aegis-honey-"));
     tempDirs.push(dir);
     const input = join(dir, "app.js");
     const output = join(dir, "out.js");
     writeFileSync(input, JS, "utf8");
-    const off = await call("bla_protect", {
+    const off = await call("aegis_protect", {
       input_path: input,
       output_path: output,
       honey_source_maps: false,
@@ -112,7 +112,7 @@ describe("MCP param alignment: in_place / honey_source_maps / output_directory",
     expect(off.structuredContent.metrics?.honeySourceMapsGenerated).toBe(0);
 
     const onOut = join(dir, "out-on.js");
-    const on = await call("bla_protect", {
+    const on = await call("aegis_protect", {
       input_path: input,
       output_path: onOut,
       honey_source_maps: true,
@@ -122,13 +122,13 @@ describe("MCP param alignment: in_place / honey_source_maps / output_directory",
     expect((on.structuredContent.metrics?.honeySourceMapsGenerated ?? 0) > 0).toBe(true);
   });
 
-  it("bla_harden output_directory writes under the custom root", async () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-outdir-"));
+  it("aegis_harden output_directory writes under the custom root", async () => {
+    const root = mkdtempSync(join(tmpdir(), "aegis-outdir-"));
     tempDirs.push(root);
     mkdirSync(join(root, "dist"), { recursive: true });
     writeFileSync(join(root, "dist", "m0.js"), JS, "utf8");
     const custom = join(root, "custom-out");
-    const r = await call("bla_harden", {
+    const r = await call("aegis_harden", {
       directory: root,
       output_directory: custom,
       seed: "outdir-1",
@@ -136,13 +136,13 @@ describe("MCP param alignment: in_place / honey_source_maps / output_directory",
     expect(r.isError).toBe(false);
     expect(r.structuredContent.outputDirectory).toBe(custom);
     expect(existsSync(join(custom, "dist", "m0.js"))).toBe(true);
-    expect(existsSync(join(root, ".bla-hardened"))).toBe(false);
+    expect(existsSync(join(root, ".aegis-hardened"))).toBe(false);
   });
 });
 
-describe("MCP bla_verify honesty metadata passthrough", () => {
+describe("MCP aegis_verify honesty metadata passthrough", () => {
   it("soft-caps JS verify without self_seal_enabled and lifts the gap when metadata says sealed", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-verify-honesty-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-verify-honesty-"));
     tempDirs.push(dir);
     const input = join(dir, "app.js");
     writeFileSync(input, JS, "utf8");
@@ -154,7 +154,7 @@ describe("MCP bla_verify honesty metadata passthrough", () => {
     });
     expect(protectedRes.selfSeal).toBe(true);
 
-    const without = await call("bla_verify", {
+    const without = await call("aegis_verify", {
       target_path: protectedRes.outputPath,
       original_path: input,
     });
@@ -163,7 +163,7 @@ describe("MCP bla_verify honesty metadata passthrough", () => {
       without.structuredContent.defenseScoreGaps?.some((g) => g.id === "self-seal-not-enabled"),
     ).toBe(true);
 
-    const withMeta = await call("bla_verify", {
+    const withMeta = await call("aegis_verify", {
       target_path: protectedRes.outputPath,
       original_path: input,
       self_seal_enabled: true,

@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { BLA_IDENTITY } from "../identity.js";
+import { AEGIS_IDENTITY } from "../identity.js";
 
 export type SupportedAgentClientId =
   | "claude_code"
@@ -122,7 +122,7 @@ export const CLIENT_COMPATIBILITY_MATRIX: readonly ClientCompatibilityMatrixEntr
     schemaVersion: "codex-config-toml-v1",
     officialSpecUrl: "https://developers.openai.com/codex/mcp/",
     verificationMode: "automated-stdio-smoke",
-    verifiedClientVersion: "0.1.x (TOML [mcp_servers.bla] spec + automated stdio smoke)",
+    verifiedClientVersion: "0.1.x (TOML [mcp_servers.aegis] spec + automated stdio smoke)",
   },
   {
     clientId: "gemini_cli",
@@ -177,7 +177,7 @@ export const CLIENT_COMPATIBILITY_MATRIX: readonly ClientCompatibilityMatrixEntr
     schemaVersion: "opencode-mcp-local-v1",
     officialSpecUrl: "https://opencode.ai/docs/mcp-servers/",
     verificationMode: "automated-stdio-smoke",
-    verifiedClientVersion: "0.1.x (opencode.json mcp.bla local command array + automated stdio smoke)",
+    verifiedClientVersion: "0.1.x (opencode.json mcp.aegis local command array + automated stdio smoke)",
   },
   {
     clientId: "copilot_cli",
@@ -539,7 +539,7 @@ function inspectCodexTomlDocument(
 
 export function readCodexTomlMcp(
   rawToml: string,
-  serverName: string = BLA_IDENTITY.mcpServerName,
+  serverName: string = AEGIS_IDENTITY.mcpServerName,
 ): ConfigReadResult {
   const inspected = inspectCodexTomlDocument(rawToml);
   if (!inspected.ok) {
@@ -564,8 +564,8 @@ export function readCodexTomlMcp(
         otherServersCount++;
       }
     } else if (sec.name === "mcp_servers") {
-      const inlineBla = sec.assignments.get(serverName);
-      if (inlineBla !== undefined && !inlineBla.startsWith("{")) {
+      const inlineAegis = sec.assignments.get(serverName);
+      if (inlineAegis !== undefined && !inlineAegis.startsWith("{")) {
         return {
           status: "malformed",
           entry: null,
@@ -703,7 +703,7 @@ export function writeCodexTomlMcp(
 
 export function removeCodexTomlMcp(
   rawToml: string,
-  serverName: string = BLA_IDENTITY.mcpServerName,
+  serverName: string = AEGIS_IDENTITY.mcpServerName,
 ): { readonly content: string; readonly removed: boolean } {
   const inspected = inspectCodexTomlDocument(rawToml);
   if (!inspected.ok) {
@@ -727,7 +727,7 @@ export function removeCodexTomlMcp(
 function createJsonMcpServersAdapter(): ClientConfigAdapter {
   return {
     format: "json-mcpServers",
-    readServer(rawContent: string, serverName: string = BLA_IDENTITY.mcpServerName): ConfigReadResult {
+    readServer(rawContent: string, serverName: string = AEGIS_IDENTITY.mcpServerName): ConfigReadResult {
       let parsed: unknown;
       try {
         parsed = JSON.parse(rawContent);
@@ -881,7 +881,7 @@ function createJsonMcpServersAdapter(): ClientConfigAdapter {
 function createJsonVscodeAdapter(): ClientConfigAdapter {
   return {
     format: "json-vscode",
-    readServer(rawContent: string, serverName: string = BLA_IDENTITY.mcpServerName): ConfigReadResult {
+    readServer(rawContent: string, serverName: string = AEGIS_IDENTITY.mcpServerName): ConfigReadResult {
       let parsed: unknown;
       try {
         parsed = JSON.parse(rawContent);
@@ -1045,7 +1045,7 @@ function createJsonVscodeAdapter(): ClientConfigAdapter {
 function createJsonOpencodeAdapter(): ClientConfigAdapter {
   return {
     format: "json-opencode",
-    readServer(rawContent: string, serverName: string = BLA_IDENTITY.mcpServerName): ConfigReadResult {
+    readServer(rawContent: string, serverName: string = AEGIS_IDENTITY.mcpServerName): ConfigReadResult {
       let parsed: unknown;
       try {
         parsed = JSON.parse(rawContent);
@@ -1221,7 +1221,7 @@ function createJsonOpencodeAdapter(): ClientConfigAdapter {
 function createTomlCodexAdapter(): ClientConfigAdapter {
   return {
     format: "toml-codex",
-    readServer(rawContent: string, serverName: string = BLA_IDENTITY.mcpServerName): ConfigReadResult {
+    readServer(rawContent: string, serverName: string = AEGIS_IDENTITY.mcpServerName): ConfigReadResult {
       return readCodexTomlMcp(rawContent, serverName);
     },
     upsertServer(rawContent: string | null, serverName: string, reg: McpServerRegistration): string {
@@ -1274,7 +1274,7 @@ export function getClientConfigAdapter(
 export function readClientMcpConfig(
   configPath: string,
   format: ClientConfigFormat,
-  serverName: string = BLA_IDENTITY.mcpServerName,
+  serverName: string = AEGIS_IDENTITY.mcpServerName,
 ): ConfigReadResult {
   if (!existsSync(configPath)) {
     return {
@@ -1343,7 +1343,7 @@ export function resolveSupportedAgentClients(
       format: "json-mcpServers",
       // Never probe `dirname(configPath)` because for `~/.claude.json` that is `home` itself!
       probePaths: [join(home, ".claude.json"), join(home, ".claude")],
-      skillDirectory: join(home, ".claude", "skills", "blind-llm-agents"),
+      skillDirectory: join(home, ".claude", "skills", "aegis-counter-rea"),
     },
     {
       id: "claude_desktop",
@@ -1351,7 +1351,7 @@ export function resolveSupportedAgentClients(
       configPath: join(claudeDesktopDir, "claude_desktop_config.json"),
       format: "json-mcpServers",
       probePaths: [join(claudeDesktopDir, "claude_desktop_config.json"), claudeDesktopDir],
-      skillDirectory: join(home, ".agents", "skills", "blind-llm-agents"),
+      skillDirectory: join(home, ".agents", "skills", "aegis-counter-rea"),
     },
     {
       id: "cursor",
@@ -1359,7 +1359,7 @@ export function resolveSupportedAgentClients(
       configPath: join(home, ".cursor", "mcp.json"),
       format: "json-mcpServers",
       probePaths: [join(home, ".cursor", "mcp.json"), join(home, ".cursor")],
-      skillDirectory: join(home, ".cursor", "skills", "blind-llm-agents"),
+      skillDirectory: join(home, ".cursor", "skills", "aegis-counter-rea"),
     },
     {
       id: "codex",
@@ -1367,7 +1367,7 @@ export function resolveSupportedAgentClients(
       configPath: join(home, ".codex", "config.toml"),
       format: "toml-codex",
       probePaths: [join(home, ".codex", "config.toml"), join(home, ".codex")],
-      skillDirectory: join(home, ".codex", "skills", "blind-llm-agents"),
+      skillDirectory: join(home, ".codex", "skills", "aegis-counter-rea"),
     },
     {
       id: "gemini_cli",
@@ -1375,7 +1375,7 @@ export function resolveSupportedAgentClients(
       configPath: join(home, ".gemini", "settings.json"),
       format: "json-mcpServers",
       probePaths: [join(home, ".gemini", "settings.json"), join(home, ".gemini")],
-      skillDirectory: join(home, ".gemini", "skills", "blind-llm-agents"),
+      skillDirectory: join(home, ".gemini", "skills", "aegis-counter-rea"),
     },
     {
       id: "antigravity",
@@ -1386,7 +1386,7 @@ export function resolveSupportedAgentClients(
         join(home, ".gemini", "antigravity", "mcp_config.json"),
         join(home, ".gemini", "antigravity"),
       ],
-      skillDirectory: join(home, ".gemini", "antigravity", "skills", "blind-llm-agents"),
+      skillDirectory: join(home, ".gemini", "antigravity", "skills", "aegis-counter-rea"),
     },
     {
       id: "windsurf",
@@ -1397,7 +1397,7 @@ export function resolveSupportedAgentClients(
         join(home, ".codeium", "windsurf", "mcp_config.json"),
         join(home, ".codeium", "windsurf"),
       ],
-      skillDirectory: join(home, ".agents", "skills", "blind-llm-agents"),
+      skillDirectory: join(home, ".agents", "skills", "aegis-counter-rea"),
     },
     {
       id: "vscode",
@@ -1405,7 +1405,7 @@ export function resolveSupportedAgentClients(
       configPath: join(vscodeDir, "mcp.json"),
       format: "json-vscode",
       probePaths: [join(vscodeDir, "mcp.json"), vscodeDir],
-      skillDirectory: join(home, ".agents", "skills", "blind-llm-agents"),
+      skillDirectory: join(home, ".agents", "skills", "aegis-counter-rea"),
     },
     {
       id: "opencode",
@@ -1413,7 +1413,7 @@ export function resolveSupportedAgentClients(
       configPath: join(opencodeDir, "opencode.json"),
       format: "json-opencode",
       probePaths: [join(opencodeDir, "opencode.json"), opencodeDir],
-      skillDirectory: join(home, ".agents", "skills", "blind-llm-agents"),
+      skillDirectory: join(home, ".agents", "skills", "aegis-counter-rea"),
     },
     {
       id: "copilot_cli",
@@ -1421,7 +1421,7 @@ export function resolveSupportedAgentClients(
       configPath: join(home, ".copilot", "mcp-config.json"),
       format: "json-mcpServers",
       probePaths: [join(home, ".copilot", "mcp-config.json"), join(home, ".copilot")],
-      skillDirectory: join(home, ".agents", "skills", "blind-llm-agents"),
+      skillDirectory: join(home, ".agents", "skills", "aegis-counter-rea"),
     },
   ];
 

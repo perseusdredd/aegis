@@ -19,23 +19,23 @@ afterEach(() => {
   }
 });
 
-describe("BLA 3.0 End-to-End Agent-Driven Hardening Loop (MCP + CLI)", () => {
+describe("AEGIS 3.0 End-to-End Agent-Driven Hardening Loop (MCP + CLI)", () => {
   it("guides a host Agent through Stage 1 (Recon/Lint/WeavePlan) -> Stage 2 (Source Surgery & VerifyWeave) -> Stage 3 (Harden) -> Stage 4 (Equivalence & Verify)", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-v3-agent-loop-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-v3-agent-loop-"));
     temps.push(dir);
 
     const licensePath = join(dir, "license.cjs");
     const servicePyPath = join(dir, "service.py");
 
     // Initial fragile source:
-    // 1) Lane-independent byte-by-byte gate (triggers bla_lint refuse)
-    // 2) Unreferenced empty `_bla_decoy` stub (triggers bla_verify_weave failure)
+    // 1) Lane-independent byte-by-byte gate (triggers aegis_lint refuse)
+    // 2) Unreferenced empty `_aegis_decoy` stub (triggers aegis_verify_weave failure)
     writeFileSync(
       licensePath,
       `
-function _bla_decoy() {}
+function _aegis_decoy() {}
 
-const target = [0x42, 0x4c, 0x41, 0x33, 0x5f, 0x50, 0x52, 0x4f];
+const target = [0x41, 0x45, 0x47, 0x49, 0x53, 0x50, 0x52, 0x4f];
 
 function verifyLicenseKey(key) {
   if (typeof key !== "string" || key.length !== 8) return false;
@@ -77,7 +77,7 @@ def compute_invoice_total(units, price):
       id: 10,
       method: "tools/call",
       params: {
-        name: "bla_lint",
+        name: "aegis_lint",
         arguments: { directory: dir },
       },
     });
@@ -94,13 +94,13 @@ def compute_invoice_total(units, price):
     expect(laneRemediation!.owner).toBe("agent-source-refactor");
     expect(laneRemediation!.sourceRefactorRecipe).toContain("whole-key chained");
 
-    // Call bla_weave_plan to get the AST surgicalWorkorder
+    // Call aegis_weave_plan to get the AST surgicalWorkorder
     const planRes = await handleMcpRequest({
       jsonrpc: "2.0",
       id: 11,
       method: "tools/call",
       params: {
-        name: "bla_weave_plan",
+        name: "aegis_weave_plan",
         arguments: { path: dir },
       },
     });
@@ -133,7 +133,7 @@ def compute_invoice_total(units, price):
       id: 12,
       method: "tools/call",
       params: {
-        name: "bla_verify_weave",
+        name: "aegis_verify_weave",
         arguments: { path: licensePath },
       },
     });
@@ -155,7 +155,7 @@ def compute_invoice_total(units, price):
     // Host Agent applies remediationPlan + surgicalWorkorder:
     // 1. Replaces per-byte lane check with whole-key chained FNV-1a mix
     // 2. Introduces shared state carrier `sessionLedgerState`
-    // 3. Replaces `_bla_decoy` with domain-plausible helpers called from `verifyLicenseKey`
+    // 3. Replaces `_aegis_decoy` with domain-plausible helpers called from `verifyLicenseKey`
     writeFileSync(
       licensePath,
       `
@@ -183,7 +183,7 @@ function verifyLicenseKey(key) {
     acc = Math.imul(acc, 0x01000193) >>> 0;
   }
   attestCommitmentDigest(acc);
-  // Chained FNV-1a digest of "BLA3_PRO" is 0x3b8e8580
+  // Chained FNV-1a digest of "AEGISPRO" is 0x3b8e8580
   return acc === 0x3b8e8580 ? "ENTITLED:PRO" : "DENIED";
 }
 
@@ -192,11 +192,11 @@ module.exports = { verifyLicenseKey };
       "utf8",
     );
 
-    // Adjust expected FNV-1a digest dynamically so our test key "BLA3_PRO" is exact
+    // Adjust expected FNV-1a digest dynamically so our test key "AEGISPRO" is exact
     const req = createRequire(import.meta.url);
     let expectedAcc = 0x811c9dc5;
-    for (let i = 0; i < "BLA3_PRO".length; i++) {
-      expectedAcc ^= "BLA3_PRO".charCodeAt(i);
+    for (let i = 0; i < "AEGISPRO".length; i++) {
+      expectedAcc ^= "AEGISPRO".charCodeAt(i);
       expectedAcc = Math.imul(expectedAcc, 0x01000193) >>> 0;
     }
     writeFileSync(
@@ -208,13 +208,13 @@ module.exports = { verifyLicenseKey };
       "utf8",
     );
 
-    // Re-run bla_lint: should now pass with 0 blocking gates
+    // Re-run aegis_lint: should now pass with 0 blocking gates
     const lintRes2 = await handleMcpRequest({
       jsonrpc: "2.0",
       id: 13,
       method: "tools/call",
       params: {
-        name: "bla_lint",
+        name: "aegis_lint",
         arguments: { directory: dir },
       },
     });
@@ -225,13 +225,13 @@ module.exports = { verifyLicenseKey };
     expect(lintReport2.shouldRefuseBankrupt).toBe(false);
     expect(lintReport2.blocking).toHaveLength(0);
 
-    // Re-run bla_verify_weave on the directory: both JS and Python pass 100%
+    // Re-run aegis_verify_weave on the directory: both JS and Python pass 100%
     const verifyWeaveRes2 = await handleMcpRequest({
       jsonrpc: "2.0",
       id: 14,
       method: "tools/call",
       params: {
-        name: "bla_verify_weave",
+        name: "aegis_verify_weave",
         arguments: { path: dir },
       },
     });
@@ -251,7 +251,7 @@ module.exports = { verifyLicenseKey };
       id: 15,
       method: "tools/call",
       params: {
-        name: "bla_harden",
+        name: "aegis_harden",
         arguments: {
           directory: dir,
           weave_decoys: true,
@@ -287,7 +287,7 @@ module.exports = { verifyLicenseKey };
     const mod = req(hardenedJs.outputPath) as {
       verifyLicenseKey: (k: string) => string;
     };
-    expect(mod.verifyLicenseKey("BLA3_PRO")).toBe("ENTITLED:PRO");
+    expect(mod.verifyLicenseKey("AEGISPRO")).toBe("ENTITLED:PRO");
     expect(mod.verifyLicenseKey("WRONGKEY")).toBe("DENIED");
 
     // Verify without self_seal_enabled surfaces agentActions to pass self_seal_enabled
@@ -296,7 +296,7 @@ module.exports = { verifyLicenseKey };
       id: 16,
       method: "tools/call",
       params: {
-        name: "bla_verify",
+        name: "aegis_verify",
         arguments: {
           target_path: hardenedJs.outputPath,
           original_path: licensePath,
@@ -316,7 +316,7 @@ module.exports = { verifyLicenseKey };
       id: 17,
       method: "tools/call",
       params: {
-        name: "bla_verify",
+        name: "aegis_verify",
         arguments: {
           target_path: hardenedJs.outputPath,
           original_path: licensePath,

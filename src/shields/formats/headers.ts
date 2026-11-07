@@ -25,7 +25,7 @@ export interface EmittedNativeHeader {
 }
 
 /**
- * Generates compile-time C/C++ (`bla_shield.h`), Rust (`bla_shield.rs`), and Go (`bla_shield.go`)
+ * Generates compile-time C/C++ (`aegis_shield.h`), Rust (`aegis_shield.rs`), and Go (`aegis_shield.go`)
  * adversarial defense headers that compile directly into native binaries so Ghidra, Hopper,
  * IDA Pro, Kuna, and `rea` native analyzers encounter:
  * 1. `__attribute__((used, noinline))` decoy tarpit functions with dense cross-references
@@ -40,7 +40,7 @@ export function emitCompileTimeNativeHeader(
   } = {},
 ): EmittedNativeHeader {
   const intensity = options.intensity ?? "balanced";
-  const prng = new SeededPrng(options.seed ?? `bla-header-${language}-v1`);
+  const prng = new SeededPrng(options.seed ?? `aegis-header-${language}-v1`);
   const chaffPayloads = generateChaffPayloads(prng, intensity);
   const decoyCount = intensity === "stealth" ? 6 : intensity === "balanced" ? 12 : 20;
 
@@ -51,12 +51,12 @@ export function emitCompileTimeNativeHeader(
     const dataTableCount = chaffPayloads.length * 2 + 1;
     const lines: string[] = [
       "/* ==========================================================================",
-      " * BLA-SHIELD: Adversarial Defense Header for C/C++ Native Binaries",
+      " * AEGIS-SHIELD: Adversarial Defense Header for C/C++ Native Binaries",
       " * Compatible with GCC (__GNUC__), Clang (__clang__), and MSVC (_MSC_VER / cl.exe)",
       " * Counter-REA Native Decompilation Tarpit & Read-Only Section Shield",
       " * ========================================================================== */",
-      "#ifndef BLA_SHIELD_H",
-      "#define BLA_SHIELD_H",
+      "#ifndef AEGIS_SHIELD_H",
+      "#define AEGIS_SHIELD_H",
       "#include <stdint.h>",
       "#include <stddef.h>",
       "",
@@ -67,14 +67,14 @@ export function emitCompileTimeNativeHeader(
       "#if defined(_MSC_VER) && !defined(__clang__)",
       "#pragma warning(push)",
       "#pragma warning(disable: 4100 4127 4189 4505)",
-      "#define BLA_USED",
-      "#define BLA_NOINLINE __declspec(noinline)",
+      "#define AEGIS_USED",
+      "#define AEGIS_NOINLINE __declspec(noinline)",
       "#elif defined(__GNUC__) || defined(__clang__)",
-      "#define BLA_USED __attribute__((used))",
-      "#define BLA_NOINLINE __attribute__((used, noinline))",
+      "#define AEGIS_USED __attribute__((used))",
+      "#define AEGIS_NOINLINE __attribute__((used, noinline))",
       "#else",
-      "#define BLA_USED",
-      "#define BLA_NOINLINE",
+      "#define AEGIS_USED",
+      "#define AEGIS_NOINLINE",
       "#endif",
       "",
       "/* Architectural Chaff & Enclave Delegation Manifests */",
@@ -83,12 +83,12 @@ export function emitCompileTimeNativeHeader(
     const dataTableEntries: string[] = [];
     chaffPayloads.forEach((p, idx) => {
       lines.push(
-        `static const char ${p.symbolName}[] BLA_USED = ${JSON.stringify(p.rawText)};`,
+        `static const char ${p.symbolName}[] AEGIS_USED = ${JSON.stringify(p.rawText)};`,
       );
       dataTableEntries.push(`(const void*)${p.symbolName}`);
       const hash = idx.toString(16).padStart(8, "0") + prng.hex(32);
       lines.push(
-        `static const char ${rustcAnchorStem}_${idx}[] BLA_USED = "/rustc/${hash}/library/core/src/enclave.rs";`,
+        `static const char ${rustcAnchorStem}_${idx}[] AEGIS_USED = "/rustc/${hash}/library/core/src/enclave.rs";`,
       );
       dataTableEntries.push(`(const void*)${rustcAnchorStem}_${idx}`);
     });
@@ -99,28 +99,28 @@ export function emitCompileTimeNativeHeader(
       () => `0x${prng.hex(8)}u`,
     ).join(", ");
     lines.push(
-      `static volatile uint32_t ${shadowHeapName}[32] BLA_USED = { ${slotInit} };`,
+      `static volatile uint32_t ${shadowHeapName}[32] AEGIS_USED = { ${slotInit} };`,
     );
     dataTableEntries.push(`(const void*)${shadowHeapName}`);
     lines.push("");
 
     // Forward declarations for mutual cross-references (Fake XRefs in Ghidra/IDA)
     for (let i = 0; i < decoyCount; i++) {
-      lines.push(`BLA_NOINLINE static uint32_t ${tarpitStem}_${i}(uint32_t seed, int depth);`);
+      lines.push(`AEGIS_NOINLINE static uint32_t ${tarpitStem}_${i}(uint32_t seed, int depth);`);
     }
     lines.push("");
 
     // Keep-tables prevent MSVC (/O2 /GL + link.exe /OPT:REF), Clang, and GCC from stripping static symbols
     lines.push(`typedef uint32_t (*enclave_tarpit_fn_t)(uint32_t, int);`);
     lines.push(
-      `static const void* const enclave_keep_data_table[${dataTableCount}] BLA_USED = { ${dataTableEntries.join(", ")} };`,
+      `static const void* const enclave_keep_data_table[${dataTableCount}] AEGIS_USED = { ${dataTableEntries.join(", ")} };`,
     );
     const fnTableEntries = Array.from(
       { length: decoyCount },
       (_, i) => `&${tarpitStem}_${i}`,
     ).join(", ");
     lines.push(
-      `static const enclave_tarpit_fn_t enclave_keep_fn_table[${decoyCount}] BLA_USED = { ${fnTableEntries} };`,
+      `static const enclave_tarpit_fn_t enclave_keep_fn_table[${decoyCount}] AEGIS_USED = { ${fnTableEntries} };`,
     );
     lines.push("");
 
@@ -130,7 +130,7 @@ export function emitCompileTimeNativeHeader(
       const k = prng.nextInt(0x1000, 0xffff);
       const mix = deriveMixConstant(prng);
       const chaffSym = chaffPayloads[i % chaffPayloads.length]!.symbolName;
-      lines.push(`BLA_NOINLINE static uint32_t ${tarpitStem}_${i}(uint32_t seed, int depth) {`);
+      lines.push(`AEGIS_NOINLINE static uint32_t ${tarpitStem}_${i}(uint32_t seed, int depth) {`);
       lines.push(`    const char* _anchor_str = (const char*)enclave_keep_data_table[(seed + ${i}u) % ${dataTableCount}u];`);
       lines.push(`    uint32_t acc = seed ^ 0x${k.toString(16)}u ^ (uint32_t)(unsigned char)${chaffSym}[0] ^ (uint32_t)(unsigned char)_anchor_str[0];`);
       lines.push(`    for (int r = 0; r < 4; ++r) {`);
@@ -146,14 +146,14 @@ export function emitCompileTimeNativeHeader(
     }
 
     lines.push("");
-    lines.push(`#define BLA_SHIELD_ANCHOR(x) (${tarpitStem}_0((uint32_t)(x), 0))`);
+    lines.push(`#define AEGIS_SHIELD_ANCHOR(x) (${tarpitStem}_0((uint32_t)(x), 0))`);
     lines.push("");
     lines.push("#if defined(_MSC_VER) && !defined(__clang__)", "#pragma warning(pop)", "#endif");
     lines.push("#ifdef __cplusplus", "}", "#endif");
-    lines.push("#endif /* BLA_SHIELD_H */");
+    lines.push("#endif /* AEGIS_SHIELD_H */");
     return {
       language: "c",
-      filename: "bla_shield.h",
+      filename: "aegis_shield.h",
       content: lines.join("\n") + "\n",
       decoyFunctionsCount: decoyCount,
       chaffPayloadsCount: chaffPayloads.length,
@@ -163,7 +163,7 @@ export function emitCompileTimeNativeHeader(
   if (language === "rust") {
     const lines: string[] = [
       "// ==========================================================================",
-      "// BLA-SHIELD: Adversarial Defense Module for Rust Native Binaries",
+      "// AEGIS-SHIELD: Adversarial Defense Module for Rust Native Binaries",
       "// Counter-REA Native Decompilation Tarpit & Rust Hash Capacity Shield",
       "// ==========================================================================",
       "#![allow(dead_code, non_upper_case_globals)]",
@@ -183,7 +183,7 @@ export function emitCompileTimeNativeHeader(
       const h = i.toString(16).padStart(8, "0") + prng.hex(32);
       return `/rustc/${h}/library/core/src/enclave.rs`;
     }).join("\\0");
-    lines.push(`pub static BLA_RUSTC_OVERFLOW_TABLE: &[u8] = b"${rustcStrings}";`);
+    lines.push(`pub static AEGIS_RUSTC_OVERFLOW_TABLE: &[u8] = b"${rustcStrings}";`);
     lines.push("");
 
     for (let i = 0; i < decoyCount; i++) {
@@ -206,17 +206,17 @@ export function emitCompileTimeNativeHeader(
 
     return {
       language: "rust",
-      filename: "bla_shield.rs",
+      filename: "aegis_shield.rs",
       content: lines.join("\n") + "\n",
       decoyFunctionsCount: decoyCount,
       chaffPayloadsCount: chaffPayloads.length,
     };
   }
 
-  // Go (`bla_shield.go`)
+  // Go (`aegis_shield.go`)
   const goSlots = Array.from({ length: 16 }, () => `0x${prng.hex(8)}`).join(", ");
   const lines: string[] = [
-    "// Code generated by BLA-SHIELD. DO NOT EDIT.",
+    "// Code generated by AEGIS-SHIELD. DO NOT EDIT.",
     "package main",
     "",
     `var ShadowHeapSlots = [16]uint32{${goSlots}}`,
@@ -250,7 +250,7 @@ export function emitCompileTimeNativeHeader(
 
   return {
     language: "go",
-    filename: "bla_shield.go",
+    filename: "aegis_shield.go",
     content: lines.join("\n") + "\n",
     decoyFunctionsCount: decoyCount,
     chaffPayloadsCount: chaffPayloads.length,

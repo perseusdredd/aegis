@@ -32,7 +32,7 @@ export const FIXTURE_DIR = join(V6_DIR, ".fixture");
 export const SCHEMA = "bla-crackme-v6-seal/v2";
 export const SEED = "bla-crackme-v6-harden-native-2026-11";
 export const INTENSITY = "bankrupt";
-/** Files handed to hardenProject() — the same tree `bla harden <dir>` sees. */
+/** Files handed to hardenProject() — the same tree `aegis harden <dir>` sees. */
 export const STAGE_FILES = ["vault.cjs", "panel.html", "core.wasm"];
 /** Committed outputs (core.wasm is gzipped: bankrupt WASM is ~7 MB raw). */
 export const COMMITTED_FILES = ["vault.cjs", "panel.html", "core.wasm.gz"];
@@ -144,7 +144,7 @@ export async function hardenChallenge({ key, flag, outDir, seed = SEED }) {
   // percent-encoded URLs when the workspace path contains spaces; Node ESM
   // resolves `import.meta.url`-relative specifiers correctly either way.
   const { hardenProject } = await import("../../dist/engine/harden.js");
-  const { BLA_IDENTITY } = await import("../../dist/identity.js");
+  const { AEGIS_IDENTITY } = await import("../../dist/identity.js");
   const work = mkdtempSync(join(tmpdir(), "bla-crackme-v6-"));
   try {
     const stage = join(work, "app");
@@ -156,7 +156,7 @@ export async function hardenChallenge({ key, flag, outDir, seed = SEED }) {
 
     // Red/blue round-1: bankrupt renames all non-preserved WASM exports by default.
     // This teaching fixture keeps mix/seal on purpose (explicit ABI) and opts into
-    // the lane-independent gate that bla_lint_lanes / harden now refuse by default.
+    // the lane-independent gate that aegis_lint_lanes / harden now refuse by default.
     const report = hardenProject({
       directory: stage,
       intensity: INTENSITY,
@@ -189,7 +189,7 @@ export async function hardenChallenge({ key, flag, outDir, seed = SEED }) {
     artifacts["core.wasm"] = { sha256: sha256Hex(rawWasm), bytes: rawWasm.length, note: "raw harden output; committed gzipped" };
 
     return {
-      blaVersion: BLA_IDENTITY.version,
+      aegisVersion: AEGIS_IDENTITY.version,
       artifacts,
       hardenSummary: report.artifacts.map((a) => ({
         relativePath: a.relativePath.replaceAll("\\", "/"),

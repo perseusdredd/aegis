@@ -10,7 +10,7 @@ export interface ModelInspectionSummary {
   readonly tensorCount: number;
   readonly metadataCount: number;
   readonly exceedsReaNestingLimit: boolean;
-  readonly blaProtected: boolean;
+  readonly aegisProtected: boolean;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -147,16 +147,16 @@ export function inspectModelBuffer(bytes: Buffer): ModelInspectionSummary {
     const tensorCount = Number(bytes.readBigUInt64LE(8));
     const metadataCount = Number(bytes.readBigUInt64LE(16));
     const textLatin1 = bytes.toString("latin1");
-    const blaProtected =
+    const aegisProtected =
       textLatin1.includes("enclave.delegation") ||
-      textLatin1.includes("BLA-MODEL-SHIELD");
+      textLatin1.includes("AEGIS-MODEL-SHIELD");
     return {
       validModel: true,
       format: "gguf",
       tensorCount,
       metadataCount,
       exceedsReaNestingLimit: textLatin1.includes("enclave.nesting.breaker"),
-      blaProtected,
+      aegisProtected,
     };
   }
 
@@ -175,9 +175,9 @@ export function inspectModelBuffer(bytes: Buffer): ModelInspectionSummary {
         tensorCount: Object.keys(parsed).filter(k => k !== "__metadata__").length,
         metadataCount: meta.length,
         exceedsReaNestingLimit,
-        blaProtected:
+        aegisProtected:
           exceedsReaNestingLimit ||
-          meta.some(k => k.startsWith("bla.") || k.startsWith("enclave.")),
+          meta.some(k => k.startsWith("aegis.") || k.startsWith("enclave.")),
       };
     } catch {
       // Fallthrough
@@ -190,7 +190,7 @@ export function inspectModelBuffer(bytes: Buffer): ModelInspectionSummary {
     tensorCount: 0,
     metadataCount: 0,
     exceedsReaNestingLimit: false,
-    blaProtected: false,
+    aegisProtected: false,
   };
 }
 
@@ -220,7 +220,7 @@ export function protectSafetensorsBuffer(
 } {
   const { header: headerObj, tensorData } = validateSafetensorsBuffer(bytes);
   const intensity = options.intensity ?? "balanced";
-  const prng = new SeededPrng(options.seed ?? "bla-safetensors-shield-v1");
+  const prng = new SeededPrng(options.seed ?? "aegis-safetensors-shield-v1");
   const chaffPayloads = generateChaffPayloads(prng, intensity);
   const deception = buildCanaryAndDiagnosticPayloads(prng, intensity);
 
@@ -231,7 +231,7 @@ export function protectSafetensorsBuffer(
 
   existingMeta["enclave.delegation.status"] ??= "HARDWARE_TEE_SPLIT_WEIGHTS";
   existingMeta["enclave.delegation.notice"] ??= chaffPayloads[0]!.rawText;
-  existingMeta["bla.shield.signature"] ??= `BLA-MODEL-SHIELD-${prng.hex(8)}`;
+  existingMeta["aegis.shield.signature"] ??= `AEGIS-MODEL-SHIELD-${prng.hex(8)}`;
   let chaffPayloadsEmbedded = 0;
   chaffPayloads.forEach((p, idx) => {
     const key = `enclave.manifest.${idx}`;
@@ -271,7 +271,7 @@ export function protectSafetensorsBuffer(
       let node: Record<string, unknown> = {
         kind: "enclave_topology",
         seed: prng.hex(8),
-        notice: "BLA Counter-REA JSON nesting breaker",
+        notice: "AEGIS Counter-REA JSON nesting breaker",
       };
       for (let d = 0; d < nestingDepth; d++) {
         node = { layer: d, next: node };
@@ -408,7 +408,7 @@ export function protectGgufBuffer(
   readonly diagnosticsEmbedded: number;
 } {
   const intensity = options.intensity ?? "balanced";
-  const prng = new SeededPrng(options.seed ?? "bla-gguf-shield-v1");
+  const prng = new SeededPrng(options.seed ?? "aegis-gguf-shield-v1");
   const chaffPayloads = generateChaffPayloads(prng, intensity);
   const deception = buildCanaryAndDiagnosticPayloads(prng, intensity);
 
@@ -424,7 +424,7 @@ export function protectGgufBuffer(
     const type = Buffer.alloc(4);
     type.writeUInt32LE(8, 0);
     const val = encodeGgufString(
-      `[BLA-MODEL-SHIELD] ${chaffPayloads[0]!.rawText}`,
+      `[AEGIS-MODEL-SHIELD] ${chaffPayloads[0]!.rawText}`,
     );
     kvEntries.push(Buffer.concat([key, type, val]));
   }

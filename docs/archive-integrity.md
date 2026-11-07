@@ -1,6 +1,6 @@
 # Archive integrity admission
 
-BLA is not a general-purpose ZIP/APK repacker. Archive protection now rejects input
+AEGIS is not a general-purpose ZIP/APK repacker. Archive protection now rejects input
 it cannot fully represent, rather than silently omitting members or treating failed
 DEFLATE decoding as original file data.
 
@@ -36,7 +36,7 @@ admission rules, not a universal signature detector or signature verification.
 ## APKs and failure behavior
 
 All explicitly identified APK protection requests, including unsigned fixtures,
-throw `UnsupportedApkProtectionError`. BLA does not implement signing, re-signing,
+throw `UnsupportedApkProtectionError`. AEGIS does not implement signing, re-signing,
 alignment preservation or APK signature validation. Renaming an APK does not make
 it a supported package. ZIP rejection throws `UnsupportedArchiveError`.
 

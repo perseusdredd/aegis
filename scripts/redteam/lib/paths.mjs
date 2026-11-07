@@ -4,11 +4,11 @@ import { pathToFileURL } from "node:url";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-export const BLA_ROOT = resolve(__dirname, "../../..");
+export const AEGIS_ROOT = resolve(__dirname, "../../..");
 // Empty/whitespace REA_ROOT is unset (CI passes "" when sibling REA is absent).
 const REA_ROOT_ENV = (process.env.REA_ROOT ?? "").trim();
-export const REA_ROOT = resolve(REA_ROOT_ENV || join(BLA_ROOT, "..", "rea"));
-export const REDTEAM_OUT_DIR = join(BLA_ROOT, "docs/redteam");
+export const REA_ROOT = resolve(REA_ROOT_ENV || join(AEGIS_ROOT, "..", "rea"));
+export const REDTEAM_OUT_DIR = join(AEGIS_ROOT, "docs/redteam");
 export const REDTEAM_REPORT_MD = join(
   REDTEAM_OUT_DIR,
   "empirical-rea-validation.md",
@@ -40,7 +40,7 @@ export function reaDistReady() {
 export function resolveTsharkEnv() {
   // Explicit override wins, so a Windows install or a custom prefix is usable
   // without the Linux user-local layout below.
-  const override = (process.env.BLA_TSHARK ?? "").trim();
+  const override = (process.env.AEGIS_TSHARK ?? "").trim();
   if (override) {
     return existsSync(override)
       ? { available: true, bin: override, env: process.env }

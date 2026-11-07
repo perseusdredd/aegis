@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * CrackMe v6 (harden-native) build — the published challenge IS `bla harden` output.
+ * CrackMe v6 (harden-native) build — the published challenge IS `aegis harden` output.
  *
  *   CRACKME_V6_KEY=… CRACKME_V6_FLAG=FLAG{…} npm run crackme:build   # release → challenge/v6/hardened + SEAL.json
  *   npm run crackme:build -- --fixture [--out <dir>]                  # public demo secret → challenge/v6/.fixture (gitignored)
@@ -33,8 +33,8 @@ const result = await hardenChallenge({ key: secrets.key, flag: secrets.flag, out
 const seal = {
   schema: SCHEMA,
   mode: secrets.mode,
-  blaVersion: result.blaVersion,
-  recipe: "npm run crackme:build (hardenProject == `bla harden <dir> --intensity bankrupt --seed <seed>`)",
+  aegisVersion: result.aegisVersion,
+  recipe: "npm run crackme:build (hardenProject == `aegis harden <dir> --intensity bankrupt --seed <seed>`)",
   seed: SEED,
   intensity: INTENSITY,
   llmDirectives: false,

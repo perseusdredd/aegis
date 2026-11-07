@@ -38,7 +38,7 @@ async function call(name: string, args: Record<string, unknown>) {
 describe("harden run evidence (C1)", () => {
   it("computeHardenRunId is stable for identical planned work", () => {
     const identity = {
-      blaVersion: "1.6.4",
+      aegisVersion: "1.6.4",
       directory: "/tmp/proj",
       intensity: "bankrupt",
       weaveDecoys: false,
@@ -53,11 +53,11 @@ describe("harden run evidence (C1)", () => {
       artifacts: [...identity.artifacts].reverse(),
     };
     expect(computeHardenRunId(identity)).toBe(computeHardenRunId(shuffled));
-    expect(computeHardenRunId(identity)).toMatch(/^bla-run-[0-9a-f]{24}$/);
+    expect(computeHardenRunId(identity)).toMatch(/^aegis-run-[0-9a-f]{24}$/);
   });
 
   it("hardenProject emits runId + unsigned summary; lookup round-trips", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-run-ev-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-run-ev-"));
     tempDirs.push(dir);
     mkdirSync(join(dir, "dist"));
     writeFileSync(join(dir, "dist", "app.js"), JS, "utf8");
@@ -67,7 +67,7 @@ describe("harden run evidence (C1)", () => {
       seed: "run-ev-1",
       intensity: "stealth",
     });
-    expect(report.runId).toMatch(/^bla-run-[0-9a-f]{24}$/);
+    expect(report.runId).toMatch(/^aegis-run-[0-9a-f]{24}$/);
     expect(report.summaryPath).toBeDefined();
     expect(existsSync(report.summaryPath!)).toBe(true);
 
@@ -100,7 +100,7 @@ describe("harden run evidence (C1)", () => {
   });
 
   it("readHardenRunSummary fails clearly on missing / bad id / pre-v2", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-run-bad-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-run-bad-"));
     tempDirs.push(dir);
     expect(() => readHardenRunSummary(join(dir, "missing.json"))).toThrow(
       /Run summary not found/,
@@ -110,7 +110,7 @@ describe("harden run evidence (C1)", () => {
     writeFileSync(
       v1,
       JSON.stringify({
-        schema: "bla-harden-summary/v1",
+        schema: "aegis-harden-summary/v1",
         directory: dir,
         artifacts: [],
       }),
@@ -123,25 +123,25 @@ describe("harden run evidence (C1)", () => {
       v2,
       JSON.stringify({
         schema: HARDEN_SUMMARY_SCHEMA,
-        runId: "bla-run-aaaaaaaaaaaaaaaaaaaaaaaa",
+        runId: "aegis-run-aaaaaaaaaaaaaaaaaaaaaaaa",
         signature: "unsigned",
         artifacts: [],
       }),
       "utf8",
     );
     expect(() =>
-      readHardenRunSummary(dir, "bla-run-bbbbbbbbbbbbbbbbbbbbbbbb"),
+      readHardenRunSummary(dir, "aegis-run-bbbbbbbbbbbbbbbbbbbbbbbb"),
     ).toThrow(/Run id mismatch/);
   });
 
-  it("MCP bla_run_lookup + bla_verify correlation; defend/protect carry runId", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-run-mcp-"));
+  it("MCP aegis_run_lookup + aegis_verify correlation; defend/protect carry runId", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "aegis-run-mcp-"));
     tempDirs.push(dir);
     mkdirSync(join(dir, "dist"));
     const input = join(dir, "dist", "app.js");
     writeFileSync(input, JS, "utf8");
 
-    const hardenRes = await call("bla_harden", {
+    const hardenRes = await call("aegis_harden", {
       directory: dir,
       seed: "run-mcp-1",
       intensity: "stealth",
@@ -150,11 +150,11 @@ describe("harden run evidence (C1)", () => {
     expect(hardenRes.error).toBeUndefined();
     const harden = (hardenRes.result as { structuredContent: Record<string, unknown> })
       .structuredContent;
-    expect(harden.runId).toMatch(/^bla-run-[0-9a-f]{24}$/);
+    expect(harden.runId).toMatch(/^aegis-run-[0-9a-f]{24}$/);
     const summaryPath = harden.summaryPath as string;
     expect(existsSync(summaryPath)).toBe(true);
 
-    const lookupOk = await call("bla_run_lookup", {
+    const lookupOk = await call("aegis_run_lookup", {
       summary_path: harden.outputDirectory as string,
       run_id: harden.runId as string,
     });
@@ -164,19 +164,19 @@ describe("harden run evidence (C1)", () => {
       .structuredContent;
     expect(looked.runId).toBe(harden.runId);
 
-    const lookupBad = await call("bla_run_lookup", {
+    const lookupBad = await call("aegis_run_lookup", {
       summary_path: summaryPath,
-      run_id: "bla-run-000000000000000000000000",
+      run_id: "aegis-run-000000000000000000000000",
     });
     expect((lookupBad.result as { isError: boolean }).isError).toBe(true);
 
-    const missing = await call("bla_run_lookup", {
+    const missing = await call("aegis_run_lookup", {
       summary_path: join(dir, "no-such-summary.json"),
     });
     expect((missing.result as { isError: boolean }).isError).toBe(true);
 
     const out = join(dir, "protected.js");
-    const protectRes = await call("bla_protect", {
+    const protectRes = await call("aegis_protect", {
       input_path: input,
       output_path: out,
       seed: "run-mcp-protect",
@@ -187,13 +187,13 @@ describe("harden run evidence (C1)", () => {
     const protectedPayload = (
       protectRes.result as { structuredContent: Record<string, unknown> }
     ).structuredContent;
-    expect(protectedPayload.runId).toMatch(/^bla-run-[0-9a-f]{24}$/);
+    expect(protectedPayload.runId).toMatch(/^aegis-run-[0-9a-f]{24}$/);
     expect(protectedPayload.runEvidence).toMatchObject({
       signature: "unsigned",
-      schema: "bla-artifact-run/v1",
+      schema: "aegis-artifact-run/v1",
     });
 
-    const verifyRes = await call("bla_verify", {
+    const verifyRes = await call("aegis_verify", {
       target_path: out,
       summary_path: summaryPath,
       run_id: harden.runId as string,
@@ -208,7 +208,7 @@ describe("harden run evidence (C1)", () => {
     expect(verified.runCorrelation.runId).toBe(harden.runId);
     expect(verified.runCorrelation.signature).toBe("unsigned");
 
-    const verifyOrphanId = await call("bla_verify", {
+    const verifyOrphanId = await call("aegis_verify", {
       target_path: out,
       run_id: harden.runId as string,
     });

@@ -1,6 +1,6 @@
-# Complete 24-Vector Counter-REA Matrix (`morluto/rea` vs `bla-agents`)
+# Complete 24-Vector Counter-REA Matrix (`morluto/rea` vs `aegis-agents`)
 
-| # | REA Source File (`morluto/rea`) | REA Mechanism / Limit | BLA Countermeasure Module |
+| # | REA Source File (`morluto/rea`) | REA Mechanism / Limit | AEGIS Countermeasure Module |
 | :- | :--- | :--- | :--- |
 | 1 | `javascriptSemanticResourceLimits.ts:7` | `SEMANTIC_PRIMITIVE_CANDIDATE_LIMIT = 256` | `ast-shield.ts` ($\ge 9$-chunk opaque ternaries $\to 512$ candidates) |
 | 2 | `javascriptSemanticResourceLimits.ts:9` | `SEMANTIC_EXPRESSION_DEPTH_LIMIT = 256` | `rea-budget-matrix.ts` (nested arithmetic identity chains) |
@@ -17,8 +17,8 @@
 | 13 | `ElectronFuseReader.ts:36` | `maximumSentinelsPerSlice = 32` | `electron-fuses.ts` (hardens V1 fuses + appends 33 decoy sentinels) |
 | 14 | `CdpCaptureEvents.ts` | JSON body & WebSocket shape budget (`depth >= 760`) | `cdp-shape-budget-breaker.ts` (780+ nested JSON envelopes) |
 | 15 | `fridaCaptureLimits.ts:8` | `MAX_JSON_DEPTH = 64`, `MAX_MESSAGE_TEXT_BYTES = 32 KiB` | `frida-capture-saturation.ts` (68+ level JSON + 34 KiB message text) |
-| 16 | `SqliteDatabaseInspection.ts:792` | Bare `readOnly: true, allowExtension: false` snapshot | `sqlite.ts` (`GENERATED ALWAYS AS (bla_enclave_unseal(...)) VIRTUAL`) |
-| 17 | `SafetensorsHeader.ts:74` | `MODEL_JSON_NESTING = 32` | `model.ts` (35-level nested JSON array under `_bla_nesting_breaker`) |
+| 16 | `SqliteDatabaseInspection.ts:792` | Bare `readOnly: true, allowExtension: false` snapshot | `sqlite.ts` (`GENERATED ALWAYS AS (aegis_enclave_unseal(...)) VIRTUAL`) |
+| 17 | `SafetensorsHeader.ts:74` | `MODEL_JSON_NESTING = 32` | `model.ts` (35-level nested JSON array under `_aegis_nesting_breaker`) |
 | 18 | `GgufHeader.ts:121` | `MODEL_METADATA_NESTING = 32` | `model.ts` (35-frame nested GGUF `ARRAY` preserving existing KV/tensors) |
 | 19 | `wasmInterface.ts:90` | `WASM_INTERFACE_REPRESENTATION_BYTES = 32 MiB` | `wasm-interface-exhaustion.ts` + `wasm.ts` (`6x` string + `16x` signature charge) |
 | 20 | `RustBinaryProvider.ts` | `MAX_RUSTC_HASHES = 64` & `.dep-v0` crate recovery | `native.ts` (72 decoy rustc hashes + decoy `.dep-v0` / Go buildinfo) |

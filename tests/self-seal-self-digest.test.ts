@@ -1,7 +1,7 @@
 /**
  * Entry self-coverage (CrackMe v8 red team 2026-11-05).
  *
- * Red finding: the bla-integrity-coverage/v1 matrix claimed `license.cjs#siteN`
+ * Red finding: the aegis-integrity-coverage/v1 matrix claimed `license.cjs#siteN`
  * hard-fail-verify `license.cjs`, but runtime only folded the entry's own bytes
  * into the opaque digest — appending to the entry was indistinguishable from an
  * intact run. These tests pin the canonical self-digest runtime fix.
@@ -55,7 +55,7 @@ describe("self-seal canonical self-digest", () => {
   });
 
   it("un-finalized snippet soft-skips the self check (never bricks a build)", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-selfdig-soft-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-selfdig-soft-"));
     try {
       writeFileSync(join(dir, "asset.bin"), "a");
       const snip = generateSelfSealSnippet(new SeededPrng("selfdig-soft"), {
@@ -76,7 +76,7 @@ describe("self-seal canonical self-digest", () => {
   });
 
   it("protect+self-seal hard-fails when the ENTRY itself is tampered", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-selfdig-hf-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-selfdig-hf-"));
     try {
       writeFileSync(join(dir, "core.wasm"), Buffer.from([0x00, 0x61, 0x73, 0x6d, 0x01, 0, 0, 0, 0xaa]));
       const entry = join(dir, "gate.cjs");

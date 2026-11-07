@@ -5,12 +5,12 @@ import { generateHoneySourceMap } from "../shields/formats/sourcemap.js";
 import {
   inferJsCarrierFromPath,
   inferJsLoaderFromPath,
-  transformJavaScriptWithBlaShield,
+  transformJavaScriptWithAegisShield,
   type JsCarrierType,
   type JsLoaderType,
 } from "../shields/javascript/ast-shield.js";
 
-export interface BlaBundlerPluginOptions {
+export interface AegisBundlerPluginOptions {
   /** Protection intensity preset (default: `"balanced"`). */
   readonly intensity?: ProtectionIntensity;
   /** Deterministic PRNG seed for reproducible builds. */
@@ -36,7 +36,7 @@ export function inferEsbuildLoader(filePath: string): JsLoaderType {
 
 /**
  * Maps a Rollup/Vite output format (`"es"`, `"cjs"`, `"iife"`, `"umd"`, `"amd"`, `"system"`)
- * or chunk filename to a BLA JavaScript carrier contract.
+ * or chunk filename to a AEGIS JavaScript carrier contract.
  */
 export function inferCarrierFromRollupFormat(
   format?: string,
@@ -84,34 +84,34 @@ function shieldOrPassThrough(
     if (ctx.failBuildOnError) throw err;
     const message = err instanceof Error ? err.message : String(err);
     console.warn(
-      `[bla-shield] skipped protection for ${ctx.fileName}: ${message}`,
+      `[aegis-shield] skipped protection for ${ctx.fileName}: ${message}`,
     );
     return null;
   }
 }
 
 /**
- * Vite & Rollup plugin (`blaVitePlugin` / `blaRollupPlugin`) that automatically
- * injects BLA's three-stage adversarial shield into generated JS chunks during `renderChunk`.
+ * Vite & Rollup plugin (`aegisVitePlugin` / `aegisRollupPlugin`) that automatically
+ * injects AEGIS's three-stage adversarial shield into generated JS chunks during `renderChunk`.
  *
  * Usage in `vite.config.ts`:
  * ```ts
  * import { defineConfig } from "vite";
- * import { blaVitePlugin } from "bla-shield";
+ * import { aegisVitePlugin } from "aegis-shield";
  *
  * export default defineConfig({
- *   plugins: [blaVitePlugin({ intensity: "bankrupt" })],
+ *   plugins: [aegisVitePlugin({ intensity: "bankrupt" })],
  * });
  * ```
  */
-export function blaRollupPlugin(options: BlaBundlerPluginOptions = {}) {
+export function aegisRollupPlugin(options: AegisBundlerPluginOptions = {}) {
   const intensity = options.intensity ?? "balanced";
   const include = options.include ?? /\.(?:m?js|cjs)$/i;
   const emitMap = options.honeySourceMap ?? true;
   const failBuildOnError = options.failBuildOnError ?? false;
 
   return {
-    name: "bla-shield-rollup-plugin",
+    name: "aegis-shield-rollup-plugin",
     renderChunk(
       code: string,
       chunk: { fileName: string; isEntry?: boolean },
@@ -120,7 +120,7 @@ export function blaRollupPlugin(options: BlaBundlerPluginOptions = {}) {
       if (!include.test(chunk.fileName)) {
         return null;
       }
-      const seed = deriveSeedLabel(options.seed ?? "bla-rollup", chunk.fileName);
+      const seed = deriveSeedLabel(options.seed ?? "aegis-rollup", chunk.fileName);
       const sourceType = inferCarrierFromRollupFormat(
         outputOptions?.format,
         chunk.fileName,
@@ -128,7 +128,7 @@ export function blaRollupPlugin(options: BlaBundlerPluginOptions = {}) {
       const loader = inferEsbuildLoader(chunk.fileName);
       const shieldedCode = shieldOrPassThrough(
         () =>
-          transformJavaScriptWithBlaShield(code, {
+          transformJavaScriptWithAegisShield(code, {
             intensity,
             seed,
             filename: chunk.fileName,
@@ -165,23 +165,23 @@ export function blaRollupPlugin(options: BlaBundlerPluginOptions = {}) {
 }
 
 /**
- * Alias of `blaRollupPlugin` with `enforce: "post"` for Vite 4/5/6.
+ * Alias of `aegisRollupPlugin` with `enforce: "post"` for Vite 4/5/6.
  */
-export function blaVitePlugin(options: BlaBundlerPluginOptions = {}) {
+export function aegisVitePlugin(options: AegisBundlerPluginOptions = {}) {
   return {
-    ...blaRollupPlugin(options),
-    name: "vite-plugin-bla-shield",
+    ...aegisRollupPlugin(options),
+    name: "vite-plugin-aegis-shield",
     enforce: "post" as const,
   };
 }
 
 /**
- * Webpack 5 / Rspack plugin class (`BlaWebpackPlugin`) that shields emitted JS assets.
+ * Webpack 5 / Rspack plugin class (`AegisWebpackPlugin`) that shields emitted JS assets.
  */
-export class BlaWebpackPlugin {
-  readonly options: BlaBundlerPluginOptions;
+export class AegisWebpackPlugin {
+  readonly options: AegisBundlerPluginOptions;
 
-  constructor(options: BlaBundlerPluginOptions = {}) {
+  constructor(options: AegisBundlerPluginOptions = {}) {
     this.options = options;
   }
 
@@ -217,10 +217,10 @@ export class BlaWebpackPlugin {
     const include = this.options.include ?? /\.(?:m?js|cjs)$/i;
     const failBuildOnError = this.options.failBuildOnError ?? false;
 
-    compiler.hooks.compilation.tap("BlaWebpackPlugin", (compilation) => {
+    compiler.hooks.compilation.tap("AegisWebpackPlugin", (compilation) => {
       compilation.hooks.processAssets.tap(
         {
-          name: "BlaWebpackPlugin",
+          name: "AegisWebpackPlugin",
           stage: 400, // PROCESS_ASSETS_STAGE_OPTIMIZE_INLINE
         },
         (assets) => {
@@ -233,9 +233,9 @@ export class BlaWebpackPlugin {
             const loader = inferEsbuildLoader(assetName);
             const shieldedCode = shieldOrPassThrough(
               () =>
-                transformJavaScriptWithBlaShield(rawSource, {
+                transformJavaScriptWithAegisShield(rawSource, {
                   intensity,
-                  seed: deriveSeedLabel(this.options.seed ?? "bla-webpack", assetName),
+                  seed: deriveSeedLabel(this.options.seed ?? "aegis-webpack", assetName),
                   filename: assetName,
                   sourceType,
                   loader,
@@ -257,16 +257,16 @@ export class BlaWebpackPlugin {
 }
 
 /**
- * esbuild plugin (`blaEsbuildPlugin`) that shields JS/TS/JSX/TSX entrypoints or modules
+ * esbuild plugin (`aegisEsbuildPlugin`) that shields JS/TS/JSX/TSX entrypoints or modules
  * while preserving the exact esbuild loader (`js`, `jsx`, `ts`, `tsx`) and module carrier.
  */
-export function blaEsbuildPlugin(options: BlaBundlerPluginOptions = {}) {
+export function aegisEsbuildPlugin(options: AegisBundlerPluginOptions = {}) {
   const intensity = options.intensity ?? "balanced";
   const include = options.include ?? /\.(?:[cm]?[jt]sx?)$/i;
   const failBuildOnError = options.failBuildOnError ?? false;
 
   return {
-    name: "bla-shield-esbuild-plugin",
+    name: "aegis-shield-esbuild-plugin",
     setup(build: {
       onLoad: (
         opts: { filter: RegExp },
@@ -283,9 +283,9 @@ export function blaEsbuildPlugin(options: BlaBundlerPluginOptions = {}) {
         const sourceType = inferJsCarrierFromPath(args.path);
         const shieldedCode = shieldOrPassThrough(
           () =>
-            transformJavaScriptWithBlaShield(source, {
+            transformJavaScriptWithAegisShield(source, {
               intensity,
-              seed: deriveSeedLabel(options.seed ?? "bla-esbuild", args.path),
+              seed: deriveSeedLabel(options.seed ?? "aegis-esbuild", args.path),
               filename: args.path,
               loader,
               sourceType,

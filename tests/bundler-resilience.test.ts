@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { blaRollupPlugin } from "../src/bundler/index.js";
+import { aegisRollupPlugin } from "../src/bundler/index.js";
 
 describe("bundler plugin resilience", () => {
   it("passes the chunk through unshielded when the transform fails and failBuildOnError is false (default)", () => {
-    const plugin = blaRollupPlugin({ seed: "resilience" });
+    const plugin = aegisRollupPlugin({ seed: "resilience" });
     const warnings: string[] = [];
     const origWarn = console.warn;
     console.warn = (...args: unknown[]) => {
@@ -21,11 +21,11 @@ describe("bundler plugin resilience", () => {
     }
     // null means Rollup treats it as "no change"; the original code passes through.
     expect(result).toBeNull();
-    expect(warnings.some((w) => w.includes("[bla-shield] skipped protection for broken.js"))).toBe(true);
+    expect(warnings.some((w) => w.includes("[aegis-shield] skipped protection for broken.js"))).toBe(true);
   });
 
   it("throws and fails the build when failBuildOnError is true", () => {
-    const plugin = blaRollupPlugin({ seed: "resilience", failBuildOnError: true });
+    const plugin = aegisRollupPlugin({ seed: "resilience", failBuildOnError: true });
     expect(() =>
       plugin.renderChunk(
         "function ( {",
@@ -36,7 +36,7 @@ describe("bundler plugin resilience", () => {
   });
 
   it("still shields valid input normally when failBuildOnError is false", () => {
-    const plugin = blaRollupPlugin({ seed: "resilience-valid", honeySourceMap: false });
+    const plugin = aegisRollupPlugin({ seed: "resilience-valid", honeySourceMap: false });
     const input = "export function unlock(token) { return token === 'LIVE-KEY'; }\n";
     const result = plugin.renderChunk(
       input,

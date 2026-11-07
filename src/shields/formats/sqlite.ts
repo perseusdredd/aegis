@@ -66,7 +66,7 @@ export interface SqliteInspectionSummary {
   readonly businessTables: readonly string[];
   readonly honeyTablesCount: number;
   readonly hasGeneratedTrapColumns: boolean;
-  readonly blaProtected: boolean;
+  readonly aegisProtected: boolean;
   readonly decorationState: "decorated" | "undecorated" | "unsupported-or-encrypted";
   readonly businessDataState: "business-data-preserved" | "empty" | "unknown";
   readonly confidentialityState:
@@ -78,7 +78,7 @@ export interface SqliteInspectionSummary {
 }
 
 export const DEFAULT_SQLITE_SENSITIVITY_POLICY: SqliteSensitivityPolicy = {
-  policyId: "bla-default-sqlite-data-minimization-v1",
+  policyId: "aegis-default-sqlite-data-minimization-v1",
   rules: [
     {
       ruleId: "SQLITE-SEC-001",
@@ -185,7 +185,7 @@ export function validateSqliteStandaloneBuffer(bytes: Buffer): void {
   }
 
   const DatabaseSync = getDatabaseSyncClass();
-  const tempDir = mkdtempSync(join(tmpdir(), "bla-sqlite-validate-"));
+  const tempDir = mkdtempSync(join(tmpdir(), "aegis-sqlite-validate-"));
   const dbPath = join(tempDir, "validate.sqlite");
   try {
     writeFileSync(dbPath, bytes);
@@ -275,7 +275,7 @@ export function evaluateSqliteSensitivityPolicy(
   }
 
   const DatabaseSync = getDatabaseSyncClass();
-  const tempDir = mkdtempSync(join(tmpdir(), "bla-sqlite-policy-"));
+  const tempDir = mkdtempSync(join(tmpdir(), "aegis-sqlite-policy-"));
   const dbPath = join(tempDir, "policy.sqlite");
   try {
     writeFileSync(dbPath, bytes);
@@ -391,7 +391,7 @@ export function inspectSqliteBuffer(
       businessTables: [],
       honeyTablesCount: 0,
       hasGeneratedTrapColumns: false,
-      blaProtected: false,
+      aegisProtected: false,
       decorationState: "unsupported-or-encrypted",
       businessDataState: "unknown",
       confidentialityState: "unsupported-or-encrypted",
@@ -400,7 +400,7 @@ export function inspectSqliteBuffer(
   }
 
   const DatabaseSync = getDatabaseSyncClass();
-  const tempDir = mkdtempSync(join(tmpdir(), "bla-sqlite-inspect-"));
+  const tempDir = mkdtempSync(join(tmpdir(), "aegis-sqlite-inspect-"));
   const dbPath = join(tempDir, "inspect.sqlite");
   try {
     writeFileSync(dbPath, bytes);
@@ -418,7 +418,7 @@ export function inspectSqliteBuffer(
       const hasGeneratedTrapColumns = rows.some(
         (r) => typeof r.sql === "string" && r.sql.includes("GENERATED ALWAYS AS"),
       );
-      const blaProtected = honeyTablesCount > 0 || hasGeneratedTrapColumns;
+      const aegisProtected = honeyTablesCount > 0 || hasGeneratedTrapColumns;
       const policyEval = evaluateSqliteSensitivityPolicy(bytes, policy);
 
       return {
@@ -427,8 +427,8 @@ export function inspectSqliteBuffer(
         businessTables,
         honeyTablesCount,
         hasGeneratedTrapColumns,
-        blaProtected,
-        decorationState: blaProtected ? "decorated" : "undecorated",
+        aegisProtected,
+        decorationState: aegisProtected ? "decorated" : "undecorated",
         businessDataState: policyEval.businessDataState,
         confidentialityState: policyEval.confidentialityState,
         policyFindings: policyEval.findings,
@@ -443,7 +443,7 @@ export function inspectSqliteBuffer(
       businessTables: [],
       honeyTablesCount: 0,
       hasGeneratedTrapColumns: false,
-      blaProtected: false,
+      aegisProtected: false,
       decorationState: "unsupported-or-encrypted",
       businessDataState: "unknown",
       confidentialityState: "unsupported-or-encrypted",
@@ -464,7 +464,7 @@ export function minimizeSqliteDatabaseBuffer(
 ): Buffer {
   validateSqliteStandaloneBuffer(bytes);
   const DatabaseSync = getDatabaseSyncClass();
-  const tempDir = mkdtempSync(join(tmpdir(), "bla-sqlite-minimize-"));
+  const tempDir = mkdtempSync(join(tmpdir(), "aegis-sqlite-minimize-"));
   const dbPath = join(tempDir, "minimize.sqlite");
   try {
     writeFileSync(dbPath, bytes);
@@ -515,11 +515,11 @@ export function protectSqliteBuffer(
 
   const DatabaseSync = getDatabaseSyncClass();
   const intensity = options.intensity ?? "balanced";
-  const prng = new SeededPrng(options.seed ?? "bla-sqlite-shield-v1");
+  const prng = new SeededPrng(options.seed ?? "aegis-sqlite-shield-v1");
   const chaffPayloads = generateChaffPayloads(prng, intensity);
   const deception = buildCanaryAndDiagnosticPayloads(prng, intensity);
 
-  const tempDir = mkdtempSync(join(tmpdir(), "bla-sqlite-protect-"));
+  const tempDir = mkdtempSync(join(tmpdir(), "aegis-sqlite-protect-"));
   const dbPath = join(tempDir, "target.sqlite");
 
   try {
@@ -698,7 +698,7 @@ export function protectSqliteBuffer(
  */
 export function buildSampleSqliteDatabase(): Buffer {
   const DatabaseSync = getDatabaseSyncClass();
-  const tempDir = mkdtempSync(join(tmpdir(), "bla-sqlite-sample-"));
+  const tempDir = mkdtempSync(join(tmpdir(), "aegis-sqlite-sample-"));
   const dbPath = join(tempDir, "sample.sqlite");
   try {
     const db = new DatabaseSync(dbPath);

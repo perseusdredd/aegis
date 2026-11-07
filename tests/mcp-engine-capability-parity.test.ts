@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BLA_MCP_TOOLS } from "../src/mcp/server.js";
+import { AEGIS_MCP_TOOLS } from "../src/mcp/server.js";
 
 /**
  * Maintainable expectation list: engine capabilities agents rely on that MCP
@@ -13,7 +13,7 @@ const EXPECTED_MCP_ENGINE_CAPABILITIES: ReadonlyArray<{
   readonly params: readonly string[];
 }> = Object.freeze([
   {
-    tool: "bla_harden",
+    tool: "aegis_harden",
     params: [
       "directory",
       "intensity",
@@ -39,11 +39,11 @@ const EXPECTED_MCP_ENGINE_CAPABILITIES: ReadonlyArray<{
     ],
   },
   {
-    tool: "bla_discover",
+    tool: "aegis_discover",
     params: ["directory", "max_artifacts"],
   },
   {
-    tool: "bla_defend",
+    tool: "aegis_defend",
     params: [
       "input_path",
       "output_path",
@@ -68,7 +68,7 @@ const EXPECTED_MCP_ENGINE_CAPABILITIES: ReadonlyArray<{
     ],
   },
   {
-    tool: "bla_protect",
+    tool: "aegis_protect",
     params: [
       "input_path",
       "output_path",
@@ -93,7 +93,7 @@ const EXPECTED_MCP_ENGINE_CAPABILITIES: ReadonlyArray<{
     ],
   },
   {
-    tool: "bla_verify",
+    tool: "aegis_verify",
     params: [
       "target_path",
       "original_path",
@@ -105,7 +105,7 @@ const EXPECTED_MCP_ENGINE_CAPABILITIES: ReadonlyArray<{
     ],
   },
   {
-    tool: "bla_lint",
+    tool: "aegis_lint",
     params: [
       "directory",
       "intensity",
@@ -120,79 +120,79 @@ const EXPECTED_MCP_ENGINE_CAPABILITIES: ReadonlyArray<{
     ],
   },
   {
-    tool: "bla_lint_lanes",
+    tool: "aegis_lint_lanes",
     params: ["path"],
   },
   {
-    tool: "bla_lint_seal",
+    tool: "aegis_lint_seal",
     params: ["path"],
   },
   {
-    tool: "bla_lint_wasm_params",
+    tool: "aegis_lint_wasm_params",
     params: ["path"],
   },
   {
-    tool: "bla_lint_panel_derive",
+    tool: "aegis_lint_panel_derive",
     params: ["path"],
   },
   {
-    tool: "bla_lint_js_aes_unwrap",
+    tool: "aegis_lint_js_aes_unwrap",
     params: ["path"],
   },
   {
-    tool: "bla_lint_js_wasm_hydrate_dump",
+    tool: "aegis_lint_js_wasm_hydrate_dump",
     params: ["path"],
   },
   {
-    tool: "bla_lint_wasm_xor_mask_sidecar",
+    tool: "aegis_lint_wasm_xor_mask_sidecar",
     params: ["path"],
   },
   {
-    tool: "bla_lint_wasm_seal_xor_known_plaintext",
+    tool: "aegis_lint_wasm_seal_xor_known_plaintext",
     params: ["path", "seal_path"],
   },
   {
-    tool: "bla_run_lookup",
+    tool: "aegis_run_lookup",
     params: ["summary_path", "run_id"],
   },
   {
-    tool: "bla_rea_drift",
+    tool: "aegis_rea_drift",
     params: ["rea_root"],
   },
   {
-    tool: "bla_lint_integrity_coverage",
+    tool: "aegis_lint_integrity_coverage",
     params: ["path"],
   },
   {
-    tool: "bla_polymorph_report",
+    tool: "aegis_polymorph_report",
     params: ["dir_a", "dir_b", "expect", "same_threshold", "different_threshold"],
   },
   {
-    tool: "bla_encrypt_strings",
+    tool: "aegis_encrypt_strings",
     params: ["path", "seed", "out_dir", "include_urls", "dry_run"],
   },
   {
-    tool: "bla_lint_plaintext_secrets",
+    tool: "aegis_lint_plaintext_secrets",
     params: ["path", "allow_plaintext_string"],
   },
   {
-    tool: "bla_bind_scope",
+    tool: "aegis_bind_scope",
     params: ["directory", "domains", "valid_from", "valid_until", "entry_path", "out_dir", "dry_run"],
   },
   {
-    tool: "bla_lint_bind_scope",
+    tool: "aegis_lint_bind_scope",
     params: ["path", "allow_missing_bind_runtime"],
   },
   {
-    tool: "bla_weave_plan",
+    tool: "aegis_weave_plan",
     params: ["path", "max_targets"],
   },
   {
-    tool: "bla_verify_weave",
+    tool: "aegis_verify_weave",
     params: ["path", "max_targets"],
   },
   {
-    tool: "bla_redteam_report",
+    tool: "aegis_redteam_report",
     params: ["execute", "rea_root", "report_path"],
   },
 ]);
@@ -200,7 +200,7 @@ const EXPECTED_MCP_ENGINE_CAPABILITIES: ReadonlyArray<{
 describe("MCP ↔ engine capability parity (agent-facing)", () => {
   it("exposes every agreed engine capability on the named MCP tools", () => {
     for (const expected of EXPECTED_MCP_ENGINE_CAPABILITIES) {
-      const tool = BLA_MCP_TOOLS.find((t) => t.name === expected.tool);
+      const tool = AEGIS_MCP_TOOLS.find((t) => t.name === expected.tool);
       expect(tool, `missing MCP tool ${expected.tool}`).toBeDefined();
       const props = Object.keys(tool!.inputSchema.properties);
       for (const param of expected.params) {
@@ -210,7 +210,7 @@ describe("MCP ↔ engine capability parity (agent-facing)", () => {
   });
 
   it("does not register duplicate tool names", () => {
-    const names = BLA_MCP_TOOLS.map((t) => t.name);
+    const names = AEGIS_MCP_TOOLS.map((t) => t.name);
     expect(new Set(names).size).toBe(names.length);
   });
 });

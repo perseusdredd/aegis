@@ -1,6 +1,6 @@
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { BLA_IDENTITY } from "../identity.js";
+import { AEGIS_IDENTITY } from "../identity.js";
 import {
   inspectReleaseExposure,
   type ReleaseExposureReport,
@@ -75,7 +75,7 @@ export interface OneClickDefenseStageSummary {
 }
 
 export interface OneClickDefenseReport {
-  readonly blaVersion: string;
+  readonly aegisVersion: string;
   readonly inputPath: string;
   readonly outputPath: string;
   readonly intensity: ProtectionIntensity;
@@ -112,9 +112,9 @@ export interface OneClickDefenseReport {
 }
 
 /**
- * One-Click Agent Defense Hardening Pipeline (`bla defend <target>` / MCP `bla_defend`).
+ * One-Click Agent Defense Hardening Pipeline (`aegis defend <target>` / MCP `aegis_defend`).
  *
- * Designed so that once an AI Coding Agent attaches BLA via `npx bla-agents@latest setup`,
+ * Designed so that once an AI Coding Agent attaches AEGIS via `npx aegis-agents@latest setup`,
  * a single command or MCP tool invocation runs the entire 5-stage Counter-REA defense loop:
  *   1. Read-only source-map & symbol exposure check (`inspectReleaseExposure`)
  *   2. Pre-flight 16-vector REA vulnerability & token-cost audit (`auditTarget`)
@@ -262,12 +262,12 @@ export function defendTarget(options: OneClickDefenseOptions): OneClickDefenseRe
   let manifestPath: string | undefined;
   let manifestSigned = false;
   if (options.emitManifest) {
-    manifestPath = `${protection.outputPath}.bla-manifest.json`;
+    manifestPath = `${protection.outputPath}.aegis-manifest.json`;
     const attestationKind =
       options.signManifest === true ? ("ed25519" as const) : ("unsigned" as const);
     const manifestPayload = {
-      schema: "https://bla.tools/schemas/defense-manifest-v1.json",
-      blaVersion: BLA_IDENTITY.version,
+      schema: "https://aegis.tools/schemas/defense-manifest-v1.json",
+      aegisVersion: AEGIS_IDENTITY.version,
       protectedAt: new Date().toISOString(),
       // Honesty: this JSON is an attestation record, not a cryptographic signature.
       // Set attestationKind to "ed25519" only when a real signature is attached.
@@ -302,7 +302,7 @@ export function defendTarget(options: OneClickDefenseOptions): OneClickDefenseRe
   }
 
   return {
-    blaVersion: BLA_IDENTITY.version,
+    aegisVersion: AEGIS_IDENTITY.version,
     inputPath: absInput,
     outputPath: protection.outputPath,
     intensity,

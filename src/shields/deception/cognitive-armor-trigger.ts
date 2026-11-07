@@ -47,7 +47,7 @@ export function computeContainmentCorpusDigest(
 }
 
 /**
- * Generates BLA's Cognitive-Armor & Constitutional Classifier Trigger Shield
+ * Generates AEGIS's Cognitive-Armor & Constitutional Classifier Trigger Shield
  * (`cognitive-armor-trigger.ts`).
  *
  * Targets the built-in safety classifiers, constitutional alignment guardrails,

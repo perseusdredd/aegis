@@ -8,21 +8,21 @@ import {
   defendTarget,
   detectArtifactFormat,
   handleMcpRequest,
-  initBlaConfig,
-  loadBlaConfig,
+  initAegisConfig,
+  loadAegisConfig,
   protectTarget,
   verifyTarget,
 } from "../src/index.js";
 
-describe("BLA Config, SARIF 2.1.0, JVM Bytecode & 22-Format Directory Pipeline", () => {
-  it("initializes and loads bla.config.json cleanly", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-cfg-"));
+describe("AEGIS Config, SARIF 2.1.0, JVM Bytecode & 22-Format Directory Pipeline", () => {
+  it("initializes and loads aegis.config.json cleanly", () => {
+    const dir = mkdtempSync(join(tmpdir(), "aegis-cfg-"));
     try {
-      const initRes = initBlaConfig(dir);
+      const initRes = initAegisConfig(dir);
       expect(initRes.created).toBe(true);
       expect(initRes.config.intensity).toBe("bankrupt");
 
-      const loaded = loadBlaConfig(dir);
+      const loaded = loadAegisConfig(dir);
       expect(loaded.sourcePath).toBe(initRes.configPath);
       expect(loaded.config.minDefenseScore).toBe(90);
     } finally {
@@ -31,7 +31,7 @@ describe("BLA Config, SARIF 2.1.0, JVM Bytecode & 22-Format Directory Pipeline",
   });
 
   it("emits valid SARIF 2.1.0 reports for audit findings", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-sarif-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-sarif-"));
     try {
       const jsFile = join(dir, "app.js");
       writeFileSync(
@@ -44,7 +44,7 @@ describe("BLA Config, SARIF 2.1.0, JVM Bytecode & 22-Format Directory Pipeline",
 
       expect(sarif.version).toBe("2.1.0");
       expect(sarif.$schema).toContain("sarif-2.1.0.json");
-      expect(sarif.runs[0].tool.driver.name).toBe("bla-agents");
+      expect(sarif.runs[0].tool.driver.name).toBe("aegis-agents");
       expect(sarif.runs[0].results.length).toBeGreaterThan(0);
     } finally {
       rmSync(dir, { recursive: true, force: true });
@@ -52,7 +52,7 @@ describe("BLA Config, SARIF 2.1.0, JVM Bytecode & 22-Format Directory Pipeline",
   });
 
   it("disambiguates 0xCAFEBABE between JVM .class files and Mach-O Universal binaries", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-magic-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-magic-"));
     try {
       // 1. JVM .class (magic 0xCAFEBABE, minor=0, major=65 [Java 21], cp_count=1)
       const jvmBuf = Buffer.alloc(32, 0);
@@ -90,7 +90,7 @@ describe("BLA Config, SARIF 2.1.0, JVM Bytecode & 22-Format Directory Pipeline",
   });
 
   it("protects and verifies JVM .class, Apple .plist, and .NET Managed assemblies inside a unified directory", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-unified-dir-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-unified-dir-"));
     try {
       const srcDir = join(dir, "dist");
       const outDir = join(dir, "dist-shielded");
@@ -104,7 +104,7 @@ describe("BLA Config, SARIF 2.1.0, JVM Bytecode & 22-Format Directory Pipeline",
       );
       writeFileSync(
         join(srcDir, "Info.plist"),
-        `<?xml version="1.0" encoding="UTF-8"?>\n<plist version="1.0"><dict><key>CFBundleName</key><string>BLAApp</string></dict></plist>`,
+        `<?xml version="1.0" encoding="UTF-8"?>\n<plist version="1.0"><dict><key>CFBundleName</key><string>AEGISApp</string></dict></plist>`,
         "utf8",
       );
       const jvmBuf = Buffer.alloc(32, 0);
@@ -133,7 +133,7 @@ describe("BLA Config, SARIF 2.1.0, JVM Bytecode & 22-Format Directory Pipeline",
         id: 99,
         method: "tools/call",
         params: {
-          name: "bla_inspect_release",
+          name: "aegis_inspect_release",
           arguments: { path: srcDir },
         },
       });

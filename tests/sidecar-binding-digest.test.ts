@@ -11,7 +11,7 @@ describe("computeSidecarBindingDigest", () => {
     };
     const sidecars = [
       {
-        pathLabel: "main.js.bla-sidecar",
+        pathLabel: "main.js.aegis-sidecar",
         bytes: new TextEncoder().encode("chaff-a"),
       },
       {

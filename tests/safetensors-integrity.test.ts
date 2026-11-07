@@ -9,7 +9,7 @@ const header = {
   weights: { dtype: "F32", shape: [2], data_offsets: [0, 8] },
   bias: { dtype: "I16", shape: [2], data_offsets: [8, 12] },
   empty: { dtype: "F32", shape: [0], data_offsets: [12, 12] },
-  __metadata__: { description: "trained weights — 测试; 1.0000000000000001 1e999 9007199254740993", "bla.shield.signature": "keep-original", "enclave.manifest.0": "keep-this-too" },
+  __metadata__: { description: "trained weights — 测试; 1.0000000000000001 1e999 9007199254740993", "aegis.shield.signature": "keep-original", "enclave.manifest.0": "keep-this-too" },
 };
 const data = Buffer.alloc(12);
 data.writeFloatLE(1.25, 0);
@@ -31,7 +31,7 @@ describe("Safetensors format and tensor preservation (not inference)", () => {
     const result = protectSafetensorsBuffer(source, { intensity, seed: "integrity" });
     expect(source).toEqual(original);
     expect(result.triggeredJsonNestingBreaker).toBe(true);
-    // Read header and body independently of BLA's inspection/validation helper.
+    // Read header and body independently of AEGIS's inspection/validation helper.
     const length = Number(result.buffer.readBigUInt64LE(0));
     expect(length % 8).toBe(0);
     const parsed = JSON.parse(result.buffer.subarray(8, 8 + length).toString("utf8"));
@@ -111,7 +111,7 @@ describe("Safetensors malformed input no-write admission", () => {
   let dir: string | undefined;
   afterEach(() => { if (dir) rmSync(dir, { recursive: true, force: true }); });
   it("does not create output directories or overwrite input/existing output", () => {
-    dir = mkdtempSync(join(tmpdir(), "bla-safetensors-integrity-"));
+    dir = mkdtempSync(join(tmpdir(), "aegis-safetensors-integrity-"));
     const input = join(dir, "broken.safetensors");
     const output = join(dir, "existing.safetensors");
     const bad = Buffer.from("invalid-model");

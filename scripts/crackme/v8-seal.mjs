@@ -52,7 +52,7 @@ try {
   if (seal.selfSeal !== true) fail("SEAL must pin selfSeal=true");
   if (seal.llmDirectives !== false || seal.emitManifest !== false) fail("SEAL must pin llmDirectives=false, emitManifest=false");
   const pkgVersion = String(JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")).version);
-  if (seal.blaVersion !== pkgVersion) fail(`SEAL blaVersion ${seal.blaVersion} != package.json ${pkgVersion}`);
+  if (seal.aegisVersion !== pkgVersion) fail(`SEAL aegisVersion ${seal.aegisVersion} != package.json ${pkgVersion}`);
   if (!/^[0-9a-f]{64}$/.test(seal.flagSha256)) fail("SEAL flagSha256 missing");
 
   for (const rel of COMMITTED_FILES) {

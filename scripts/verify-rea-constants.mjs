@@ -8,7 +8,7 @@
  * REA-drift verification harness.
  *
  * Reads the local REA checkout and asserts — by constant NAME, never by
- * brittle file:line citations — that every hard limit BLA depends on still
+ * brittle file:line citations — that every hard limit AEGIS depends on still
  * matches the expected value. Prints a clear PASS/FAIL drift report.
  *
  * Usage:
@@ -23,12 +23,12 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const BLA_ROOT = resolve(__dirname, "..");
+const AEGIS_ROOT = resolve(__dirname, "..");
 // Treat an empty/whitespace REA_ROOT as unset. CI passes `REA_ROOT=""` when the
 // sibling checkout is absent; `??` would keep "" and resolve("") === cwd, which
-// silently pointed this harness at BLA's OWN tree and produced bogus failures.
+// silently pointed this harness at AEGIS's OWN tree and produced bogus failures.
 const REA_ROOT_ENV = (process.env.REA_ROOT ?? "").trim();
-const REA_ROOT = resolve(REA_ROOT_ENV || join(BLA_ROOT, "..", "rea"));
+const REA_ROOT = resolve(REA_ROOT_ENV || join(AEGIS_ROOT, "..", "rea"));
 
 /** Evaluate a simple numeric TS/Python initializer (`64 * 1024`, `1_048_576`, `65_536`). */
 function evalNumericExpr(expr) {
@@ -143,7 +143,7 @@ function countObligationFamilies(files) {
   };
 }
 
-/** Catalog of BLA-tracked REA constants (name → expected numeric value). */
+/** Catalog of AEGIS-tracked REA constants (name → expected numeric value). */
 const NUMERIC_EXPECTATIONS = [
   { name: "SEMANTIC_PRIMITIVE_CANDIDATE_LIMIT", expected: 256 },
   { name: "SEMANTIC_EXPRESSION_DEPTH_LIMIT", expected: 256 },
@@ -378,12 +378,12 @@ const EXPECTED_OBLIGATION_FAMILIES = [
 ];
 
 function main() {
-  console.log("BLA ↔ REA constant drift verification");
-  console.log(`  BLA_ROOT = ${BLA_ROOT}`);
+  console.log("AEGIS ↔ REA constant drift verification");
+  console.log(`  AEGIS_ROOT = ${AEGIS_ROOT}`);
   console.log(`  REA_ROOT = ${REA_ROOT}`);
 
   if (
-    REA_ROOT === BLA_ROOT ||
+    REA_ROOT === AEGIS_ROOT ||
     !existsSync(REA_ROOT) ||
     !existsSync(join(REA_ROOT, "src"))
   ) {
@@ -570,7 +570,7 @@ function main() {
   console.log("");
   console.log(
     failures === 0
-      ? `OK  ${rows.length} checks passed — BLA catalog is aligned with REA.`
+      ? `OK  ${rows.length} checks passed — AEGIS catalog is aligned with REA.`
       : `DRIFT  ${failures}/${rows.length} checks failed — update src/identity.ts / rea-budget-matrix.ts / obligation-flooder.ts.`,
   );
   process.exit(failures === 0 ? 0 : 1);

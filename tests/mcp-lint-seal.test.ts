@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { handleMcpRequest, BLA_MCP_TOOLS } from "../src/mcp/server.js";
+import { handleMcpRequest, AEGIS_MCP_TOOLS } from "../src/mcp/server.js";
 import { SEAL_COMMITMENT_SCHEMA } from "../src/engine/seal-commitment-lint.js";
 
 const tempDirs: string[] = [];
@@ -20,7 +20,7 @@ async function call(name: string, args: Record<string, unknown>) {
 }
 
 const ROUND2 = {
-  schema: "bla-redblue-r2-seal/v1",
+  schema: "aegis-redblue-r2-seal/v1",
   rounds: 28,
   scheduleSalt: 1374179543,
   revision: "7f325fec37206b637a224e9630b67c4a",
@@ -28,22 +28,22 @@ const ROUND2 = {
 };
 
 const ONE_WAY = {
-  schema: "bla-entitlement-seal/v1",
+  schema: "aegis-entitlement-seal/v1",
   algorithm: "sha256",
   revision: "b38091d4a394ded9012846e8d4b647083b260beb6ee5ad1e42265fe6f107c660",
 };
 
-describe("MCP bla_lint_seal", () => {
+describe("MCP aegis_lint_seal", () => {
   it("is registered once", () => {
-    expect(BLA_MCP_TOOLS.filter((t) => t.name === "bla_lint_seal")).toHaveLength(1);
+    expect(AEGIS_MCP_TOOLS.filter((t) => t.name === "aegis_lint_seal")).toHaveLength(1);
   });
 
   it("flags reversible seal and sets isError", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-mcp-seal-bad-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-mcp-seal-bad-"));
     tempDirs.push(dir);
     const file = join(dir, "seal.json");
     writeFileSync(file, JSON.stringify(ROUND2), "utf8");
-    const res = await call("bla_lint_seal", { path: file });
+    const res = await call("aegis_lint_seal", { path: file });
     expect(res?.error).toBeUndefined();
     const result = res!.result as {
       isError?: boolean;
@@ -62,11 +62,11 @@ describe("MCP bla_lint_seal", () => {
   });
 
   it("passes one-way digest without refuse", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-mcp-seal-ok-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-mcp-seal-ok-"));
     tempDirs.push(dir);
     const file = join(dir, "seal.json");
     writeFileSync(file, JSON.stringify(ONE_WAY), "utf8");
-    const res = await call("bla_lint_seal", { path: file });
+    const res = await call("aegis_lint_seal", { path: file });
     const result = res!.result as {
       isError?: boolean;
       structuredContent: { shouldRefuseBankrupt: boolean };

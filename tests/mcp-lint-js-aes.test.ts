@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { handleMcpRequest, BLA_MCP_TOOLS } from "../src/mcp/server.js";
+import { handleMcpRequest, AEGIS_MCP_TOOLS } from "../src/mcp/server.js";
 import {
   buildTestJsAesUnwrapFootgun,
   JS_AES_UNWRAP_SCHEMA,
@@ -22,17 +22,17 @@ async function call(name: string, args: Record<string, unknown>) {
   });
 }
 
-describe("MCP bla_lint_js_aes_unwrap", () => {
+describe("MCP aegis_lint_js_aes_unwrap", () => {
   it("registers once", () => {
-    expect(BLA_MCP_TOOLS.filter((t) => t.name === "bla_lint_js_aes_unwrap")).toHaveLength(1);
+    expect(AEGIS_MCP_TOOLS.filter((t) => t.name === "aegis_lint_js_aes_unwrap")).toHaveLength(1);
   });
 
   it("flags R4 footgun with isError", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-mcp-aes-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-mcp-aes-"));
     tempDirs.push(dir);
     const file = join(dir, "license.cjs");
     writeFileSync(file, buildTestJsAesUnwrapFootgun({}), "utf8");
-    const res = await call("bla_lint_js_aes_unwrap", { path: file });
+    const res = await call("aegis_lint_js_aes_unwrap", { path: file });
     expect(res?.error).toBeUndefined();
     const result = res!.result as {
       isError?: boolean;

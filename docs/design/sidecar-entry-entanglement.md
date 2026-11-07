@@ -25,13 +25,13 @@ checks beat orphan honeypot files.
    self-seal digest — see `#40.5`).
 3. **Strip ⇒ fail** — missing or altered sidecar changes the digest → opaque happy-path /
    activation gate fails.
-4. **Opt-in** — `sidecarEntangle: true` in `.blarc` / CLI / MCP (not enabled by default until
+4. **Opt-in** — `sidecarEntangle: true` in `.aegisrc` / CLI / MCP (not enabled by default until
    format coverage is broader).
 
 ## First slice (this batch)
 
 - This DESIGN note (normative intent).
-- Stub helper `planSidecarEntanglement()` returning a `bla-sidecar-entangle/v1` plan
+- Stub helper `planSidecarEntanglement()` returning a `aegis-sidecar-entangle/v1` plan
   object (paths, digest algorithm, entry hook kind) **without** rewriting binaries yet.
 - Unit tests for the planner.
 

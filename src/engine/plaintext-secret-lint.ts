@@ -13,7 +13,7 @@
  * Avoid false positives:
  *   - length < 8 → skip
  *   - pure UI copy (no high entropy, no structural markers) → skip
- *   - strings already behind the XOR decrypt stub (_blaS(i) / table) → skip
+ *   - strings already behind the XOR decrypt stub (_aegisS(i) / table) → skip
  *   - allowPlaintextString escapes bankrupt refuse
  *
  * DEFENSIVE ONLY.
@@ -24,7 +24,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 import type { ProtectionIntensity } from "../core/types.js";
 
-export const PLAINTEXT_SECRET_SCHEMA = "bla-plaintext-secret-lint/v1" as const;
+export const PLAINTEXT_SECRET_SCHEMA = "aegis-plaintext-secret-lint/v1" as const;
 
 export type PlaintextSecretFindingId =
   | "plaintext-flag-literal"
@@ -59,7 +59,7 @@ const SKIP_DIR_NAMES = new Set([
   ".git",
   ".hg",
   ".svn",
-  ".bla-hardened",
+  ".aegis-hardened",
   "coverage",
   ".next",
   ".turbo",
@@ -161,7 +161,7 @@ export function extractStringLiterals(source: string): string[] {
  * (opaque payload / index calls) — do not re-flag.
  */
 export function looksAlreadyEncrypted(source: string, literal: string): boolean {
-  if (source.includes("_blaS(") && source.includes("_blaT")) {
+  if (source.includes("_aegisS(") && source.includes("_aegisT")) {
     // After encrypt, cleartext literal should be absent from source.
     if (!source.includes(JSON.stringify(literal)) && !source.includes(`'${literal}'`) && !source.includes(`"${literal}"`)) {
       return true;
@@ -239,9 +239,9 @@ export function lintPlaintextSecretsSource(
     errorFindings.length > 0 && options.allowPlaintextString !== true;
 
   const oneLineAdvice = shouldRefuseBankrupt
-    ? "ERROR: Cleartext sensitive literals remain — run bla_encrypt_strings (XOR/combinatorial; never JS AES) or pass allow_plaintext_string (lab only)."
+    ? "ERROR: Cleartext sensitive literals remain — run aegis_encrypt_strings (XOR/combinatorial; never JS AES) or pass allow_plaintext_string (lab only)."
     : looksExposed
-      ? "WARNING: Non-refusing sensitive literals (e.g. URLs) still in cleartext — prefer bla_encrypt_strings."
+      ? "WARNING: Non-refusing sensitive literals (e.g. URLs) still in cleartext — prefer aegis_encrypt_strings."
       : "No cleartext sensitive-literal findings (heuristic).";
 
   return {
@@ -327,7 +327,7 @@ export function plaintextSecretRefuseMessage(
   const ids = [...new Set(report.findings.map((f) => f.id))].join(", ");
   return (
     `Plaintext sensitive literals in ${basename(filePath)} (${ids}). ` +
-    `Encrypt with bla_encrypt_strings (seed-derived XOR — never JS-side AES wrap-key) ` +
+    `Encrypt with aegis_encrypt_strings (seed-derived XOR — never JS-side AES wrap-key) ` +
     `or pass allowPlaintextString / --allow-plaintext-string / allow_plaintext_string (lab only).`
   );
 }

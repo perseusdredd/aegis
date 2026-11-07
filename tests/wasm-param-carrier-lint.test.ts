@@ -51,7 +51,7 @@ describe("wasm-param-carrier lint (red-blue round-3)", () => {
   });
 
   it("discovers .wasm under a tree and lints the round-3-shaped carrier", () => {
-    const root = mkdtempSync(join(tmpdir(), "bla-wasm-parm-"));
+    const root = mkdtempSync(join(tmpdir(), "aegis-wasm-parm-"));
     dirs.push(root);
     mkdirSync(join(root, "dist"));
     writeFileSync(join(root, "dist", "core.wasm"), buildTestWasmWithParamCarrier({}));
@@ -64,7 +64,7 @@ describe("wasm-param-carrier lint (red-blue round-3)", () => {
   });
 
   it("flags the round-3 hardened fixture when present", () => {
-    const fixture = "/workspace/bla-redblue/round-3/hardened/core.wasm";
+    const fixture = "/workspace/aegis-redblue/round-3/hardened/core.wasm";
     try {
       const report = lintWasmParamCarrierFile(fixture);
       expect(report.shouldRefuseBankrupt).toBe(true);

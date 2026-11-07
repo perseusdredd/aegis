@@ -47,7 +47,7 @@ export function getDatabaseSyncClass(): typeof DatabaseSync {
   const cls = tryGetDatabaseSyncClass();
   if (cls) return cls;
   throw new Error(
-    `BLA SQLite support requires Node.js 22.x >=22.13.0 or Node.js >=24.0.0 ` +
+    `AEGIS SQLite support requires Node.js 22.x >=22.13.0 or Node.js >=24.0.0 ` +
       `with node:sqlite enabled (current runtime: ${process.version}). ` +
       "Upgrade Node.js and remove --no-experimental-sqlite if set.",
   );

@@ -1,4 +1,4 @@
-export { BLA_IDENTITY, REA_INTERNAL_LIMITS } from "./identity.js";
+export { AEGIS_IDENTITY, REA_INTERNAL_LIMITS } from "./identity.js";
 export * from "./core/types.js";
 export { SeededPrng, deriveSeedLabel } from "./core/prng.js";
 export { detectArtifactFormat } from "./core/detector.js";
@@ -20,7 +20,7 @@ export {
   type SplitShareEncodedString,
 } from "./shields/runtime/memory-diff-shield.js";
 export {
-  transformJavaScriptWithBlaShield,
+  transformJavaScriptWithAegisShield,
   InvalidJavaScriptCarrierError,
   inferJsLoaderFromPath,
   inferJsCarrierFromPath,
@@ -196,11 +196,11 @@ export {
   protectZipOrApkBuffer,
 } from "./shields/formats/archive.js";
 export {
-  blaRollupPlugin,
-  blaVitePlugin,
-  BlaWebpackPlugin,
-  blaEsbuildPlugin,
-  type BlaBundlerPluginOptions,
+  aegisRollupPlugin,
+  aegisVitePlugin,
+  AegisWebpackPlugin,
+  aegisEsbuildPlugin,
+  type AegisBundlerPluginOptions,
 } from "./bundler/index.js";
 export { auditTarget } from "./engine/auditor.js";
 export { protectTarget } from "./engine/protector.js";
@@ -230,7 +230,7 @@ export {
   discoverHardenTargets,
   hardenProject,
   formatHardenProjectReport,
-  BLA_BUILD_OUTPUT_DIR_NAMES,
+  AEGIS_BUILD_OUTPUT_DIR_NAMES,
   type HardenProjectReport,
   type HardenProgressEvent,
   type HardenProgressPhase,
@@ -308,7 +308,7 @@ export {
 } from "./setup/clients.js";
 export { runSetup, runUninstall } from "./setup/setup.js";
 export { runDoctor } from "./setup/doctor.js";
-export { handleMcpRequest, startMcpStdioServer, BLA_MCP_TOOLS, BLA_MCP_RESOURCES, BLA_MCP_PROMPTS } from "./mcp/server.js";
+export { handleMcpRequest, startMcpStdioServer, AEGIS_MCP_TOOLS, AEGIS_MCP_RESOURCES, AEGIS_MCP_PROMPTS } from "./mcp/server.js";
 export {
   inspectReleaseExposure,
   type ReleaseExposureReport,

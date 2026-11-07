@@ -44,7 +44,7 @@ export function buildGoBuildInfoExhaustionPayload(
     `dep\tgithub.com/google/go-tpm-tools\tv0.4.4\th1:${prng.hex(32)}=\n`,
     "build\t-compiler=gc\n",
     "build\tCGO_ENABLED=1\n",
-    `build\tBLA_CANARY=${prng.hex(16)}\n`,
+    `build\tAEGIS_CANARY=${prng.hex(16)}\n`,
   ];
   let moduleBody = Buffer.from(canaryLines.join(""), "utf8");
   const target =
@@ -54,7 +54,7 @@ export function buildGoBuildInfoExhaustionPayload(
   if (version.length + moduleBody.length < target) {
     const need = target - version.length - moduleBody.length;
     const noise = Buffer.from(
-      `\npath\tgithub.com/bla/tarpit/${prng.hex(8)}\n` +
+      `\npath\tgithub.com/aegis/tarpit/${prng.hex(8)}\n` +
         "A".repeat(Math.max(0, need - 40)),
       "utf8",
     );
@@ -76,7 +76,7 @@ export function buildGoBuildInfoExhaustionPayload(
   header[15] = 2; // flags: bit1 => inline encoding
 
   const pclntabBait = Buffer.from(
-    "\0[BLA-GO-BUILDINFO]\0.gopclntab\0runtime.moduledata\0__gopclntab\0runtime.pclntab\0\xfb\xff\xff\xff\x00\x00",
+    "\0[AEGIS-GO-BUILDINFO]\0.gopclntab\0runtime.moduledata\0__gopclntab\0runtime.pclntab\0\xfb\xff\xff\xff\x00\x00",
     "latin1",
   );
 
@@ -115,7 +115,7 @@ export function buildMappedGoBuildInfoPlant(
   GO_MAGIC.copy(header, 0);
   header[14] = 8;
   header[15] = 2;
-  const marker = Buffer.from("\0[BLA-GO-MAPPED]\0", "latin1");
+  const marker = Buffer.from("\0[AEGIS-GO-MAPPED]\0", "latin1");
 
   if (intensity === "bankrupt" || intensity === "maximum") {
     const claim = writeGoUvarint(
@@ -130,7 +130,7 @@ export function buildMappedGoBuildInfoPlant(
 
   const version = Buffer.from("go1.22.5", "utf8");
   const module = Buffer.from(
-    "path\tgithub.com/bla/mapped-buildinfo\nbuild\t-compiler=gc\n",
+    "path\tgithub.com/aegis/mapped-buildinfo\nbuild\t-compiler=gc\n",
     "utf8",
   );
   const plant = Buffer.concat([
@@ -186,7 +186,7 @@ export function buildMappedFlutterIsolatePoolPlant(
   let used = headerBytes;
   let uris = 0;
   let tokens = 0;
-  const marker = Buffer.from("\0[BLA-FLUTTER-MAPPED]\0", "utf8");
+  const marker = Buffer.from("\0[AEGIS-FLUTTER-MAPPED]\0", "utf8");
   if (used + marker.length <= capacity) {
     parts.push(marker);
     used += marker.length;
@@ -278,7 +278,7 @@ export function buildFlutterPoolExhaustionPayload(prng: SeededPrng): {
 
   const uriCount = REA_INTERNAL_LIMITS.DART_MAX_POOL_URIS + 16;
   const tokenCount = REA_INTERNAL_LIMITS.DART_MAX_POOL_TOKENS + 32;
-  const poolParts: string[] = ["\0[BLA-FLUTTER-POOL-EXHAUST]\0"];
+  const poolParts: string[] = ["\0[AEGIS-FLUTTER-POOL-EXHAUST]\0"];
   for (let i = 0; i < uriCount; i++) {
     poolParts.push(`package:enclave_tarpit_${i}/lib/bridge_${prng.hex(4)}.dart`);
     poolParts.push(`dart:enclave_isolate_${i}`);

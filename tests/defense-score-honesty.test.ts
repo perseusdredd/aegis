@@ -62,7 +62,7 @@ describe("Issue #40.6: defenseScore honesty", () => {
   });
 
   it("verifyTarget attaches honesty fields and soft-caps wasm by default", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-honesty-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-honesty-"));
     try {
       // Minimal valid empty wasm module (magic + version)
       const wasm = Buffer.from([
@@ -93,7 +93,7 @@ describe("Issue #40.6: defenseScore honesty", () => {
   });
 
   it("verifyTarget skips wasm rename gap when wasmExportRenameApplied:true", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-honesty-ren-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-honesty-ren-"));
     try {
       const wasm = Buffer.from([
         0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00,

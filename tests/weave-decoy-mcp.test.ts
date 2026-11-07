@@ -3,9 +3,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import {
-  BLA_MCP_PROMPTS,
-  BLA_MCP_RESOURCES,
-  BLA_MCP_TOOLS,
+  AEGIS_MCP_PROMPTS,
+  AEGIS_MCP_RESOURCES,
+  AEGIS_MCP_TOOLS,
   handleMcpRequest,
 } from "../src/mcp/server.js";
 import {
@@ -44,7 +44,7 @@ describe("weave-decoy theory pack", () => {
   });
 
   it("buildWeavePlan classifies JS and Python source as woven", () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-weave-plan-"));
+    const dir = mkdtempSync(join(tmpdir(), "aegis-weave-plan-"));
     temps.push(dir);
     writeFileSync(join(dir, "app.js"), "function main(){ return 1; }\n");
     writeFileSync(join(dir, "svc.py"), "def main():\n    return 1\n");
@@ -64,16 +64,16 @@ describe("weave-decoy theory pack", () => {
 });
 
 describe("weave-decoy MCP descriptors", () => {
-  it("lists bla_weave_plan and weave_decoys on harden/defend/protect", () => {
-    expect(BLA_MCP_TOOLS.map((t) => t.name)).toContain("bla_weave_plan");
-    for (const name of ["bla_harden", "bla_defend", "bla_protect"] as const) {
-      const tool = BLA_MCP_TOOLS.find((t) => t.name === name)!;
+  it("lists aegis_weave_plan and weave_decoys on harden/defend/protect", () => {
+    expect(AEGIS_MCP_TOOLS.map((t) => t.name)).toContain("aegis_weave_plan");
+    for (const name of ["aegis_harden", "aegis_defend", "aegis_protect"] as const) {
+      const tool = AEGIS_MCP_TOOLS.find((t) => t.name === name)!;
       expect(tool.inputSchema.properties.weave_decoys?.type).toBe("boolean");
     }
-    expect(BLA_MCP_RESOURCES.some((r) => r.uri === WEAVE_DIRECTIVES_URI)).toBe(
+    expect(AEGIS_MCP_RESOURCES.some((r) => r.uri === WEAVE_DIRECTIVES_URI)).toBe(
       true,
     );
-    expect(BLA_MCP_PROMPTS.some((p) => p.name === "bla-weave-decoy")).toBe(true);
+    expect(AEGIS_MCP_PROMPTS.some((p) => p.name === "aegis-weave-decoy")).toBe(true);
   });
 
   it("initialize advertises resources; resources/read returns directives", async () => {
@@ -107,11 +107,11 @@ describe("weave-decoy MCP descriptors", () => {
       read?.result as { contents: Array<{ text: string; uri: string }> }
     ).contents;
     expect(contents[0]!.uri).toBe(WEAVE_DIRECTIVES_URI);
-    expect(contents[0]!.text).toContain("bla_weave_plan");
+    expect(contents[0]!.text).toContain("aegis_weave_plan");
   });
 
-  it("tools/call bla_weave_plan returns structured plan", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bla-weave-mcp-"));
+  it("tools/call aegis_weave_plan returns structured plan", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "aegis-weave-mcp-"));
     temps.push(dir);
     mkdirSync(dir, { recursive: true });
     writeFileSync(join(dir, "x.js"), "exports.x = 1;\n");
@@ -121,7 +121,7 @@ describe("weave-decoy MCP descriptors", () => {
       id: 4,
       method: "tools/call",
       params: {
-        name: "bla_weave_plan",
+        name: "aegis_weave_plan",
         arguments: { path: dir },
       },
     });
@@ -132,13 +132,13 @@ describe("weave-decoy MCP descriptors", () => {
     expect(plan.targets.length).toBeGreaterThanOrEqual(1);
   });
 
-  it("prompts/get bla-weave-decoy mentions weave_decoys", async () => {
+  it("prompts/get aegis-weave-decoy mentions weave_decoys", async () => {
     const res = await handleMcpRequest({
       jsonrpc: "2.0",
       id: 5,
       method: "prompts/get",
       params: {
-        name: "bla-weave-decoy",
+        name: "aegis-weave-decoy",
         arguments: { target_path: "." },
       },
     });
@@ -146,6 +146,6 @@ describe("weave-decoy MCP descriptors", () => {
       res?.result as { messages: Array<{ content: { text: string } }> }
     ).messages[0]!.content.text;
     expect(text).toContain("weave_decoys");
-    expect(text).toContain("bla_weave_plan");
+    expect(text).toContain("aegis_weave_plan");
   });
 });
