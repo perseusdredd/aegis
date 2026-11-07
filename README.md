@@ -1,4 +1,7 @@
-﻿# <img src="docs/assets/logo.png" alt="AEGIS Shield" width="42" align="absmiddle" /> AEGIS: Blind LLM Agents
+﻿<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-banner-dark.png">
+  <img src="docs/assets/logo-banner.png" alt="AEGIS: Blind LLM Agents" width="420">
+</picture>
 
 ### Rotate -> Deepen -> Measure
 
