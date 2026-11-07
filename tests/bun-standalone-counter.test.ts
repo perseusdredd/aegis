@@ -10,7 +10,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { describe, expect, it } from "vitest";
 import { SeededPrng } from "../src/core/prng.js";
 import { REA_INTERNAL_LIMITS } from "../src/identity.js";
@@ -28,7 +28,8 @@ const REA_ROOT = resolve(
   (process.env.REA_ROOT ?? "").trim() || join(AEGIS_ROOT, "..", "rea"),
 );
 const REA_BUN_READER = join(REA_ROOT, "src/artifacts/BunStandaloneArtifactReader.ts");
-const REA_TSX = join(REA_ROOT, "node_modules/.bin/tsx");
+// Run tsx through node so Windows needs no .cmd shim (extensionless bin ENOENTs there).
+const REA_TSX = join(REA_ROOT, "node_modules/tsx/dist/cli.mjs");
 const HOST_ELF = "/bin/true";
 
 function decodeSuffix(buf: Buffer): { byteCount: bigint; tableLength: number; entry: number } {
@@ -132,7 +133,7 @@ describe("Bun standalone module graph counter (REA #6998)", () => {
       const script = join(dir, "probe.mts");
       writeFileSync(
         script,
-        `import { BunStandaloneArtifactReader } from ${JSON.stringify(REA_BUN_READER)};
+        `import { BunStandaloneArtifactReader } from ${JSON.stringify(pathToFileURL(REA_BUN_READER).href)};
 import { buffer } from "node:stream/consumers";
 const reader = new BunStandaloneArtifactReader(${JSON.stringify(decoy)});
 const entries = [];
@@ -144,7 +145,7 @@ await reader.close();
 console.log(JSON.stringify({ count: entries.length, limited, indexed, first: entries[0].path, canary: first.includes("PROTECTED_CANARY_CREDENTIAL=") }));
 `,
       );
-      const out = execFileSync(REA_TSX, [script], { cwd: REA_ROOT, encoding: "utf8", timeout: 120_000 });
+      const out = execFileSync(process.execPath, [REA_TSX, script], { cwd: REA_ROOT, encoding: "utf8", timeout: 120_000 });
       const res = JSON.parse(out.trim().split("\n").pop()!);
       expect(res.count).toBeGreaterThanOrEqual(r.moduleCount);
       expect(res.limited).toBe(r.deepNameModules);
