@@ -6,7 +6,7 @@ Hedef: AEGIS'in iddia ettiği bütçe ihlallerini **gerçek REA koduna** karşı
 ## 0. Bugünkü durum (okunan kod)
 
 Var:
-- `scripts/redteam/run.mjs` — 14 format için "önce/sonra" ampirik koşucu; `docs/redteam/empirical-rea-validation.{md,json}` yazar; REA dist yoksa `status: "unverified"` + exit 0.
+- `scripts/redteam/run.mjs` — 13 format için "önce/sonra" ampirik koşucu; `docs/redteam/empirical-rea-validation.{md,json}` yazar; REA dist yoksa `status: "unverified"` + exit 0.
 - `scripts/redteam/lib/probes.mjs` — gerçek REA parserlarını `dist/` üzerinden yükler (`probeWasm`, `probeSqlite`, `probeGo`, ...).
 - `scripts/redteam/lib/samples.mjs` — örnek matrisi; `buildSampleMatrix()` `{aegis, intensity, seed, samples}` döner, seed sabit `"aegis-redteam-empirical-v1"`.
 - `scripts/redteam/lib/report.mjs` — `buildReportDocument()`, `writeReports()`.
@@ -30,7 +30,7 @@ aegis measure [--format <f>]... [--seed <s>] [--intensity <p>]
 
 | Bayrak | Anlam | Varsayılan |
 |---|---|---|
-| `--format <f>` | Yalnızca bu formatı koş (tekrarlanabilir). Geçerli değerler `run.mjs`'deki 14 anahtar. | tümü |
+| `--format <f>` | Yalnızca bu formatı koş (tekrarlanabilir). Geçerli değerler `run.mjs`'deki 13 anahtar. | tümü |
 | `--seed <s>` | Build seed'i; `rotation` spec'indeki çözümleyici ile aynı öncelik. | `resolveRotationSeed()` |
 | `--intensity <p>` | `stealth\|balanced\|maximum\|bankrupt` — mevcut doğrulama kullanılır. | `bankrupt` |
 | `--out <dir>` | Çıktı dizini. | `docs/measure` |
@@ -71,10 +71,10 @@ JSON (`aegis-measure/v1`):
   "rea": { "root": "C:/Users/numan/aresearch/rea", "commit": "<git rev-parse>", "distReady": true },
   "run": { "seed": "aegis-…", "intensity": "bankrupt", "nodeVersion": "v24.19.0" },
   "summary": {
-    "selected": 14, "measured": 12, "skipped": 2,
+    "selected": 13, "measured": 12, "skipped": 1,
     "passed": 11, "remaining": 1,
     "divergences": 1, "overclaims": 1, "underclaims": 0,
-    "formatCoverage": 0.857,
+    "formatCoverage": 0.923,
     "totalDurationMs": 184230, "medianDurationMs": 9100,
     "verdict": "fail"
   },
@@ -91,7 +91,7 @@ JSON (`aegis-measure/v1`):
 
 ## 4. Eşik ve başarı tanımı
 
-- `formatCoverage` ≥ **0.85** (14 formatın en az 12'si ölçülmüş).
+- `formatCoverage` ≥ **0.85** (13 formatın en az 12'si ölçülmüş; 11/13 = 0.846 eşiğin altındadır).
 - `divergences` == 0.
 - `beforeBudgetHit` hiçbir formatta `true` olmamalı (sertleştirilmemiş örnek bütçeyi aşmamalı).
 - `totalDurationMs` ≤ 600000.
@@ -136,6 +136,6 @@ Atlanan her format `skips[]` içinde nedeniyle birlikte görünür; sessiz atlam
 
 ## 8. Sınırlar
 
-- Ölçüm yalnızca `scripts/redteam` matrisinin kapsadığı 14 formatı ölçer; matriste örneği olmayan format "kapsam dışı"dır ve `skips[]`'e `no-sample` olarak yazılır.
+- Ölçüm yalnızca `scripts/redteam` matrisinin kapsadığı 13 formatı ölçer; matriste örneği olmayan format "kapsam dışı"dır ve `skips[]`'e `no-sample` olarak yazılır.
 - `gpu_ptx` yalnız metin taramasıyla doğrulanır; fatbin/SPIR-V nesne çözümü ölçülmüş sayılmaz, `metrics.nativeDecode: false` ile işaretlenir.
 - Ölçüm, üretim artifact'ını değiştirmez; yalnız `docs/measure` altına yazar.

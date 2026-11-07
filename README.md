@@ -52,6 +52,8 @@ npx aegis-agents harden .
 
 `harden` auto-discovers build outputs (`dist/`, `build/`, `.asar`, `.wasm`, `.sqlite`, `models/` ...) and runs `audit` -> `protect` -> `verify` at `bankrupt` intensity.
 
+> On Windows PowerShell, `npx` may be blocked by script execution policy. Use `npx.cmd` instead (e.g. `npx.cmd aegis-agents setup -y`).
+
 Step by step, when you know the target:
 
 ```bash
