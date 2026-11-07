@@ -22,6 +22,29 @@ AEGIS is a build-time defence layer for software you ship: it makes release arte
 
 Each layer has a spec with the exact limits it targets: [rotation](docs/AEGIS-ROTATION.md), [budgets](docs/AEGIS-BUDGETS.md), [measurement](docs/AEGIS-MEASUREMENT.md).
 
+## Benchmark
+
+`node dist/cli.js benchmark` runs the 14-target Counter-REA showcase and reports estimated REA reconstruction cost before and after AEGIS, at identical runtime behaviour:
+
+| Target | Before (score / cost) | After (score / cost) | Token mult | Runtime |
+| --- | --- | --- | --- | --- |
+| DX-Ball Sound-Pan Calculation | 84/100, $0.20 | 2/100, $236.47 | 3150.8x | EXACT |
+| Notion Electron Clipboard Bridge (.asar) | 98/100, $0.34 | 2/100, $358.64 | 2532.3x | EXACT |
+| Enterprise License & Crypto Validator | 87/100, $0.20 | 2/100, $241.51 | 3220.8x | EXACT |
+| WebAssembly Crypto Kernel (.wasm) | 81/100, $0.20 | 6/100, $30.23 | 381.5x | EXACT |
+| Native ELF64 Rust/Go/Electron/Dart Binary | 81/100, $0.73 | 2/100, $60.03 | 105.6x | EXACT |
+| Local SQLite Entitlement Database (.sqlite) | 81/100, $0.29 | 7/100, $28.39 | 162.1x | EXACT |
+| Proprietary Edge AI Model (.safetensors) | 81/100, $0.20 | 6/100, $29.90 | 376.8x | EXACT |
+| Android Dalvik Bytecode (classes.dex) | 81/100, $0.34 | 7/100, $45.13 | 313.4x | EXACT |
+| Apple Bundle PropertyList (Info.plist) | 81/100, $0.26 | 9/100, $22.96 | 211.8x | EXACT |
+| .NET Managed CLR Assembly (.dll) | 81/100, $0.34 | 6/100, $39.97 | 274.9x | EXACT |
+| Erlang/OTP BEAM Module (.beam) | 81/100, $0.34 | 5/100, $62.08 | 433.2x | EXACT |
+| EVM Contract Bytecode (Solidity metadata) | 81/100, $0.26 | 6/100, $29.40 | 276.3x | EXACT |
+| libpcap Network Capture (.pcap) | 81/100, $0.20 | 8/100, $26.58 | 333.2x | EXACT |
+| NVIDIA PTX Text Module (.ptx) | 81/100, $0.20 | 6/100, $39.56 | 504.0x | EXACT |
+
+**Aggregate:** token 641.0x, cost 305.1x across all 14 targets (estimated reconstruction cost, Claude Opus 4 pricing). "Runtime: EXACT" means the protected artefact behaves identically to the original. These are AEGIS's own token-cost estimates, not a live LLM run — see [Measurement](#measurement) below for the empirical check against real REA probes.
+
 ## Requirements
 
 - Node.js `^22.23.4` or `>=24.0.0` (REA red-team probes need `zlib.zstd*` on 22.23+)
