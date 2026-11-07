@@ -934,7 +934,8 @@ export function transformJavaScriptWithAegisShield(
   traverse(ast, {
     Scope(path) {
       for (const [name, binding] of Object.entries(path.scope.bindings)) {
-        if (binding.scope !== path.scope) continue;
+        // TypeScript declaration files (.d.ts) can leave undefined binding records.
+        if (!binding || binding.scope !== path.scope) continue;
         if (RENAME_RESERVED.has(name)) continue;
         if (exportedNameSet.has(name)) continue;
         if (binding.kind === "module") continue;
