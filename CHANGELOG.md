@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0] — 2026-11-07
+
+First tagged GitHub release.
+
+### Added
+- **Zero-arg interactive wizard:** running `aegis` / `npx aegis-agents` with no arguments in an interactive terminal now prompts for a target path and an intensity (stealth/balanced/maximum/bankrupt), then runs `harden` for you. Falls back to the existing help screen whenever stdin isn't a TTY (CI, pipes, scripts), so no scripted behaviour changes.
+- **Drift registry + red-team intensity matrix tests:** `tests/sample-matrix-intensity.test.ts` asserts hardened-byte growth is strictly ordered across `stealth < balanced < maximum < bankrupt`.
+- **Benchmark table in README:** the 14-target Counter-REA showcase (before/after exposure score, token and dollar cost, amplification multiplier) is now documented directly in the README, alongside the real `measure` empirical results.
+- New AEGIS wordmark logo in the README header (light/dark variants via `<picture>`).
+
+### Fixed
+- Windows `npx` script-execution-policy note added to the README (use `npx.cmd`).
+- `.gitignore`: measurement scratch output (`docs/measure/*.json`, `drift.txt`, `.aegis-hardened/`) no longer tracked.
+
 ## [3.0.1] — 2026-11-06
 
 Patch completing the JS+Python sidecar/entry entanglement strip⇒fail vertical slice (issue #40). Default still OFF.
