@@ -603,5 +603,5 @@ benchmark. Includes commit `1490af1` and all subsequent work through this tag.
 
 Previous release. See git tag `aegis-agents-1.3.0`.
 
-[1.4.0]: https://github.com/qybaihe/bla/compare/aegis-agents-1.3.0...aegis-agents-1.4.0
-[1.3.0]: https://github.com/qybaihe/bla/releases/tag/aegis-agents-1.3.0
+[1.4.0]: https://github.com/perseusdredd/aegis/compare/aegis-agents-1.3.0...aegis-agents-1.4.0
+[1.3.0]: https://github.com/perseusdredd/aegis/releases/tag/aegis-agents-1.3.0

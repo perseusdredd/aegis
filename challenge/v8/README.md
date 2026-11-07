@@ -1,8 +1,8 @@
 # Aegis (CrackMe v8)
 
-Offline product entitlement gate shipped as a **real `bla harden` output**
+Offline product entitlement gate shipped as a **real `aegis harden` output**
 (bankrupt + `--self-seal`, **no** `--allow-*`). Absorbs the red/blue R1–R12
-recipes that held under BLA 2.0 packaging gates.
+recipes that held under AEGIS 2.0 packaging gates.
 
 ```bash
 npm run crackme:v8 -- '<16-char-key>'

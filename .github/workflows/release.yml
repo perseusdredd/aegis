@@ -169,7 +169,7 @@ jobs:
           if npm publish "${PRIMARY_TGZ}" --provenance --access public; then
             echo "Published aegis-agents@${VERSION} with provenance."
           else
-            echo "::error::npm publish --provenance failed. Configure npm Trusted Publishing (OIDC) for qybaihe/bla or set a valid NPM_TOKEN secret. Refusing to publish without provenance."
+            echo "::error::npm publish --provenance failed. Configure npm Trusted Publishing (OIDC) for perseusdredd/aegis or set a valid NPM_TOKEN secret. Refusing to publish without provenance."
             exit 1
           fi
 

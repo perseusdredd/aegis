@@ -1,10 +1,10 @@
-# BLA CrackMe
+# AEGIS CrackMe
 
-BLA 对外发布的逆向 / 防护挑战。当前主挑战是 **v9 Sovereign（BLA 3.0）**。
+AEGIS 对外发布的逆向 / 防护挑战。当前主挑战是 **v9 Sovereign（AEGIS 3.0）**。
 
-## v9 — Sovereign（当前 · BLA 3.0）
+## v9 — Sovereign（当前 · AEGIS 3.0）
 
-多语言产品 entitlement 门禁（`license.cjs` + `core.wasm` + `panel.html` + `policy.py` + 受保护 `seal.json`），经 **BLA 3.0 四阶段 Agent 主导加固剧本**（`bla_lint` → `bla_weave_plan` → `bla_verify_weave` 100/100 → `bla_harden --weave-decoys --self-seal --sidecar-entangle`，无 `--allow-*`）硬化后发布。
+多语言产品 entitlement 门禁（`license.cjs` + `core.wasm` + `panel.html` + `policy.py` + 受保护 `seal.json`），经 **AEGIS 3.0 四阶段 Agent 主导加固剧本**（`aegis_lint` → `aegis_weave_plan` → `aegis_verify_weave` 100/100 → `aegis_harden --weave-decoys --self-seal --sidecar-entangle`，无 `--allow-*`）硬化后发布。
 闭合了 v8 遗留的 `seal.json` 数据 sidecar 未覆盖缺口，并强制通过编译前/加固后 `weaveScore: 100` 与 `integrityCoverageSelfVerified: true`。
 
 ```bash

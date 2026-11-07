@@ -1,7 +1,7 @@
 # CrackMe v7 — Meridian Design
 
 > Status: **successor to CrackMe v6**. v6 (harden-native vault) shipped in
-> bla-agents 1.6.1 as an interim snapshot and is retained under
+> aegis-agents 1.6.1 as an interim snapshot and is retained under
 > `challenge/v6/` for history; it is **not** the product challenge anymore.
 
 ## Product framing
@@ -29,9 +29,9 @@ Owner writeup against v6, mapped to design constraints:
 | Critique | v7 response |
 |---|---|
 | 16 independent 1-byte lanes → ~95^1 search | **Chained 24–32 round ARX over the whole 20-symbol key.** Four 32-bit words packed from Crockford-base32; each round mixes all words with a seed-derived schedule. No per-lane oracle. |
-| `LANE_SALT` / numeric literals survive harden | **No compile-time challenge constants in JS.** Expected digest lives in `catalog.json` as data; schedule/pad come from a SHA-256 stream keyed by `(integrity ‖ fingerprint ‖ env)`. Literals that remain are BLA's own injected numerics, not the secret. |
-| WASM `mix`/`seal` kept export names, bit-identical to public ref | **No custom WASM crypto.** Crypto is ordinary `node:crypto` + ARX in JS, so BLA's JS shields (rename, string split, opaque predicates, decoys, anti-strip corpus) are the surface. |
-| Opaque `hrtime` predicates / poisoned lanes | Documented as a **BLA product gap** (see issue). Challenge still runs through real `hardenProject()`; we avoid `class` constructors that BLA currently renames inconsistently (see below). |
+| `LANE_SALT` / numeric literals survive harden | **No compile-time challenge constants in JS.** Expected digest lives in `catalog.json` as data; schedule/pad come from a SHA-256 stream keyed by `(integrity ‖ fingerprint ‖ env)`. Literals that remain are AEGIS's own injected numerics, not the secret. |
+| WASM `mix`/`seal` kept export names, bit-identical to public ref | **No custom WASM crypto.** Crypto is ordinary `node:crypto` + ARX in JS, so AEGIS's JS shields (rename, string split, opaque predicates, decoys, anti-strip corpus) are the surface. |
+| Opaque `hrtime` predicates / poisoned lanes | Documented as a **AEGIS product gap** (see issue). Challenge still runs through real `hardenProject()`; we avoid `class` constructors that AEGIS currently renames inconsistently (see below). |
 | Static `solve.mjs` never executes the target | Activation **requires executing the hardened modules**: self-integrity hashes the five `.cjs` files at runtime; schedule seed binds that hash + a live feature fingerprint + an environment note. Pure static dumps of constants are insufficient. |
 | No self-integrity / anti-debug | `measure()` SHA-256s all five modules; `environmentNote()` records inspector / `--inspect` / `NODE_OPTIONS` / `Function#toString` native-code checks. Tamper or attach → different seed → reject. |
 | Decorative bankrupt score | Five real modules + catalog, all passed through `hardenProject({intensity:"bankrupt", llmDirectives:false})`. `SEAL.json` records per-file `defenseScore` from the live report. |
@@ -51,7 +51,7 @@ challenge/v7/SEAL.json  ← public digests / knobs only
 
 Cleartext sources and the release generator live **outside git** (maintainer
 store). Only hardened output + SEAL are public. That matches the product
-story: customers receive BLA-hardened builds, not the preimage.
+story: customers receive AEGIS-hardened builds, not the preimage.
 
 ### Activation (happy path)
 
@@ -74,14 +74,14 @@ collapse to the same `License rejected.` (exit 1). Bad format → usage
 
 ### Why multi-file + catalog
 
-- BLA's discovery prefers `bin/` as a build-output name and skips `lib/` on
+- AEGIS's discovery prefers `bin/` as a build-output name and skips `lib/` on
   supplemental walks. Layout uses `cli/` + `core/` so every module is
   discovered and hardened (enforced by the private generator).
-- `data/catalog.json` is **not** JS, so BLA leaves it intact — the natural
+- `data/catalog.json` is **not** JS, so AEGIS leaves it intact — the natural
   place to publish the expected digest and sealed certificate without
   embedding them as JS numeric/string literals that survive harden.
 
-### Known BLA gaps exercised (filed as product issues)
+### Known AEGIS gaps exercised (filed as product issues)
 
 1. **Numeric literals are not de-literalized** — still visible after
    bankrupt harden (confirmed with a probe `0x9e3779b9`).
@@ -117,7 +117,7 @@ Out of scope: attacking npm, GitHub, or unrelated software; enabling
 ```bash
 # in the private store tree (not in git):
 set -a; . secrets/crackme-v7-release.env; set +a
-BLA_ROOT=/path/to/bla node gen.mjs /path/to/bla/challenge/v7/hardened
+AEGIS_ROOT=/path/to/aegis node gen.mjs /path/to/aegis/challenge/v7/hardened
 # then fold build-info → SEAL.json (scripts/crackme/v7-seal.mjs --write-seal)
 ```
 

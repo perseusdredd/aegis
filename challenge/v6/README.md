@@ -1,8 +1,8 @@
-# BLA CrackMe v6 — Harden-Native Edition
+# AEGIS CrackMe v6 — Harden-Native Edition
 
-The public target **is `bla harden` output**. No hand-written obfuscation, no
+The public target **is `aegis harden` output**. No hand-written obfuscation, no
 custom CTF crypto: a small multi-format app is hardened by `hardenProject()`
-(the exact pipeline behind `bla harden <dir>`), and the result is published as-is.
+(the exact pipeline behind `aegis harden <dir>`), and the result is published as-is.
 
 | File | What it is | Hardened by |
 |------|------------|-------------|
@@ -32,7 +32,7 @@ The cleartext **template is public** ([`src/`](./src/)) — reading it tells you
 *shape* of the gate, not the answer. Every build fills in fresh constants (16 WASM
 lane targets, the panel token, the encrypted flag) from maintainer secrets, then
 hardens. To win you must recover those constants and the real logic from the
-hardened output, i.e. defeat BLA:
+hardened output, i.e. defeat AEGIS:
 
 - **Stage A** — each key byte goes through `seal(mix(byte, tweak_i))` in the hardened
   `core.wasm` and must hit a hidden 32-bit lane target.
@@ -47,16 +47,16 @@ node -e 'console.log(require("crypto").createHash("sha256").update(process.argv[
 ```
 
 It must equal `flagSha256` in [`SEAL.json`](./SEAL.json). Open an issue with the
-**CrackMe v6 solve** template (hash + method notes). A *general* bypass of BLA's
+**CrackMe v6 solve** template (hash + method notes). A *general* bypass of AEGIS's
 hardening is worth more than a one-off patch of this fixture — say so in the issue.
 
 ## Honest scope
 
-BLA raises the cost for **automated** AI reverse-engineering agents and plants
+AEGIS raises the cost for **automated** AI reverse-engineering agents and plants
 decoys. It does not claim immunity to patient interactive reversing (debuggers,
 Frida, manual analysis). Known gap surfaced by this challenge: numeric literals
 are not de-literalized by the JS shield, so the template keeps constants in
-strings (which BLA does split / decoy).
+strings (which AEGIS does split / decoy).
 
 ## Reproducible build (maintainers)
 
@@ -70,7 +70,7 @@ npm run crackme:seal                        # CI gate: digests, deny/honeypot, f
 
 Equivalent CLI recipe: materialize the template into `app/` (see
 `scripts/crackme/lib.mjs#materializeVault`), copy `src/panel.html` and
-`src/core.wasm`, then `bla harden app --intensity bankrupt --seed <SEAL.seed>`.
+`src/core.wasm`, then `aegis harden app --intensity bankrupt --seed <SEAL.seed>`.
 
 ## History
 

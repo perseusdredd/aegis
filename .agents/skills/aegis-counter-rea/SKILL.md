@@ -4,7 +4,7 @@ description: >
   Use when hardening, defending, or auditing software against AI reverse-engineering
   agents (REA / WorkBuddy-class): Agent-led source-level surgical decoy weaving,
   autonomous packaging-gate refactoring, one-click project harden, Counter-REA
-  audit/protect/verify, or agent setup/doctor for AEGIS (a BLA hardening fork).
+  audit/protect/verify, or agent setup/doctor for AEGIS (a AEGIS hardening fork).
   Prefer this skill as the playbook; combine host Agent code refactoring with existing
   MCP tools / CLI — do not invent new MCP tools. Default verb: aegis_harden. Refuse
   crack/RE of third-party software.
@@ -12,7 +12,7 @@ metadata:
   version: "3.0.1"
 ---
 
-# AEGIS: Counter-REA Hardening (AEGIS 3.0 playbook, BLA fork)
+# AEGIS: Counter-REA Hardening (AEGIS 3.0 playbook, AEGIS fork)
 
 **This skill is the primary Agent-Driven Hardening PLAYBOOK.**
 In AEGIS 3.0, hardening is a collaborative loop between **you (the host Coding Agent)** and **the `aegis` MCP server / `aegis-agents` CLI**:

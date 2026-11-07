@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Prove a break of [Meridian / CrackMe v7](https://github.com/qybaihe/bla/tree/main/challenge/v7) by posting the **SHA-256 of the activation certificate** (not necessarily the raw certificate). It must match `certSha256` in `challenge/v7/SEAL.json`.
+        Prove a break of [Meridian / CrackMe v7](https://github.com/perseusdredd/aegis/tree/main/challenge/v7) by posting the **SHA-256 of the activation certificate** (not necessarily the raw certificate). It must match `certSha256` in `challenge/v7/SEAL.json`.
   - type: dropdown
     id: surface
     attributes:

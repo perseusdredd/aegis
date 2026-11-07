@@ -1,6 +1,6 @@
 # Meridian (CrackMe v7)
 
-Offline engineering calculator shipped as a **real `bla harden` output**.
+Offline engineering calculator shipped as a **real `aegis harden` output**.
 Activate Meridian Pro to print the activation certificate.
 
 ```bash
@@ -14,4 +14,4 @@ Rules, commitment digests, and the design rationale live in
 [`DESIGN.md`](./DESIGN.md) and [`SEAL.json`](./SEAL.json).
 
 This supersedes CrackMe v6 (still under `../v6/` for history; shipped in
-bla-agents 1.6.1 as an interim snapshot).
+aegis-agents 1.6.1 as an interim snapshot).

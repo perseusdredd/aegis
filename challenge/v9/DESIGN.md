@@ -1,8 +1,8 @@
-# CrackMe v9 — Sovereign Design (BLA 3.0 Showcase)
+# CrackMe v9 — Sovereign Design (AEGIS 3.0 Showcase)
 
-> Status: **successor to CrackMe v8 Aegis**. Built with **bla-agents 3.0.0**
-> through the **4-Stage Agent-Driven Hardening Playbook** (`bla_lint` →
-> `bla_weave_plan` → `bla_verify_weave` → `bla_harden --weave-decoys --self-seal --sidecar-entangle`).
+> Status: **successor to CrackMe v8 Aegis**. Built with **aegis-agents 3.0.0**
+> through the **4-Stage Agent-Driven Hardening Playbook** (`aegis_lint` →
+> `aegis_weave_plan` → `aegis_verify_weave` → `aegis_harden --weave-decoys --self-seal --sidecar-entangle`).
 
 ## Product framing
 
@@ -16,10 +16,10 @@ Sovereign is a polyglot (JS + WASM + HTML + Python) entitlement unlock:
 
 | Dimension | CrackMe v8 (Aegis — 2.0) | CrackMe v9 (Sovereign — 3.0) |
 |---|---|---|
-| Pipeline | Single-step `bla harden --self-seal` | Full **4-Stage BLA 3.0 Playbook** (`bla_lint` → `bla_weave_plan` → `bla_verify_weave` → `bla_harden`) |
+| Pipeline | Single-step `aegis harden --self-seal` | Full **4-Stage AEGIS 3.0 Playbook** (`aegis_lint` → `aegis_weave_plan` → `aegis_verify_weave` → `aegis_harden`) |
 | `seal.json` sidecar coverage | Uncovered data sidecar (v8 residual) | **Closed**: `license.cjs` pins `EXPECTED_SEAL_SHA256` at runtime; tampering with `seal.json` hard-fails |
 | Cross-format entanglement | `selfSeal: true` only | `selfSeal: true` + **`sidecarEntangle: true`** + **`weaveDecoys: true`** across JS, WASM, HTML, and Python (`policy.py`) |
-| Structural weave verification | None | Enforced **100/100 (`weaveScore: 100`)** via `bla_verify_weave` both pre-harden and post-harden |
+| Structural weave verification | None | Enforced **100/100 (`weaveScore: 100`)** via `aegis_verify_weave` both pre-harden and post-harden |
 | Entry self-digest verification | Soft / post-hoc | Enforced `integrityCoverageSelfVerified: true` in `SEAL.json` |
 | WASM + JS Deception Anchors | Strip-prone export roots | All injected JS exhaustion/deception roots + Python canary honeypots anchored to module init |
 

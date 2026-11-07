@@ -35,7 +35,7 @@ aegis harden .
 
 > [!IMPORTANT]
 > AEGIS is a **defensive** tool for protecting **your own** software. See [DISCLAIMER.md](DISCLAIMER.md).
-> Get AEGIS from [qybaihe/bla](https://github.com/qybaihe/bla) or [npm `aegis-agents`](https://www.npmjs.com/package/aegis-agents).
+> Get AEGIS from [perseusdredd/aegis](https://github.com/perseusdredd/aegis) or [npm `aegis-agents`](https://www.npmjs.com/package/aegis-agents).
 
 <div align="center">
 <img src="docs/assets/aegis-vs-rea-showcase.svg" alt="Side-by-side: REA on an unprotected artifact vs AEGIS-protected output" width="1200" />
@@ -239,7 +239,7 @@ Report security issues through [SECURITY.md](SECURITY.md).
 
 ## Contributing
 
-Issues and PRs welcome at [qybaihe/bla](https://github.com/qybaihe/bla). Before submitting:
+Issues and PRs welcome at [perseusdredd/aegis](https://github.com/perseusdredd/aegis). Before submitting:
 
 ```bash
 export PATH=$HOME/node22.23.4/bin:$PATH   # or node24

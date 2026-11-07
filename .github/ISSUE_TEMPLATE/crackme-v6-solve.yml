@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Prove a break of [CrackMe v6](https://github.com/qybaihe/bla/tree/main/challenge/v6) by posting the **SHA-256 of the FLAG** (not necessarily the raw FLAG). It must match `flagSha256` in `challenge/v6/SEAL.json`.
+        Prove a break of [CrackMe v6](https://github.com/perseusdredd/aegis/tree/main/challenge/v6) by posting the **SHA-256 of the FLAG** (not necessarily the raw FLAG). It must match `flagSha256` in `challenge/v6/SEAL.json`.
   - type: dropdown
     id: stage
     attributes:
