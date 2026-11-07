@@ -76,6 +76,8 @@ npx aegis-agents harden .
 # or tell your agent: "Harden my software against REA"
 ```
 
+Or run `npx aegis-agents` with no arguments in an interactive terminal: it asks for a target path and an intensity, then runs `harden` for you.
+
 `harden` auto-discovers build outputs (`dist/`, `build/`, `.asar`, `.wasm`, `.sqlite`, `models/` ...) and runs `audit` -> `protect` -> `verify` at `bankrupt` intensity.
 
 > On Windows PowerShell, `npx` may be blocked by script execution policy. Use `npx.cmd` instead (e.g. `npx.cmd aegis-agents setup -y`).

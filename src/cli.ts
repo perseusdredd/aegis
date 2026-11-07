@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { createHash } from "node:crypto";
-import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { createInterface } from "node:readline/promises";
 import { resolve } from "node:path";
 import { AEGIS_IDENTITY } from "./identity.js";
 import {
@@ -61,6 +62,60 @@ import {
   formatSetupReport,
   formatVerificationReport,
 } from "./ui/reporter.js";
+
+const INTERACTIVE_INTENSITIES: readonly ProtectionIntensity[] = [
+  "stealth",
+  "balanced",
+  "maximum",
+  "bankrupt",
+];
+
+/**
+ * Zero-argument, interactive-terminal-only wizard: ask for a target path and
+ * an intensity, then delegate to the normal `harden` command. Never runs in
+ * a non-TTY context (CI, pipes, tests) so it can't change any existing
+ * scripted behaviour.
+ */
+async function runInteractiveWizard(): Promise<number> {
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  try {
+    console.log(`${formatBanner()}\n`);
+    console.log("Interactive setup — press Ctrl+C anytime to cancel.\n");
+
+    let target = "";
+    while (!target) {
+      const answer = (
+        await rl.question(`Target file or directory to protect [${process.cwd()}]: `)
+      ).trim();
+      const candidate = answer.length > 0 ? answer : process.cwd();
+      if (!existsSync(candidate)) {
+        console.log(`  Not found: ${candidate}\n`);
+        continue;
+      }
+      target = candidate;
+    }
+
+    console.log("\nIntensity:");
+    INTERACTIVE_INTENSITIES.forEach((level, i) => {
+      const note = level === "bankrupt" ? " (default, most aggressive)" : "";
+      console.log(`  ${i + 1}) ${level}${note}`);
+    });
+    let intensity: ProtectionIntensity = "bankrupt";
+    const levelAnswer = (await rl.question(`Choose 1-4 [4]: `)).trim();
+    if (levelAnswer.length > 0) {
+      const index = Number.parseInt(levelAnswer, 10) - 1;
+      const picked = INTERACTIVE_INTENSITIES[index];
+      if (picked) intensity = picked;
+      else console.log(`  Unrecognized choice, using default: ${intensity}`);
+    }
+
+    console.log(`\nRunning: aegis harden "${target}" --intensity ${intensity}\n`);
+    rl.close();
+    return runCli(["harden", target, "--intensity", intensity]);
+  } finally {
+    rl.close();
+  }
+}
 
 function printHelp(): void {
   console.log(`${formatBanner()}
@@ -540,6 +595,10 @@ export async function runCli(argv: readonly string[] = process.argv.slice(2)): P
   if (parsed.command === "mcp") {
     startMcpStdioServer();
     return 0;
+  }
+
+  if (!parsed.help && !parsed.command && argv.length === 0 && process.stdin.isTTY) {
+    return runInteractiveWizard();
   }
 
   if (parsed.help || !parsed.command) {
