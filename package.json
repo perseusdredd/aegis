@@ -22,10 +22,10 @@
   "homepage": "https://aegis.tools",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/qybaihe/bla.git"
+    "url": "git+https://github.com/perseusdredd/aegis.git"
   },
   "bugs": {
-    "url": "https://github.com/qybaihe/bla/issues"
+    "url": "https://github.com/perseusdredd/aegis/issues"
   },
   "license": "MIT",
   "author": "AEGIS Contributors",
